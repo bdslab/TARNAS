@@ -1,0 +1,15 @@
+.root{
+    -fx-font-size: 10pt;
+    -fx-font-family: "Courier New";
+    -fx-background-color: #ffffff;
+    -fx-base: #e0ffff;
+}
+
+#textOptions .text{
+-fx-font-weight: bold;
+-fx-stroke: black;
+}
+
+#fileTables .table-column {
+  -fx-alignment: CENTER;
+}
