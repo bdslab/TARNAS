@@ -1,24 +1,17 @@
-module it.unicam.cs.bdslab.tarnas {
+module tarnas {
+    // required modules
     requires javafx.controls;
     requires javafx.fxml;
     requires org.antlr.antlr4.runtime;
     requires java.logging;
 
+    // all types in it.unicam.cs.bdslab.tarnas.model.* packages are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.model.rnastructure to javafx.base;
-    exports it.unicam.cs.bdslab.tarnas.model.rnastructure;
-
     opens it.unicam.cs.bdslab.tarnas.model.rnafile to javafx.base;
-    exports it.unicam.cs.bdslab.tarnas.model.rnafile;
-
     opens it.unicam.cs.bdslab.tarnas.model.utils to javafx.base;
-    exports it.unicam.cs.bdslab.tarnas.model.utils;
-
-    opens it.unicam.cs.bdslab.tarnas to javafx.fxml;
-    exports it.unicam.cs.bdslab.tarnas to javafx.graphics;
-
-    exports it.unicam.cs.bdslab.tarnas.view.utils;
+    // all types in it.unicam.cs.bdslab.tarnas.view.* package are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.view.utils to javafx.fxml;
-
-    exports it.unicam.cs.bdslab.tarnas.view;
     opens it.unicam.cs.bdslab.tarnas.view to javafx.fxml;
+    // javafx.graphics needs to access the it.unicam.cs.bdslab.tarnas exported package
+    exports it.unicam.cs.bdslab.tarnas to javafx.graphics;
 }

@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 
 // TODO: check file with same name
 public class HomeController {
-    public static final Logger logger = Logger.getLogger("it.unicam.cs.two.pie.tarnas.view.HomeController");
+    public static final Logger logger = Logger.getLogger("it.unicam.cs.bdslab.tarnas.view.HomeController");
     private TranslatorController translatorController;
 
     private IOController ioController;
