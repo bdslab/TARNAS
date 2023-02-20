@@ -35,7 +35,7 @@ class CleanerControllerTest {
 
     @Test
     void mergeDBLines() throws IOException {
-        Files.walk(db).parallel().filter(Files::isRegularFile).forEach(
+        Files.walk(db).filter(Files::isRegularFile).forEach(
                 f -> {
                     try {
                         RNAFile toClean = RNAFileConstructor.getInstance().construct(f);
