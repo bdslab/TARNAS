@@ -5,6 +5,7 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.WeakBond;
+import org.antlr.v4.runtime.Token;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -151,18 +152,28 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     @Override
     public void enterBondsContinue(RNASecondaryStructureParser.BondsContinueContext ctx) {
         // take the bond and add it to the structure
-        int left = Integer.parseInt(ctx.bond().INDEX(0).getText());
-        int right = Integer.parseInt(ctx.bond().INDEX(1).getText());
+        var indexes = this.getBondTokens(ctx.BOND().getText());
+        int left = Integer.parseInt(indexes.get(0));
+        int right = Integer.parseInt(indexes.get(1));
         this.s.addBond(new WeakBond(left, right));
     }
 
-    @Override
+    private List<String> getBondTokens(String bondTokenText) {
+        var separator = bondTokenText.contains(",") ? ',' : ';';
+        var left = bondTokenText.substring(bondTokenText.indexOf('(') + 1, bondTokenText.lastIndexOf(separator));
+        var right = bondTokenText.substring(bondTokenText.indexOf(separator) + 1, bondTokenText.lastIndexOf(')'));
+        return List.of(left, right);
+    }
+
+    // in teoria questo non serve piu perche l'ultimo bond l'ho gia preso in bond
+    /*@Override
     public void enterBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx) {
         // take the bond and add it to the structure
         int left = Integer.parseInt(ctx.bond().INDEX(0).getText());
         int right = Integer.parseInt(ctx.bond().INDEX(1).getText());
         this.s.addBond(new WeakBond(left, right));
-    }
+        System.out.println(ctx.getText());
+    }*/
 
     @Override
     public void exitAas(RNASecondaryStructureParser.AasContext ctx) {

@@ -1,5 +1,7 @@
 package it.unicam.cs.bdslab.tarnas.model.rnafile;
 
+import it.unicam.cs.bdslab.tarnas.model.antlr.RNASecondaryStructureLexer;
+import it.unicam.cs.bdslab.tarnas.model.antlr.RNASecondaryStructureParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -7,8 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import it.unicam.cs.bdslab.tarnas.model.antlr.RNAFileListener;
-import it.unicam.cs.bdslab.tarnas.model.antlr.RNASecondaryStructureLexer;
-import it.unicam.cs.bdslab.tarnas.model.antlr.RNASecondaryStructureParser;
 
 import java.io.IOException;
 import java.nio.file.Path;

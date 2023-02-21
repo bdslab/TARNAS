@@ -230,49 +230,49 @@ class RNAFileTranslatorTest {
     private void translateToDB(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToDB(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToDB(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
     }
 
 
     private void translateToDBNoSequence(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToDBNoSequence(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToDBNoSequence(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
     }
 
     private void translateToBPSEQ(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToBPSEQ(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToBPSEQ(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
     }
 
     private void translateToCT(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToCT(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToCT(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
 
     }
 
     private void translateToAAS(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToAAS(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToAAS(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
 
     }
 
     private void translateToAASNoSequence(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToAASNoSequence(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToAASNoSequence(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
     }
 
     private void translateToFASTA(RNAFile rnaFile, RNAFile expectedRNAFile) throws IOException {
         var fRNAFile = RNAFileTranslator.translateToFASTA(rnaFile);
         var fExpectedRNAFile = RNAFileTranslator.translateToFASTA(expectedRNAFile);
-        this.removeBodyIfPseudoknotted(fRNAFile,fExpectedRNAFile);
+        this.removeBodyIfPseudoknotted(fRNAFile, fExpectedRNAFile);
     }
 
-    private void removeBodyIfPseudoknotted(RNAFile toTranslate, RNAFile expected){
+    private void removeBodyIfPseudoknotted(RNAFile toTranslate, RNAFile expected) {
         // with pseudoktnots comparing only weakbonds
         if (toTranslate.getStructure().isPseudoknotted() && expected.getStructure().isPseudoknotted()) {
             toTranslate = new RNAFile(toTranslate.getFileName(), new ArrayList<>(), new ArrayList<>(), toTranslate.getStructure(), toTranslate.getFormat());
