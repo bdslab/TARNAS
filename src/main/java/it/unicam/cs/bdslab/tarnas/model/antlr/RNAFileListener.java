@@ -165,16 +165,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         return List.of(left, right);
     }
 
-    // in teoria questo non serve piu perche l'ultimo bond l'ho gia preso in bond
-    /*@Override
-    public void enterBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx) {
-        // take the bond and add it to the structure
-        int left = Integer.parseInt(ctx.bond().INDEX(0).getText());
-        int right = Integer.parseInt(ctx.bond().INDEX(1).getText());
-        this.s.addBond(new WeakBond(left, right));
-        System.out.println(ctx.getText());
-    }*/
-
     @Override
     public void exitAas(RNASecondaryStructureParser.AasContext ctx) {
         // create body

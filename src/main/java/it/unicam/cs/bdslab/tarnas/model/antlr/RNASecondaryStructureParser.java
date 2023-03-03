@@ -728,7 +728,6 @@ public class RNASecondaryStructureParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class BondsEndContext extends BondsContext {
-		public TerminalNode BOND() { return getToken(RNASecondaryStructureParser.BOND, 0); }
 		public BondsEndContext(BondsContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -764,8 +763,8 @@ public class RNASecondaryStructureParser extends Parser {
 		try {
 			setState(106);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case BOND:
 				_localctx = new BondsContinueContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
@@ -785,14 +784,14 @@ public class RNASecondaryStructureParser extends Parser {
 				bonds();
 				}
 				break;
-			case 2:
+			case EOF:
 				_localctx = new BondsEndContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(105);
-				match(BOND);
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1271,8 +1270,8 @@ public class RNASecondaryStructureParser extends Parser {
 		"\u000e\u0007\u0000ac\u0005\u0007\u0000\u0000b_\u0001\u0000\u0000\u0000"+
 		"ba\u0001\u0000\u0000\u0000c\u000f\u0001\u0000\u0000\u0000df\u0005\u0004"+
 		"\u0000\u0000eg\u0005\u0003\u0000\u0000fe\u0001\u0000\u0000\u0000fg\u0001"+
-		"\u0000\u0000\u0000gh\u0001\u0000\u0000\u0000hk\u0003\u0010\b\u0000ik\u0005"+
-		"\u0004\u0000\u0000jd\u0001\u0000\u0000\u0000ji\u0001\u0000\u0000\u0000"+
+		"\u0000\u0000\u0000gh\u0001\u0000\u0000\u0000hk\u0003\u0010\b\u0000ik\u0001"+
+		"\u0000\u0000\u0000jd\u0001\u0000\u0000\u0000ji\u0001\u0000\u0000\u0000"+
 		"k\u0011\u0001\u0000\u0000\u0000lm\u0003\u0014\n\u0000mn\u0003\u0012\t"+
 		"\u0000nq\u0001\u0000\u0000\u0000oq\u0003\u0014\n\u0000pl\u0001\u0000\u0000"+
 		"\u0000po\u0001\u0000\u0000\u0000q\u0013\u0001\u0000\u0000\u0000rs\u0005"+

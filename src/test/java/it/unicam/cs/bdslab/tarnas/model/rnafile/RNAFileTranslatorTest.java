@@ -42,6 +42,7 @@ class RNAFileTranslatorTest {
         Files.walk(Paths.get(srcFolder)).filter(Files::isRegularFile).forEach(
                 f -> {
                     try {
+                        System.out.println("filepath: "+ f);
                         RNAFile toTranslate = RNAFileConstructor.getInstance().construct(f);
                         toTranslate = new RNAFile(toTranslate.getFileName(), new ArrayList<>(), toTranslate.getBody(), toTranslate.getStructure(), toTranslate.getFormat());
                         for (int i = 0; i < expectedFolder.size(); i++) {
