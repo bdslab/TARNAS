@@ -5,11 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileConstructor;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileTranslator;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,7 +37,7 @@ class RNAFileTranslatorTest {
         Files.walk(Paths.get(srcFolder)).filter(Files::isRegularFile).forEach(
                 f -> {
                     try {
-                        System.out.println("filepath: "+ f);
+                        System.out.println("to translate filepath: " + f);
                         RNAFile toTranslate = RNAFileConstructor.getInstance().construct(f);
                         toTranslate = new RNAFile(toTranslate.getFileName(), new ArrayList<>(), toTranslate.getBody(), toTranslate.getStructure(), toTranslate.getFormat());
                         for (int i = 0; i < expectedFolder.size(); i++) {
@@ -50,6 +45,7 @@ class RNAFileTranslatorTest {
                                     this.getFileNameWithoutExtension(f.getFileName()) + expectedExtension.get(i);
                             Path tmpPath = Paths.get(tmp);
                             if (Files.exists(tmpPath)) {
+                                System.out.println("to compare filepath: " + tmpPath);
                                 RNAFile expected = RNAFileConstructor.getInstance().construct(tmpPath);
                                 // header can not be the same in all files...
                                 expected = new RNAFile(expected.getFileName(), new ArrayList<>(), expected.getBody(), expected.getStructure(), expected.getFormat());
@@ -279,7 +275,7 @@ class RNAFileTranslatorTest {
             toTranslate = new RNAFile(toTranslate.getFileName(), new ArrayList<>(), new ArrayList<>(), toTranslate.getStructure(), toTranslate.getFormat());
             expected = new RNAFile(expected.getFileName(), new ArrayList<>(), new ArrayList<>(), expected.getStructure(), expected.getFormat());
         }
-        assertEquals(toTranslate, expected);
+        assertEquals(expected, toTranslate);
     }
 
     private String getFileNameWithoutExtension(Path filePath) {
