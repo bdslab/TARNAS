@@ -5,7 +5,6 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.WeakBond;
-import org.antlr.v4.runtime.Token;
 
 import java.io.IOException;
 import java.nio.file.Files;
