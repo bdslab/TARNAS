@@ -85,7 +85,7 @@ public class TranslatorController {
      */
     public List<RNAFile> translateAllLoadedFiles(List<RNAFile> rnaFiles, RNAFormat dstRNAFormat) {
         List<RNAFile> translatedtedLoadedRNAFiles = new ArrayList<>();
-        rnaFiles.parallelStream().forEach(f -> {
+        rnaFiles.forEach(f -> {
             try {
                 translatedtedLoadedRNAFiles.add(this.translateTo(f, dstRNAFormat));
             } catch (RNAFormatTranslationException e) {
