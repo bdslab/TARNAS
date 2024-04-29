@@ -1,4 +1,4 @@
-<!-- PROJECT LOGO -->
+<div id="readme-top"></div>
 <br />
 <div align="center">
     <img src="/src/main/resources/img/tarnas-center-logo.png" alt="Logo" width="80" height="80" style="background-color:white; border-radius: 10%;" >
@@ -144,8 +144,21 @@ TARNAS works as follows:
    Once the desired cleaning options have been selected, you must press the `CLEAN button` to start cleaning on the uploaded files.
 
    At this point, the user will be asked to choose where to save the cleaned files, and if successful, a report will be shown of the number of files cleaned and saved in the location specified by the user.
-4. `TRANSLATION OPTIONS`: TODO Piero
- 
+4. `TRANSLATION OPTIONS`: they are on the `right side` side of TARNAS and allow the user to translate a file from one format to another.<br>Allowed translations:
+      |                          | **Dot-Bracket senza seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS senza seq.** | **CT** |
+      |--------------------------|-----------------------------|------------------|-----------|-----------|---------|--------------------|--------|
+      | **Dot-Bracket senza seq.** | -                           | **X**            | **X**     | **X**     | **X**   | ✓                  | **X**  |
+      | **Dot-Bracket**           | ✓                           | -                | ✓         | ✓         | ✓       | ✓                  | ✓      |
+      | **BPSEQ**                 | ✓                           | ✓                | -         | ✓         | ✓       | ✓                  | ✓      |
+      | **Fasta**                 | **X**                       | **X**            | **X**     | -         | **X**   | **X**              | **X**  |
+      | **AAS**                   | ✓                           | ✓                | ✓         | ✓         | -       | ✓                  | ✓      |
+      | **AAS senza seq.**        | ✓                           | **X**            | **X**     | **X**     | **X**   | -                  | **X**  |
+      | **CT**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   |   
+    <br>
+    You can select the `include header` checkbox if you want to keep the header during translation.<br>
+    Also you can save all the translated files in a zip file to reduce the space occupied by them, to do this just select the `save as zip` checkbox and then name the zip file.<br>
+    When all translation options have been selected, you can start the translation through the `TRANSLATE` button. 
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
