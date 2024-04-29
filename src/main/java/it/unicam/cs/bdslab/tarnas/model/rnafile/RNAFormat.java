@@ -81,7 +81,7 @@ package it.unicam.cs.bdslab.tarnas.model.rnafile;
  */
 public enum RNAFormat {
 
-    AAS("ASS"),
+    AAS("AAS"),
     AAS_NO_SEQUENCE("AAS NO SEQUENCE"),
     BPSEQ("BPSEQ"),
     CT("CT"),
