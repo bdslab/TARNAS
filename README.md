@@ -98,15 +98,19 @@ You can install TARNAS in several ways:
 * If you cloned the repo, you can use `Maven` to execute TARNAS.
 <br>
 Position yourself inside the `TARNAS folder`, which contains the `pom.xml`, and type the following command:
+
   ```sh
   mvn clean javafx:run
   ```
+  
 * If you downloaded the `TARNAS.jar`from the latest release, you can use `Java` to execute TARNAS.
   <br>
   Position yourself inside the folder that contains the jar executable file, and type the following command:
+
   ```sh
   java -jar TARNAS.jar
   ```
+  
 <br>
 TARNAS works as follows:
 
