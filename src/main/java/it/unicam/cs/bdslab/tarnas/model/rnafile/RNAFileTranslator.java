@@ -141,7 +141,7 @@ public class RNAFileTranslator {
         var header = List.of("");
 
         // write the list of strings to the temporary file
-        var input = "input."+rnaFile.getFormat().getExtension();
+        var input = "input." + rnaFile.getFormat().getExtension();
         Files.write(Path.of(input), rnaFile.getContent());
         var controller = new RnaParserAnalyzerController();
         var result = controller.loadRna(input);
@@ -292,8 +292,10 @@ public class RNAFileTranslator {
         for (int i = 1; i < n; i++) {
             var globalOrder = 0;
             for (int j = 0; j <= i - 1; j++) {
-                if (regs.get(j).getOrder() == globalOrder && areRegionsConflicting(regs.get(i), regs.get(j)))
+                if (regs.get(j).getOrder() == globalOrder && areRegionsConflicting(regs.get(i), regs.get(j))) {
                     globalOrder += 1;
+                    j = 0;
+                }
             }
             regs.get(i).setOrder(globalOrder);
         }
