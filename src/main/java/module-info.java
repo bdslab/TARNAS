@@ -4,6 +4,7 @@ module tarnas {
     requires javafx.fxml;
     requires org.antlr.antlr4.runtime;
     requires java.logging;
+    requires java.xml;
 
     // all types in it.unicam.cs.bdslab.tarnas.model.* packages are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.model.rnastructure to javafx.base;

@@ -2,12 +2,17 @@ package it.unicam.cs.bdslab.tarnas.controller;
 
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import it.unicam.cs.bdslab.rnamlparsertool.controller.RnaParserAnalyzerController;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.*;
+import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 
 /**
  * // TODO: javadoc
@@ -37,13 +42,14 @@ public class TranslatorController {
      */
     private TranslatorController() {
         conversionMatrix = Map.of(
-                AAS, List.of(AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA),
+                AAS, List.of(AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML),
                 AAS_NO_SEQUENCE, List.of(DB_NO_SEQUENCE),
-                BPSEQ, List.of(AAS, AAS_NO_SEQUENCE, CT, DB, DB_NO_SEQUENCE, FASTA),
-                CT, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, DB, DB_NO_SEQUENCE, FASTA),
-                DB, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB_NO_SEQUENCE, FASTA),
+                BPSEQ, List.of(AAS, AAS_NO_SEQUENCE, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML),
+                CT, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, DB, DB_NO_SEQUENCE, FASTA, RNAML),
+                DB, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB_NO_SEQUENCE, FASTA, RNAML),
                 DB_NO_SEQUENCE, List.of(AAS_NO_SEQUENCE),
-                FASTA, List.of());
+                FASTA, List.of(),
+                RNAML, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA));
     }
 
     /**
@@ -53,15 +59,7 @@ public class TranslatorController {
      * @return list of {@link RNAFormat}
      */
     public List<RNAFormat> getAvailableTranslations(RNAFormat rnaFormat) {
-        return switch (rnaFormat) {
-            case AAS -> List.of(AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA);
-            case AAS_NO_SEQUENCE -> List.of(DB_NO_SEQUENCE);
-            case BPSEQ -> List.of(AAS, AAS_NO_SEQUENCE, CT, DB, DB_NO_SEQUENCE, FASTA);
-            case CT -> List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, DB, DB_NO_SEQUENCE, FASTA);
-            case DB -> List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB_NO_SEQUENCE, FASTA);
-            case DB_NO_SEQUENCE -> List.of(AAS_NO_SEQUENCE);
-            case FASTA -> List.of();
-        };
+        return this.conversionMatrix.get(rnaFormat);
     }
 
     /**
@@ -88,7 +86,7 @@ public class TranslatorController {
         rnaFiles.forEach(f -> {
             try {
                 translatedtedLoadedRNAFiles.add(this.translateTo(f, dstRNAFormat));
-            } catch (RNAFormatTranslationException e) {
+            } catch (RNAFormatTranslationException | IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -104,8 +102,38 @@ public class TranslatorController {
      * @return the {@code FormattedRNAFile}, so the translation of the specified {@code rnaFile}
      * @throws RNAFormatTranslationException if a translation error occurs
      */
-    private RNAFile translateTo(RNAFile rnaFile, RNAFormat dstRNAFormat) throws RNAFormatTranslationException {
+    private RNAFile translateTo(RNAFile rnaFile, RNAFormat dstRNAFormat) throws RNAFormatTranslationException, IOException {
         RNAFile formattedRNAFile;
+
+        if (rnaFile.getFormat() == RNAML) {
+
+            // Local translation from RNAML to DB for the ease of translation from RNAML to other formats
+            var rnaSecondaryStructure = new RNASecondaryStructure();
+            // create empty DB header
+            var header = List.of("");
+
+            // write the list of strings to the temporary file
+            var input = "input." + RNAML.getExtension();
+            Path inputFilePath = Path.of(input);
+            Files.write(inputFilePath, rnaFile.getBody());
+            var controller = new RnaParserAnalyzerController();
+            var result = controller.loadRna(input);
+            var output = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.') + 1) + DB.getExtension();
+            if (result.result) {
+                controller.SaveLoadedData(output);
+            }
+
+            // create DB body
+            Path outputFilePath = Path.of(output);
+            rnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
+            rnaFile.setFormat(RNAML);
+            // read content of outputFilePath
+            Files.readAllLines(outputFilePath).forEach(System.out::println);
+            // delete input and output files
+            Files.delete(outputFilePath);
+            Files.delete(inputFilePath);
+        }
+
         if (this.conversionMatrix.get(rnaFile.getFormat()).contains(dstRNAFormat))
             formattedRNAFile = this.noCheckingtranslateTo(rnaFile, dstRNAFormat);
         else
@@ -121,7 +149,7 @@ public class TranslatorController {
      * @return the {@link RNAFile} that represent the translation of the specified {@code rnaFile}
      * in the destination {@code rnaFormat}
      */
-    private RNAFile noCheckingtranslateTo(RNAFile rnaFile, RNAFormat rnaFormat) {
+    private RNAFile noCheckingtranslateTo(RNAFile rnaFile, RNAFormat rnaFormat) throws IOException {
         return switch (rnaFormat) {
             case AAS -> RNAFileTranslator.translateToAAS(rnaFile);
             case AAS_NO_SEQUENCE -> RNAFileTranslator.translateToAASNoSequence(rnaFile);
@@ -130,6 +158,7 @@ public class TranslatorController {
             case DB -> RNAFileTranslator.translateToDB(rnaFile);
             case DB_NO_SEQUENCE -> RNAFileTranslator.translateToDBNoSequence(rnaFile);
             case FASTA -> RNAFileTranslator.translateToFASTA(rnaFile);
+            case RNAML -> RNAFileTranslator.translateToRNAML(rnaFile);
         };
     }
 }

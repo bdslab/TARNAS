@@ -1,5 +1,6 @@
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 
+
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
@@ -11,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.DB;
+import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.RNAML;
+
 public class RNAFileListener extends RNASecondaryStructureBaseListener {
     private RNAFile rnaFile;
     private RNASecondaryStructure s;
@@ -19,6 +23,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     private List<String> header;
     private String fileName;
     private List<String> content;
+    private String absoluteFilePath;
 
     public RNAFileListener() {
 
@@ -31,6 +36,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         this.edbnsBuffer = new StringBuffer();
         this.header = new ArrayList<>();
         this.fileName = String.valueOf(filePath.getFileName());
+        this.absoluteFilePath = filePath.toAbsolutePath().toString(); // useful only for RNAML files
     }
 
     public RNAFile getRnaFile() {
@@ -265,8 +271,15 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         if (this.s.getSequence() == null)
             this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.edbnsBuffer.toString()), this.s, RNAFormat.DB_NO_SEQUENCE);
         else
-            this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.sequenceBuffer.toString(), this.edbnsBuffer.toString()), this.s, RNAFormat.DB);
+            this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.sequenceBuffer.toString(), this.edbnsBuffer.toString()), this.s, DB);
     }
+
+
+    @Override
+    public void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
+        this.rnaFile = new RNAFile(this.fileName, this.header, List.of(ctx.XML_HEADER_LINE1().getText(), ctx.XML_HEADER_LINE2().getText(), ctx.XML_CONTENT().getText()), this.s, RNAML);
+    }
+
     /*
      * Parse an Extended Dot-Bracket Notation string and transform it into a
      * list of weak bonds.
@@ -346,12 +359,5 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
             case '>' -> '<';
             default -> Character.toUpperCase(c);
         };
-    }
-
-    // RNAML
-
-    @Override
-    public void enterRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
-        System.out.println(ctx.XML_HEADER_LINE1().getText() + ctx.XML_HEADER_LINE2().getText() + ctx.XML_CONTENT().getText());
     }
 }

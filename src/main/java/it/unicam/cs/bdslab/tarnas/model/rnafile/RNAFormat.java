@@ -1,5 +1,6 @@
 package it.unicam.cs.bdslab.tarnas.model.rnafile;
 
+// TODO: javadoc for RNAML
 /**
  * An RNAFormat can be:
  * <ul>
@@ -87,7 +88,8 @@ public enum RNAFormat {
     CT("CT"),
     DB("DOT BRACKET"),
     DB_NO_SEQUENCE("DOT BRACKET NO SEQUENCE"),
-    FASTA("FASTA");
+    FASTA("FASTA"),
+    RNAML("RNAML");
 
     private final String name;
 
@@ -98,4 +100,16 @@ public enum RNAFormat {
     public String getName() {
         return name;
     }
+
+    public String getExtension() {
+        return switch (this) {
+            case AAS, AAS_NO_SEQUENCE -> "aas";
+            case BPSEQ -> "bpseq";
+            case CT -> "ct";
+            case DB, DB_NO_SEQUENCE -> "db";
+            case FASTA -> "fasta";
+            case RNAML -> "rnaml";
+        };
+    }
+
 }

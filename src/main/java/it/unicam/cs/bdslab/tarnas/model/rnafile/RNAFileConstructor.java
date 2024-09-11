@@ -53,7 +53,7 @@ public class RNAFileConstructor {
         this.rnaFilelistener.setFilePath(filePath);
         // Walk the tree created during the parse, trigger callbacks
         this.walker.walk(rnaFilelistener, tree);
-        return rnaFilelistener.getRnaFile();
+        return this.rnaFilelistener.getRnaFile();
     }
 
 }

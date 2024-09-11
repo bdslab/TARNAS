@@ -36,7 +36,7 @@ public class RNAFile {
     private final String fileName;
     private final List<String> header;
     private final RNASecondaryStructure structure;
-    private final RNAFormat format;
+    private RNAFormat format;
     private final List<String> body;
     private final List<String> content;
 
@@ -110,6 +110,14 @@ public class RNAFile {
      */
     public List<String> getContent() {
         return this.content;
+    }
+
+    /**
+     * Sets the {@link RNAFormat} for this {@code RNAFile}
+     * @param format the format will be set for this {@code RNAFile}
+     */
+    public void setFormat(RNAFormat format) {
+        this.format = format;
     }
 
     @Override
