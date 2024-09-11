@@ -24,7 +24,7 @@ package it.unicam.cs.bdslab.tarnas.model.antlr;
 
 // Grammar rules
 rna_format:
-    aas | ct | edbn | bpseq | fasta
+    aas | ct | edbn | bpseq | fasta | rnaml
 ;
 
 aas:
@@ -91,6 +91,10 @@ bpseq_structure:
 bpseq_line:
 	INDEX NUCLEOTIDE ZERO_INDEX # bpseqLineUnpaired
 	| INDEX NUCLEOTIDE INDEX # bpseqLineBond
+;
+
+rnaml:
+    XML_HEADER_LINE1 XML_HEADER_LINE2 XML_CONTENT # rnamlContent
 ;
 
 // Lexer tokens
@@ -186,6 +190,18 @@ LINE3BPSEQCT:
 
 LINE4BPSEQCT:
 	'Citation' .*? '\r'? '\n'
+;
+
+XML_HEADER_LINE1:
+    '<?xml' .*? '?>' '\r'? '\n'
+;
+
+XML_HEADER_LINE2:
+    '<!DOCTYPE rnaml SYSTEM "rnaml.dtd">' '\r'? '\n'
+;
+
+XML_CONTENT:
+    '<rnaml' .*? '>' .*? '</rnaml>'
 ;
 
 COMMENT:

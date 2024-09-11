@@ -348,4 +348,10 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         };
     }
 
+    // RNAML
+
+    @Override
+    public void enterRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
+        System.out.println(ctx.XML_HEADER_LINE1().getText() + ctx.XML_HEADER_LINE2().getText() + ctx.XML_CONTENT().getText());
+    }
 }
