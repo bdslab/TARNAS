@@ -106,12 +106,6 @@ public class TranslatorController {
         RNAFile formattedRNAFile;
 
         if (rnaFile.getFormat() == RNAML) {
-
-            // Local translation from RNAML to DB for the ease of translation from RNAML to other formats
-            var rnaSecondaryStructure = new RNASecondaryStructure();
-            // create empty DB header
-            var header = List.of("");
-
             // write the list of strings to the temporary file
             var input = "input." + RNAML.getExtension();
             Path inputFilePath = Path.of(input);
@@ -127,8 +121,6 @@ public class TranslatorController {
             Path outputFilePath = Path.of(output);
             rnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
             rnaFile.setFormat(RNAML);
-            // read content of outputFilePath
-            Files.readAllLines(outputFilePath).forEach(System.out::println);
             // delete input and output files
             Files.delete(outputFilePath);
             Files.delete(inputFilePath);
