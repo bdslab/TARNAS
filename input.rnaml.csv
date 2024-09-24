@@ -1,0 +1,9 @@
+base-id-5p base-id-3p canonical-bond bond-type cis-or-trans
+G5 A37 Not-Canonical-Pair Sugar-Hoogsteen trans
+A6 U36 Canonical-Pair Hoogsteen-Watson-Crick trans
+U7 G35 Not-Canonical-Pair Hoogsteen-Watson-Crick trans
+G9 G33 Not-Canonical-Pair Watson-Crick-Hoogsteen trans
+U10 A32 Canonical-Pair Watson-Crick-Hoogsteen trans
+A11 G31 Not-Canonical-Pair Hoogsteen-Sugar trans
+G8 A34 Not-Canonical-Pair ???-??? trans
+G19 C23 Canonical-Pair ???-??? trans
