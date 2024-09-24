@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="574.0" prefWidth="905.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="638.0" prefWidth="1207.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
     <top>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
@@ -71,7 +71,7 @@
     <center>
         <BorderPane fx:id="paneTranslationCleaning" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <right>
-                <BorderPane prefHeight="175.0" prefWidth="427.0" BorderPane.alignment="CENTER">
+                <BorderPane prefHeight="181.0" prefWidth="383.0" BorderPane.alignment="CENTER">
                     <center>
                         <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="285.0" prefHeight="120.0" prefWidth="285.0" BorderPane.alignment="CENTER">
                             <columnConstraints>
@@ -114,10 +114,10 @@
             <left>
                 <BorderPane prefHeight="131.0" prefWidth="471.0" BorderPane.alignment="CENTER">
                     <center>
-                        <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="500.0" prefHeight="120.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+                        <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="434.0" prefHeight="120.0" prefWidth="434.0" BorderPane.alignment="CENTER">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="372.0000203450521" minWidth="10.0" prefWidth="340.66670735677087" />
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.6666564941406" minWidth="10.0" prefWidth="149.33329264322913" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="372.0000203450521" minWidth="10.0" prefWidth="303.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.6666564941406" minWidth="10.0" prefWidth="131.0" />
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -142,7 +142,7 @@
                                         <Insets left="5.0" />
                                     </GridPane.margin>
                                 </CheckBox>
-                                <TextField fx:id="textFieldRmLinesContainingWord" promptText="word" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <TextField fx:id="textFieldRmLinesContainingWord" prefHeight="24.0" prefWidth="132.0" promptText="word" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Button maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#handleClean" prefWidth="100.0" text="CLEAN">
                            <GridPane.margin>
                               <Insets left="190.0" top="240.0" />
@@ -166,6 +166,52 @@
                     </center>
                 </BorderPane>
             </left>
+         <center>
+            <BorderPane fx:id="abstractionsPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <center>
+                  <GridPane prefHeight="148.0" prefWidth="340.0" BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="182.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="156.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <CheckBox fx:id="chbxCore" mnemonicParsing="false" text="core" />
+                        <CheckBox fx:id="chbxCorePlus" mnemonicParsing="false" text="coreplus" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chbxShape" mnemonicParsing="false" text="shape" GridPane.rowIndex="2" />
+                     </children>
+                     <padding>
+                        <Insets left="50.0" />
+                     </padding>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </GridPane>
+               </center>
+               <top>
+                  <Label prefHeight="38.0" prefWidth="164.0" text="ABSTRACTIONS" BorderPane.alignment="CENTER">
+                     <padding>
+                        <Insets left="50.0" />
+                     </padding>
+                  </Label>
+               </top>
+               <bottom>
+                  <ButtonBar prefHeight="40.0" prefWidth="244.0" BorderPane.alignment="CENTER">
+                    <buttons>
+                      <Button minWidth="3.0" mnemonicParsing="false" onAction="#handleAbstractions" prefHeight="24.0" prefWidth="75.0" text="CORE" />
+                    </buttons>
+                     <BorderPane.margin>
+                        <Insets right="115.0" />
+                     </BorderPane.margin>
+                  </ButtonBar>
+               </bottom>
+            </BorderPane>
+         </center>
         </BorderPane>
     </center>
     <bottom>

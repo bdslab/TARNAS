@@ -1,6 +1,7 @@
 package it.unicam.cs.bdslab.tarnas.view;
 
 import it.unicam.cs.bdslab.tarnas.Main;
+import it.unicam.cs.bdslab.tarnas.controller.AbstractionsController;
 import it.unicam.cs.bdslab.tarnas.controller.CleanerController;
 import it.unicam.cs.bdslab.tarnas.controller.IOController;
 import it.unicam.cs.bdslab.tarnas.controller.TranslatorController;
@@ -9,6 +10,7 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.view.utils.DeleteCell;
 import it.unicam.cs.bdslab.tarnas.view.utils.LenCell;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,6 +43,8 @@ public class HomeController {
     private IOController ioController;
 
     private CleanerController cleanerController;
+
+    private AbstractionsController abstractionsController;
 
     private RNAFormat selectedFormat;
 
@@ -81,6 +85,15 @@ public class HomeController {
     public CheckBox chbxRmAllComments;
 
     @FXML
+    public CheckBox chbxCore;
+
+    @FXML
+    public CheckBox chbxCorePlus;
+
+    @FXML
+    public CheckBox chbxShape;
+
+    @FXML
     public TextField textFieldRmLinesContainingWord;
 
     @FXML
@@ -91,6 +104,9 @@ public class HomeController {
 
     @FXML
     public BorderPane paneTranslationCleaning;
+
+    @FXML
+    private BorderPane abstractionsPane;
 
     @FXML
     public void initialize() {
@@ -106,6 +122,7 @@ public class HomeController {
         this.cleanerController = CleanerController.getInstance();
         this.ioController = IOController.getInstance();
         this.translatorController = TranslatorController.getInstance();
+        this.abstractionsController = AbstractionsController.getInstance();
         // load trash image
         var trashImage = new Image(Objects.requireNonNull(Main.class.getResource("/img/trash.png")).toExternalForm(), 18, 18, false, false);
         var lenImage = new Image(Objects.requireNonNull(Main.class.getResource("/img/lens-icon.jpeg")).toExternalForm(), 18, 18, false, false);
@@ -263,7 +280,6 @@ public class HomeController {
                     var selectedRNAFile = Path.of(tmp.getPath());
                     this.addFileToTable(selectedRNAFile);
                     Files.delete(tmp.toPath());
-                    logger.info(fileName + " deleted");
                     // clear
                     dialog.getEditor().clear();
                 }
@@ -308,6 +324,7 @@ public class HomeController {
             this.filesTable.getItems().add(rnaFile);
             this.paneTranslationCleaning.setDisable(false);
             this.chbxMergeLines.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
+            this.abstractionsPane.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
             // add event to select ButtonItem for destination format translation
             this.initSelectEventOnButtonItems(this.translatorController.getAvailableTranslations(rnaFile.getFormat()));
         } catch (Exception e) {
@@ -357,6 +374,9 @@ public class HomeController {
             this.chbxIncludeHeader.setSelected(false);
             this.chbxSaveAsZIP.setSelected(false);
             this.chbxRmAllComments.setSelected(false);
+            this.chbxCore.setSelected(false);
+            this.chbxCorePlus.setSelected(false);
+            this.chbxShape.setSelected(false);
             // reset textAreas
             this.textFieldArchiveName.setText("");
             this.textFieldRmLinesContainingWord.setText("");
@@ -369,8 +389,30 @@ public class HomeController {
         }
     }
 
+    @FXML
+    public void handleAbstractions() throws IOException {
+        try {
+            logger.info("Abstractions button clicked");
+            var abstractions = new ArrayList<RNAFile>();
+            var files = this.filesTable.getItems().stream().toList();
+            for (var f : files) {
+                if (this.chbxCore.isSelected())
+                    abstractions.add(this.abstractionsController.getCore(f));
+                if (this.chbxCorePlus.isSelected())
+                    abstractions.add(this.abstractionsController.getCorePlus(f));
+                if (this.chbxShape.isSelected())
+                    abstractions.add(this.abstractionsController.getShape(f));
+            }
+            this.saveFilesTo(abstractions);
+            logger.info("Abstractions files saved successfully");
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+        }
+
+    }
+
     private EventHandler<? super MouseEvent> eventTableEmpty() {
         return e -> this.tableEmpty();
     }
-
 }
