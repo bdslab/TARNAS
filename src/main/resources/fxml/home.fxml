@@ -146,7 +146,7 @@
          <right>
             <BorderPane fx:id="abstractionsPane" prefHeight="216.0" prefWidth="331.0" BorderPane.alignment="CENTER">
                <center>
-                  <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" prefHeight="148.0" prefWidth="340.0" BorderPane.alignment="CENTER">
+                  <GridPane fx:id="abstractionPane" maxHeight="120.0" maxWidth="500.0" minHeight="120.0" prefHeight="148.0" prefWidth="340.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="182.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="156.0" />
@@ -195,7 +195,7 @@
                             </rowConstraints>
                             <children>
                                 <CheckBox fx:id="chbxIncludeHeader" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="include header" />
-                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="button" text="Translate to" GridPane.rowIndex="2">
+                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" styleClass="button" text="Translate to" GridPane.rowIndex="2">
                                 </MenuButton>
                               <Label maxWidth="200.0" minWidth="200.0" prefWidth="200.0" styleClass="textOptions" text="TRANSLATION OPTIONS">
                            <GridPane.margin>

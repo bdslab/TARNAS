@@ -107,8 +107,8 @@ public class HomeController {
     @FXML
     public BorderPane paneTranslationCleaning;
 
-    //@FXML
-    //public BorderPane abstractionsPane;
+    @FXML
+    public BorderPane abstractionsPane;
 
     @FXML
     public void initialize() {
@@ -355,7 +355,7 @@ public class HomeController {
             this.filesTable.getItems().add(rnaFile);
             this.paneTranslationCleaning.setDisable(false);
             this.chbxMergeLines.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
-            //this.abstractionsPane.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
+            this.abstractionsPane.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
             // add event to select ButtonItem for destination format translation
             this.initSelectEventOnButtonItems(this.translatorController.getAvailableTranslations(rnaFile.getFormat()));
         } catch (Exception e) {
