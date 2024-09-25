@@ -48,6 +48,8 @@ public class HomeController {
 
     private RNAFormat selectedFormat;
 
+    private boolean isTranslating;
+
     @FXML
     private TableView<RNAFile> filesTable;
 
@@ -66,8 +68,8 @@ public class HomeController {
     @FXML
     public MenuButton btnSelectFormatTranslation;
 
-    @FXML
-    public Button btnTranslate;
+    //@FXML
+    //public Button btnTranslate;
 
     @FXML
     public CheckBox chbxRmLinesContainingWord;
@@ -105,12 +107,13 @@ public class HomeController {
     @FXML
     public BorderPane paneTranslationCleaning;
 
-    @FXML
-    private BorderPane abstractionsPane;
+    //@FXML
+    //public BorderPane abstractionsPane;
 
     @FXML
     public void initialize() {
         logger.info("Initializing...");
+        this.isTranslating = false;
         // remove sorting
         this.nameColumn.setSortable(false);
         this.formatColumn.setSortable(false);
@@ -173,59 +176,47 @@ public class HomeController {
         logger.info("Cancel button clicked");
     }
 
-    @FXML
-    public void handleClean() {
+    public List<RNAFile> clean(List<RNAFile> files) {
         logger.info("CLEAN button clicked");
-        try {
-            var cleanedFiles = this.filesTable.getItems().stream().toList();
-            if (this.chbxRmAllComments.isSelected()) {
-                cleanedFiles = cleanedFiles
-                        .parallelStream()
-                        .map(f -> this.cleanerController.removeLinesStartingWith(f, "#"))
-                        .toList();
-                cleanedFiles = cleanedFiles
-                        .parallelStream()
-                        .map(f -> this.cleanerController.removeLinesStartingWith(f, ">"))
-                        .toList();
-            }
-            if (this.chbxRmLinesContainingWord.isSelected())
-                cleanedFiles = cleanedFiles
-                        .parallelStream()
-                        .map(f -> this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText()))
-                        .toList();
-            if (this.chbxRmBlankLines.isSelected())
-                cleanedFiles = cleanedFiles
-                        .parallelStream()
-                        .map(f -> this.cleanerController.removeWhiteSpaces(f))
-                        .toList();
-            if (this.chbxRmBlankLines.isSelected())
-                cleanedFiles = cleanedFiles
-                        .parallelStream()
-                        .map(f -> this.cleanerController.mergeDBLines(f))
-                        .toList();
-            this.saveFilesTo(cleanedFiles);
-            logger.info("Cleaned all files successfully");
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+        var cleanedFiles = files;
+        if (this.chbxRmAllComments.isSelected()) {
+            cleanedFiles = cleanedFiles
+                    .parallelStream()
+                    .map(f -> this.cleanerController.removeLinesStartingWith(f, "#"))
+                    .toList();
+            cleanedFiles = cleanedFiles
+                    .parallelStream()
+                    .map(f -> this.cleanerController.removeLinesStartingWith(f, ">"))
+                    .toList();
         }
+        if (this.chbxRmLinesContainingWord.isSelected())
+            cleanedFiles = cleanedFiles
+                    .parallelStream()
+                    .map(f -> this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText()))
+                    .toList();
+        if (this.chbxRmBlankLines.isSelected())
+            cleanedFiles = cleanedFiles
+                    .parallelStream()
+                    .map(f -> this.cleanerController.removeWhiteSpaces(f))
+                    .toList();
+        if (this.chbxRmBlankLines.isSelected())
+            cleanedFiles = cleanedFiles
+                    .parallelStream()
+                    .map(f -> this.cleanerController.mergeDBLines(f))
+                    .toList();
+        return cleanedFiles;
+
     }
 
-    @FXML
-    public void handleTranslate() {
+    private List<RNAFile> translate(List<RNAFile> files) {
         logger.info("TRANSLATE button clicked");
         List<RNAFile> translatedRNAFiles;
-        try {
-            translatedRNAFiles = this.translatorController.translateAllLoadedFiles(this.ioController.getLoadedRNAFiles(), this.selectedFormat);
-            if (!this.chbxIncludeHeader.isSelected())
-                translatedRNAFiles = translatedRNAFiles.parallelStream()
-                        .map(f -> this.cleanerController.removeHeader(f))
-                        .toList();
-            this.saveFilesTo(translatedRNAFiles);
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
-            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
-        }
+        translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.selectedFormat);
+        if (!this.chbxIncludeHeader.isSelected())
+            translatedRNAFiles = translatedRNAFiles.parallelStream()
+                    .map(f -> this.cleanerController.removeHeader(f))
+                    .toList();
+        return translatedRNAFiles;
     }
 
     @FXML
@@ -238,6 +229,46 @@ public class HomeController {
         // disable translation and cleaning pane
         this.tableEmpty();
         logger.info("Reset done");
+    }
+
+    @FXML
+    public void handleRun() {
+        var files = this.filesTable.getItems().stream().toList();
+        try {
+            if (isTranslating) {
+                files = this.clean(files);
+                files = this.translate(files);
+                this.saveFilesTo(files);
+            } else {
+                files = this.abstractions(files);
+                this.saveFilesTo(files);
+            }
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            this.showAlert(Alert.AlertType.ERROR, "Error", "", "Something went wrong, some files have a wrong syntax");
+        }
+
+
+    }
+
+    @FXML
+    public void handleAbstractionSelected() {
+        this.chbxMergeLines.setSelected(false);
+        this.chbxRmAllComments.setSelected(false);
+        this.chbxRmBlankLines.setSelected(false);
+        this.chbxRmLinesContainingWord.setSelected(false);
+        this.textFieldRmLinesContainingWord.setText("");
+        this.chbxIncludeHeader.setSelected(false);
+        this.btnSelectFormatTranslation.setText("Translate to");//easter egg
+        this.isTranslating = false;
+    }
+
+    @FXML
+    public void handleTranslationCleaningSelected() {
+        this.chbxCore.setSelected(false);
+        this.chbxCorePlus.setSelected(false);
+        this.chbxShape.setSelected(false);
+        this.isTranslating = true;
     }
 
     @FXML
@@ -312,10 +343,10 @@ public class HomeController {
                 this.selectedFormat = (RNAFormat) ((MenuItem) e.getSource()).getUserData();  // set RNAFormat enum
                 this.btnSelectFormatTranslation.setText((((MenuItem) e.getSource()).getText())); // set String to display in MenuItem
                 this.btnSelectFormatTranslation.setUserData(selectedFormat);
-                this.btnTranslate.setDisable(false);
+                this.handleTranslationCleaningSelected();
             });
         });
-        this.btnTranslate.setDisable(true);
+        //this.btnTranslate.setDisable(true);
     }
 
     private void addFileToTable(Path selectedRNAFile) {
@@ -324,7 +355,7 @@ public class HomeController {
             this.filesTable.getItems().add(rnaFile);
             this.paneTranslationCleaning.setDisable(false);
             this.chbxMergeLines.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
-            this.abstractionsPane.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
+            //this.abstractionsPane.setDisable(this.ioController.getRecognizedFormat() != DB && this.ioController.getRecognizedFormat() != DB_NO_SEQUENCE);
             // add event to select ButtonItem for destination format translation
             this.initSelectEventOnButtonItems(this.translatorController.getAvailableTranslations(rnaFile.getFormat()));
         } catch (Exception e) {
@@ -383,36 +414,39 @@ public class HomeController {
             // reset menu button
             this.btnSelectFormatTranslation.setText("Translate to");
             // reset translate button
-            this.btnTranslate.setDisable(true);
+            //this.btnTranslate.setDisable(true);
             // reset panes
             this.paneTranslationCleaning.setDisable(true);
         }
     }
 
-    @FXML
-    public void handleAbstractions() throws IOException {
-        try {
-            logger.info("Abstractions button clicked");
-            var abstractions = new ArrayList<RNAFile>();
-            var files = this.filesTable.getItems().stream().toList();
-            for (var f : files) {
-                if (this.chbxCore.isSelected())
-                    abstractions.add(this.abstractionsController.getCore(f));
-                if (this.chbxCorePlus.isSelected())
-                    abstractions.add(this.abstractionsController.getCorePlus(f));
-                if (this.chbxShape.isSelected())
-                    abstractions.add(this.abstractionsController.getShape(f));
-            }
-            this.saveFilesTo(abstractions);
-            logger.info("Abstractions files saved successfully");
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+    public List<RNAFile> abstractions(List<RNAFile> files) {
+
+        logger.info("Abstractions button clicked");
+        var abstractions = new ArrayList<RNAFile>();
+        for (var f : files) {
+            if (this.chbxCore.isSelected())
+                abstractions.add(this.abstractionsController.getCore(f));
+            if (this.chbxCorePlus.isSelected())
+                abstractions.add(this.abstractionsController.getCorePlus(f));
+            if (this.chbxShape.isSelected())
+                abstractions.add(this.abstractionsController.getShape(f));
         }
+        return abstractions;
 
     }
 
     private EventHandler<? super MouseEvent> eventTableEmpty() {
         return e -> this.tableEmpty();
+    }
+
+    @FXML
+    public void handleTutorial() {
+
+    }
+
+    @FXML
+    public void handleCiteUs() {
+
     }
 }

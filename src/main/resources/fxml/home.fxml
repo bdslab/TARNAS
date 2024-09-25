@@ -18,101 +18,80 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="638.0" prefWidth="1207.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
     <top>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
-                <MenuBar BorderPane.alignment="CENTER">
+                <MenuBar styleClass="menu" BorderPane.alignment="CENTER">
                     <menus>
-                        <Menu mnemonicParsing="false" text="File">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
-                            </items>
-                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleTutorial" text="Tutorial" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="About">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#handleCiteUs" text="Cite Us" />
                             </items>
                         </Menu>
                     </menus>
                 </MenuBar>
             </top>
-            <bottom>
-                <TableView fx:id="filesTable" maxWidth="1100.0" minWidth="1100.0" prefHeight="256.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
-                    <columns>
-                        <TableColumn fx:id="nameColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" styleClass="title" text="File Name" />
-                        <TableColumn fx:id="formatColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" text="Format" />
-                        <TableColumn fx:id="deleteColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" text="Remove" />
-                        <TableColumn fx:id="previewColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" text="Preview" />
-                    </columns>
-                    <BorderPane.margin>
-                        <Insets left="50.0" right="50.0" top="10.0" />
-                    </BorderPane.margin>
-                </TableView>
-            </bottom>
-         <center>
-            <ImageView fitHeight="107.0" fitWidth="153.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-               <image>
-                  <Image url="@../img/tarnas-center-logo.png" />
-               </image>
-               <BorderPane.margin>
-                  <Insets top="10.0" />
-               </BorderPane.margin>
-            </ImageView>
-         </center>
+         <bottom>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <bottom>
+                      <TableView fx:id="filesTable" maxWidth="1172.0" minWidth="1100.0" prefHeight="266.0" prefWidth="1172.0" styleClass="table" BorderPane.alignment="CENTER">
+                          <columns>
+                              <TableColumn fx:id="nameColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" resizable="false" styleClass="column" text="File Name" />
+                              <TableColumn fx:id="formatColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" resizable="false" styleClass="column" text="Format" />
+                              <TableColumn fx:id="deleteColumn" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" resizable="false" styleClass="column" text="Remove" />
+                              <TableColumn fx:id="previewColumn" maxWidth="346.0" minWidth="275.0" prefWidth="346.0" resizable="false" styleClass="column" text="Preview" />
+                          </columns>
+                          <BorderPane.margin>
+                              <Insets left="50.0" right="50.0" top="10.0" />
+                          </BorderPane.margin>
+                      </TableView>
+               </bottom>
+               <right>
+                  <ImageView fitHeight="87.0" fitWidth="98.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/logo_lab_bioShape.png" />
+                     </image>
+                     <BorderPane.margin>
+                        <Insets right="50.0" />
+                     </BorderPane.margin>
+                  </ImageView>
+               </right>
+               <left>
+                  <ImageView fitHeight="88.0" fitWidth="101.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/UNICAM_logo.png" />
+                     </image>
+                     <BorderPane.margin>
+                        <Insets left="50.0" />
+                     </BorderPane.margin>
+                  </ImageView>
+               </left>
+               <center>
+                  <ImageView fitHeight="78.0" fitWidth="121.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/tarnas-center-logo.png" />
+                     </image>
+                     <BorderPane.margin>
+                        <Insets left="50.0" />
+                     </BorderPane.margin>
+                  </ImageView>
+               </center>
+            </BorderPane>
+         </bottom>
         </BorderPane>
     </top>
-    <center>
-        <BorderPane fx:id="paneTranslationCleaning" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <right>
-                <BorderPane prefHeight="181.0" prefWidth="383.0" BorderPane.alignment="CENTER">
-                    <center>
-                        <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="285.0" prefHeight="120.0" prefWidth="285.0" BorderPane.alignment="CENTER">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints maxHeight="68.39999618530274" minHeight="2.0000045537948594" prefHeight="31.600010299682616" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="86.79999544620514" minHeight="10.0" prefHeight="33.599999999999994" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="62.400000000000006" minHeight="10.0" prefHeight="62.400000000000006" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <CheckBox fx:id="chbxIncludeHeader" mnemonicParsing="false" text="include header" />
-                                <CheckBox fx:id="chbxSaveAsZIP" mnemonicParsing="false" text="save as zip" GridPane.rowIndex="1" />
-                                <TextField fx:id="textFieldArchiveName" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" promptText="zip name" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                    <GridPane.margin>
-                                        <Insets right="10.0" />
-                                    </GridPane.margin>
-                                </TextField>
-                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" text="Translate to" GridPane.rowIndex="2">
-                                </MenuButton>
-                              <Button fx:id="btnTranslate" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#handleTranslate" prefWidth="100.0" text="TRANSLATE">
-                           <GridPane.margin>
-                              <Insets left="80.0" top="240.0" />
-                           </GridPane.margin>
-                        </Button>
-                              <Label maxWidth="200.0" minWidth="200.0" prefWidth="200.0" styleClass="textOptions" text="TRANSLATION OPTIONS">
-                           <GridPane.margin>
-                              <Insets bottom="50.0" left="50.0" />
-                           </GridPane.margin>
-                        </Label>
-                            </children>
-                     <BorderPane.margin>
-                        <Insets left="100.0" />
-                     </BorderPane.margin>
-                        </GridPane>
-                    </center>
-                </BorderPane>
-            </right>
+   <bottom>
+        <BorderPane fx:id="paneTranslationCleaning" prefHeight="349.0" prefWidth="1202.0" BorderPane.alignment="CENTER">
             <left>
-                <BorderPane prefHeight="131.0" prefWidth="471.0" BorderPane.alignment="CENTER">
+                <BorderPane prefHeight="236.0" prefWidth="443.0" BorderPane.alignment="CENTER">
                     <center>
                         <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="434.0" prefHeight="120.0" prefWidth="434.0" BorderPane.alignment="CENTER">
                             <columnConstraints>
@@ -127,33 +106,31 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <CheckBox fx:id="chbxRmLinesContainingWord" mnemonicParsing="false" text="remove lines containing" GridPane.rowIndex="1">
+                                <CheckBox fx:id="chbxRmLinesContainingWord" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="remove lines containing" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0" />
                                     </GridPane.margin>
                                 </CheckBox>
-                                <CheckBox fx:id="chbxRmBlankLines" mnemonicParsing="false" text="remove empty lines" GridPane.rowIndex="2">
+                                <CheckBox fx:id="chbxRmBlankLines" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="remove empty lines" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="5.0" />
                                     </GridPane.margin>
                                 </CheckBox>
-                                <CheckBox fx:id="chbxMergeLines" mnemonicParsing="false" text="merge lines (DB or DB NO SEQUENCE)" GridPane.rowIndex="3">
+                                <CheckBox fx:id="chbxMergeLines" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="merge lines (DB or DB NO SEQUENCE)" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="5.0" />
                                     </GridPane.margin>
                                 </CheckBox>
-                                <TextField fx:id="textFieldRmLinesContainingWord" prefHeight="24.0" prefWidth="132.0" promptText="word" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#handleClean" prefWidth="100.0" text="CLEAN">
-                           <GridPane.margin>
-                              <Insets left="190.0" top="240.0" />
-                           </GridPane.margin>
-                        </Button>
+                                <TextField fx:id="textFieldRmLinesContainingWord" onKeyTyped="#handleTranslationCleaningSelected" prefHeight="24.0" prefWidth="132.0" promptText="word" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label minWidth="200.0" styleClass="textOptions" text="CLEANING OPTIONS">
                            <GridPane.margin>
                               <Insets bottom="50.0" left="180.0" />
                            </GridPane.margin>
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
                         </Label>
-                        <CheckBox fx:id="chbxRmAllComments" mnemonicParsing="false" text="remove all comments">
+                        <CheckBox fx:id="chbxRmAllComments" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="remove all comments">
                            <GridPane.margin>
                               <Insets left="5.0" />
                            </GridPane.margin>
@@ -166,10 +143,10 @@
                     </center>
                 </BorderPane>
             </left>
-         <center>
-            <BorderPane fx:id="abstractionsPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <right>
+            <BorderPane fx:id="abstractionsPane" prefHeight="216.0" prefWidth="331.0" BorderPane.alignment="CENTER">
                <center>
-                  <GridPane prefHeight="148.0" prefWidth="340.0" BorderPane.alignment="CENTER">
+                  <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" prefHeight="148.0" prefWidth="340.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="182.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="156.0" />
@@ -181,9 +158,17 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <CheckBox fx:id="chbxCore" mnemonicParsing="false" text="core" />
-                        <CheckBox fx:id="chbxCorePlus" mnemonicParsing="false" text="coreplus" GridPane.rowIndex="1" />
-                        <CheckBox fx:id="chbxShape" mnemonicParsing="false" text="shape" GridPane.rowIndex="2" />
+                        <CheckBox fx:id="chbxCore" mnemonicParsing="false" onAction="#handleAbstractionSelected" styleClass="checkbox" text="core" />
+                        <CheckBox fx:id="chbxCorePlus" mnemonicParsing="false" onAction="#handleAbstractionSelected" styleClass="checkbox" text="coreplus" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chbxShape" mnemonicParsing="false" onAction="#handleAbstractionSelected" styleClass="checkbox" text="shape" GridPane.rowIndex="2" />
+                        <Label prefHeight="67.0" prefWidth="229.0" text="ABSTRACTIONS">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="50.0" left="50.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                      <padding>
                         <Insets left="50.0" />
@@ -193,31 +178,110 @@
                      </BorderPane.margin>
                   </GridPane>
                </center>
-               <top>
-                  <Label prefHeight="38.0" prefWidth="164.0" text="ABSTRACTIONS" BorderPane.alignment="CENTER">
-                     <padding>
-                        <Insets left="50.0" />
-                     </padding>
-                  </Label>
-               </top>
-               <bottom>
-                  <ButtonBar prefHeight="40.0" prefWidth="244.0" BorderPane.alignment="CENTER">
-                    <buttons>
-                      <Button minWidth="3.0" mnemonicParsing="false" onAction="#handleAbstractions" prefHeight="24.0" prefWidth="75.0" text="CORE" />
-                    </buttons>
-                     <BorderPane.margin>
-                        <Insets right="115.0" />
-                     </BorderPane.margin>
-                  </ButtonBar>
-               </bottom>
             </BorderPane>
+         </right>
+         <center>
+                <BorderPane prefHeight="181.0" prefWidth="383.0" BorderPane.alignment="CENTER">
+                    <center>
+                        <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="285.0" prefHeight="120.0" prefWidth="285.0" BorderPane.alignment="CENTER">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="68.39999618530274" minHeight="2.0000045537948594" prefHeight="31.600010299682616" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="86.79999544620514" minHeight="10.0" prefHeight="33.599999999999994" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="62.400000000000006" minHeight="10.0" prefHeight="62.400000000000006" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <CheckBox fx:id="chbxIncludeHeader" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="include header" />
+                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="button" text="Translate to" GridPane.rowIndex="2">
+                                </MenuButton>
+                              <Label maxWidth="200.0" minWidth="200.0" prefWidth="200.0" styleClass="textOptions" text="TRANSLATION OPTIONS">
+                           <GridPane.margin>
+                              <Insets bottom="50.0" left="50.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                            </children>
+                     <BorderPane.margin>
+                        <Insets left="100.0" />
+                     </BorderPane.margin>
+                        </GridPane>
+                    </center>
+                </BorderPane>
          </center>
+         <bottom>
+            <BorderPane prefHeight="146.0" prefWidth="1170.0" BorderPane.alignment="CENTER">
+               <left>
+                  <ImageView fitHeight="60.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/logo_mur.jpg" />
+                     </image>
+                  </ImageView>
+               </left>
+               <center>
+                  <ImageView fitHeight="60.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/logo_next.png" />
+                     </image>
+                  </ImageView>
+               </center>
+               <right>
+                  <ImageView fitHeight="84.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../img/logo_pnrr.jpg" />
+                     </image>
+                  </ImageView>
+               </right>
+               <BorderPane.margin>
+                  <Insets bottom="-15.0" left="15.0" right="15.0" top="20.0" />
+               </BorderPane.margin>
+               <top>
+                  <GridPane BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <ButtonBar prefHeight="30.0" prefWidth="1172.0" />
+                      <Button mnemonicParsing="false" onAction="#handleRun" prefHeight="26.0" prefWidth="101.0" text="RUN" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Button>
+                                <TextField fx:id="textFieldArchiveName" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" promptText="zip name" GridPane.columnIndex="2" GridPane.halignment="LEFT">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" />
+                                    </GridPane.margin>
+                                </TextField>
+                                <CheckBox fx:id="chbxSaveAsZIP" mnemonicParsing="false" styleClass="checkbox" text="save as zip" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                     </children>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </GridPane>
+               </top>
+            </BorderPane>
+         </bottom>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets top="-2.0" />
+         </padding>
         </BorderPane>
-    </center>
-    <bottom>
-        <BorderPane prefHeight="46.0" prefWidth="906.0" BorderPane.alignment="CENTER">
-            <bottom>
-                <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+   </bottom>
+   <center>
+        <BorderPane prefHeight="0.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+         <top>
+                <ButtonBar prefHeight="60.0" prefWidth="1115.0" styleClass="buttons" BorderPane.alignment="CENTER">
                     <buttons>
                         <Button mnemonicParsing="false" onAction="#handleAddFile" prefHeight="26.0" prefWidth="522.0" text="ADD FILE" />
                         <Button mnemonicParsing="false" onAction="#handleAddFolder" text="ADD FOLDER" />
@@ -228,7 +292,7 @@
                   <Insets left="35.0" right="50.0" />
                </BorderPane.margin>
                 </ButtonBar>
-            </bottom>
+         </top>
         </BorderPane>
-    </bottom>
+   </center>
 </BorderPane>

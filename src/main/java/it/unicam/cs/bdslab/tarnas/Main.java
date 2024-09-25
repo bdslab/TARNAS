@@ -24,7 +24,7 @@ public class Main extends Application {
         stage.setTitle("TARNAS");
         stage.getIcons().add(new Image(String.valueOf(App.class.getResource("/img/tarnas-icon.png").toURI())));
         stage.setScene(new Scene(root));
-        stage.setMinWidth(1200);
+        stage.setMinWidth(1300);
         stage.setMinHeight(700);
         stage.show();
     }

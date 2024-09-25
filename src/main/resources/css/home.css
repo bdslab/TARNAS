@@ -1,15 +1,59 @@
-.root{
+/* Root styles */
+.root {
     -fx-font-size: 10pt;
     -fx-font-family: "Courier New";
     -fx-background-color: #ffffff;
-    -fx-base: #e0ffff;
 }
 
-#textOptions .text{
--fx-font-weight: bold;
--fx-stroke: black;
+.menu {
+    -fx-base: #1b3b5d;
+}
+
+.column {
+    -fx-base: #305780;
+}
+
+#textOptions .text {
+    -fx-font-weight: bold;
+    -fx-stroke: black;
 }
 
 #fileTables .table-column {
-  -fx-alignment: CENTER;
+    -fx-alignment: CENTER;
 }
+
+/* Custom button with white background and black text */
+.button {
+    -fx-background-color: white;   /* White background */
+    -fx-text-fill: black;          /* Black text */
+    -fx-font-weight: bold;         /* Bold font */
+    -fx-border-color: black;       /* Black border */
+    -fx-border-radius: 5px;        /* Rounded corners for the border */
+    -fx-background-radius: 5px;    /* Rounded corners for the background */
+    -fx-cursor: hand;              /* Hand cursor when hovered */
+}
+
+/* Hover effect */
+.button:hover {
+    -fx-background-color: #f0f0f0; /* Light grey when hovered */
+}
+
+/* Pressed effect */
+.button:pressed {
+    -fx-background-color: #e0e0e0; /* Slightly darker grey when pressed */
+    -fx-border-color: black;       /* Keeps black border when pressed */
+}
+
+/* Custom checkbox styles */
+.checkbox {
+    -fx-background-color: white;    /* White background for checkbox */
+    -fx-text-fill: black;           /* Black text for checkbox label */
+}
+
+/* Checkbox selected style */
+.checkbox:selected {
+    -fx-background-color: white;    /* White background when selected */
+    -fx-text-fill: black;           /* Black text when selected */
+}
+
+
