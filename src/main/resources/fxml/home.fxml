@@ -20,22 +20,27 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="880.0" prefWidth="1312.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
     <top>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
                 <MenuBar styleClass="menu" BorderPane.alignment="CENTER">
                     <menus>
-                        <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#handleTutorial" text="Tutorial" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="About">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#handleCiteUs" text="Cite Us" />
-                            </items>
-                        </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleHelp" text="Help" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="About">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Contact Us">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#handleContactUs" text="Contact Us" />
+                    </items>
+                  </Menu>
                     </menus>
                 </MenuBar>
             </top>
@@ -216,21 +221,21 @@
          <bottom>
             <BorderPane prefHeight="146.0" prefWidth="1170.0" BorderPane.alignment="CENTER">
                <left>
-                  <ImageView fitHeight="60.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fitHeight="52.0" fitWidth="166.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@../img/logo_mur.jpg" />
                      </image>
                   </ImageView>
                </left>
                <center>
-                  <ImageView fitHeight="60.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fitHeight="52.0" fitWidth="269.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@../img/logo_next.png" />
                      </image>
                   </ImageView>
                </center>
                <right>
-                  <ImageView fitHeight="84.0" fitWidth="346.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fitHeight="94.0" fitWidth="370.0" pickOnBounds="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@../img/logo_pnrr.jpg" />
                      </image>
@@ -240,33 +245,40 @@
                   <Insets bottom="-15.0" left="15.0" right="15.0" top="20.0" />
                </BorderPane.margin>
                <top>
-                  <GridPane BorderPane.alignment="CENTER">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <ButtonBar prefHeight="30.0" prefWidth="1172.0" />
-                      <Button mnemonicParsing="false" onAction="#handleRun" prefHeight="26.0" prefWidth="101.0" text="RUN" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                           <GridPane.margin>
+                  <BorderPane prefHeight="74.0" prefWidth="1270.0" BorderPane.alignment="CENTER">
+                     <top>
+                        <GridPane prefHeight="34.0" prefWidth="1270.0" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ButtonBar prefHeight="30.0" prefWidth="1172.0" />
+                            <Button mnemonicParsing="false" onAction="#handleRun" prefHeight="26.0" prefWidth="101.0" text="RUN" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Button>
+                                      <TextField fx:id="textFieldArchiveName" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" promptText="zip name" GridPane.columnIndex="2" GridPane.halignment="LEFT">
+                                          <GridPane.margin>
+                                              <Insets left="10.0" />
+                                          </GridPane.margin>
+                                      </TextField>
+                                      <CheckBox fx:id="chbxSaveAsZIP" mnemonicParsing="false" styleClass="checkbox" text="save as zip" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                           </children>
+                           <BorderPane.margin>
                               <Insets />
-                           </GridPane.margin>
-                        </Button>
-                                <TextField fx:id="textFieldArchiveName" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" promptText="zip name" GridPane.columnIndex="2" GridPane.halignment="LEFT">
-                                    <GridPane.margin>
-                                        <Insets left="10.0" />
-                                    </GridPane.margin>
-                                </TextField>
-                                <CheckBox fx:id="chbxSaveAsZIP" mnemonicParsing="false" styleClass="checkbox" text="save as zip" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                     </children>
-                     <BorderPane.margin>
-                        <Insets />
-                     </BorderPane.margin>
-                  </GridPane>
+                           </BorderPane.margin>
+                        </GridPane>
+                     </top>
+                     <bottom>
+                        <Label prefHeight="35.0" prefWidth="1270.0" text="This website received funding from the European Union - Next-GenerationEU - National Recovery and Resilience Plan (NRRP) – MISSION 4 COMPONENT 2, INVESTMENT N. 1.1, CALL PRIN 2022 PNRR D.D. 1409 of 14th Sep 2022 - RNA2Fun CUP N. J53D23014960001" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER" />
+                     </bottom>
+                  </BorderPane>
                </top>
             </BorderPane>
          </bottom>

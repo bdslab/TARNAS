@@ -23,15 +23,19 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
-
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -446,12 +450,75 @@ public class HomeController {
     }
 
     @FXML
-    public void handleTutorial() {
+    public void handleHelp() {
+        Alert helpDialog = new Alert(Alert.AlertType.INFORMATION);
+        helpDialog.setTitle("Help");
+        helpDialog.setHeaderText("How to Use This Application");
+        helpDialog.setContentText("This is a simple help dialog. Use this space to provide helpful information about the application.");
 
+        // Show the dialog
+        helpDialog.showAndWait();
     }
 
     @FXML
-    public void handleCiteUs() {
+    public void handleAbout() {
+        Alert helpDialog = new Alert(Alert.AlertType.INFORMATION);
+        helpDialog.setTitle("Help");
+        helpDialog.setHeaderText("How to Use This Application");
+        helpDialog.setContentText("This is a simple help dialog. Use this space to provide helpful information about the application.");
 
+        // Show the dialog
+        helpDialog.showAndWait();
+    }
+    @FXML
+    public void handleContactUs() {
+        // Create an alert dialog for help information
+        Alert helpDialog = new Alert(Alert.AlertType.INFORMATION);
+        helpDialog.setTitle("Contact Us");
+        helpDialog.setHeaderText("Contact Us");
+
+        // Create the text and hyperlinks for the content
+        Text contactText = new Text(
+                "TARNAS has been realised within the BioShape and Data Science Lab with the contribution of:\n" +
+                        "Piero Jean Pier Hierro Canchari, Michela Quadrini, Piermichele Rosati, and Luca Tesei.\n\n"
+        );
+
+        // Hyperlink for the BioShape Lab
+        Text labWebsiteText = new Text("\nLab website: ");
+        Hyperlink bioShapeLink = new Hyperlink("https://bdslab.unicam.it/");
+        bioShapeLink.setOnAction(e -> openLink("https://bdslab.unicam.it/"));
+
+        Text rna2FunWebsiteText = new Text("\nRNA2Fun Project website: ");
+        Hyperlink rna2FunLink = new Hyperlink("https://bdslab.unicam.it/rna2fun/");
+        rna2FunLink.setOnAction(e -> openLink("https://bdslab.unicam.it/rna2fun/"));
+
+        Text contactInfo = new Text(
+                "\n\nFor any issue, please contact:\n" +
+                        "Prof. Luca Tesei\n\n" +
+                        "Email: luca.tesei@unicam.it\n" +
+                        "Address: School of Sciences and Technology, Via Madonna delle Carceri 7, 62032, Camerino (MC), Italy\n\n" +
+                        "Personal website: "
+        );
+
+        Hyperlink personalWebsiteLink = new Hyperlink("www.lucatesei.com");
+        personalWebsiteLink.setOnAction(e -> openLink("http://www.lucatesei.com/"));
+
+        // Use TextFlow to handle mixed text and hyperlinks
+        TextFlow dialogContent = new TextFlow(contactText, labWebsiteText, bioShapeLink, rna2FunWebsiteText, rna2FunLink, contactInfo, personalWebsiteLink);
+
+        // Set the content of the alert dialog
+        helpDialog.getDialogPane().setContent(dialogContent);
+
+        // Show the dialog
+        helpDialog.showAndWait();
+    }
+
+    // Helper method to open links in the default browser
+    private void openLink(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
