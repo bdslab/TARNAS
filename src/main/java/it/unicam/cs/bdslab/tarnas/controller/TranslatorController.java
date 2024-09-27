@@ -81,15 +81,17 @@ public class TranslatorController {
      * @param dstRNAFormat the destination {@link RNAFormat} to which translate all loaded files.
      * @return the list of all translated loaded files
      */
-    public List<RNAFile> translateAllLoadedFiles(List<RNAFile> rnaFiles, RNAFormat dstRNAFormat) {
+    public List<RNAFile> translateAllLoadedFiles(List<RNAFile> rnaFiles, RNAFormat dstRNAFormat) throws RNAFileException {
         List<RNAFile> translatedtedLoadedRNAFiles = new ArrayList<>();
-        rnaFiles.forEach(f -> {
-            try {
-                translatedtedLoadedRNAFiles.add(this.translateTo(f, dstRNAFormat));
-            } catch (RNAFormatTranslationException | IOException e) {
-                throw new RuntimeException(e);
+        RNAFile tmp = null;
+        try{
+            for (var f: rnaFiles){
+                tmp = f;
+                translatedtedLoadedRNAFiles.add(this.translateTo(f,dstRNAFormat));
             }
-        });
+        }catch (Exception e) {
+            throw new RNAFileException("Error caused by file: "+ tmp.getFileName());
+        }
         return translatedtedLoadedRNAFiles;
     }
 
@@ -104,33 +106,34 @@ public class TranslatorController {
      */
     private RNAFile translateTo(RNAFile rnaFile, RNAFormat dstRNAFormat) throws RNAFormatTranslationException, IOException {
         RNAFile formattedRNAFile;
-
-        if (rnaFile.getFormat() == RNAML) {
-            // write the list of strings to the temporary file
-            var input = "input." + RNAML.getExtension();
-            Path inputFilePath = Path.of(input);
-            Files.write(inputFilePath, rnaFile.getBody());
-            var controller = new RnaParserAnalyzerController();
-            var result = controller.loadRna(input);
-            var output = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.') + 1) + DB.getExtension();
-            if (result.result) {
-                controller.SaveLoadedData(output);
-            }
-
-            // create DB body
-            Path outputFilePath = Path.of(output);
-            rnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
-            rnaFile.setFormat(RNAML);
-            // delete input and output files
-            Files.delete(outputFilePath);
-            Files.delete(inputFilePath);
-        }
+        if (rnaFile.getFormat() == RNAML || dstRNAFormat == RNAML)
+            return this.handleRnamlTranslation(rnaFile, rnaFile.getFormat().getExtension(), dstRNAFormat.getExtension());
 
         if (this.conversionMatrix.get(rnaFile.getFormat()).contains(dstRNAFormat))
             formattedRNAFile = this.noCheckingtranslateTo(rnaFile, dstRNAFormat);
         else
             throw new RNAFormatTranslationException("Cannot translate from " + rnaFile.getFormat() + " to " + dstRNAFormat);
         return formattedRNAFile;
+    }
+
+    private RNAFile handleRnamlTranslation(RNAFile rnaFile, String inputExtension, String outputExtension) throws IOException {
+        // write the list of strings to the temporary file
+        var input = "input." + inputExtension;
+        var inputFilePath = Path.of(input);
+        Files.write(inputFilePath, rnaFile.getContent());
+        var controller = new RnaParserAnalyzerController();
+        var result = controller.loadRna(input);
+        var output = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.') + 1) + outputExtension;
+        if (result.result) {
+            controller.SaveLoadedData(output);
+        }
+        Path outputFilePath = Path.of(output);
+        rnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
+        rnaFile.setFormat(RNAML);
+        // delete input and output files
+        Files.delete(outputFilePath);
+        Files.delete(inputFilePath);
+        return rnaFile;
     }
 
     /**
@@ -141,7 +144,7 @@ public class TranslatorController {
      * @return the {@link RNAFile} that represent the translation of the specified {@code rnaFile}
      * in the destination {@code rnaFormat}
      */
-    private RNAFile noCheckingtranslateTo(RNAFile rnaFile, RNAFormat rnaFormat) throws IOException {
+    private RNAFile noCheckingtranslateTo(RNAFile rnaFile, RNAFormat rnaFormat) {
         return switch (rnaFormat) {
             case AAS -> RNAFileTranslator.translateToAAS(rnaFile);
             case AAS_NO_SEQUENCE -> RNAFileTranslator.translateToAASNoSequence(rnaFile);
@@ -150,7 +153,8 @@ public class TranslatorController {
             case DB -> RNAFileTranslator.translateToDB(rnaFile);
             case DB_NO_SEQUENCE -> RNAFileTranslator.translateToDBNoSequence(rnaFile);
             case FASTA -> RNAFileTranslator.translateToFASTA(rnaFile);
-            case RNAML -> RNAFileTranslator.translateToRNAML(rnaFile);
+            // dummy case, case handle in another function
+            case RNAML -> null;
         };
     }
 }

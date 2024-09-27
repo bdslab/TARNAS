@@ -1,16 +1,18 @@
 package it.unicam.cs.bdslab.tarnas.view;
 
+
+import it.unicam.cs.bdslab.tarnas.App;
 import it.unicam.cs.bdslab.tarnas.Main;
 import it.unicam.cs.bdslab.tarnas.controller.AbstractionsController;
 import it.unicam.cs.bdslab.tarnas.controller.CleanerController;
 import it.unicam.cs.bdslab.tarnas.controller.IOController;
 import it.unicam.cs.bdslab.tarnas.controller.TranslatorController;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
+import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileException;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.view.utils.DeleteCell;
 import it.unicam.cs.bdslab.tarnas.view.utils.LenCell;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +32,7 @@ import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -150,10 +153,14 @@ public class HomeController {
         var selectedFile = fileChooser.showOpenDialog(this.getPrimaryStage());
         if (selectedFile != null) {
             var selectedRNAFile = Path.of(selectedFile.getPath());
-            this.addFileToTable(selectedRNAFile);
-            logger.info("File added successfully");
+            try {
+                this.addFileToTable(selectedRNAFile);
+                logger.info("File added successfully");
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "", "", e.getMessage());
+            }
         }
-        logger.info("Cancel button clicked");
+        logger.info("Exit add file");
     }
 
     @FXML
@@ -166,50 +173,43 @@ public class HomeController {
                 var files = Files.walk(selectedDirectory.toPath())
                         .filter(Files::isRegularFile)
                         .toList();
-                files.forEach(this::addFileToTable);
+                for (var f : files)
+                    this.addFileToTable(f);
+
+                logger.info("Folder added successfully");
             } catch (Exception e) {
-                logger.severe(e.getMessage());
-                this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+                showAlert(Alert.AlertType.ERROR, "", "", e.getMessage());
             }
-            logger.info("Folder added successfully");
         }
-        logger.info("Cancel button clicked");
+        logger.info("Exit add file");
     }
 
-    public List<RNAFile> clean(List<RNAFile> files) {
-        logger.info("CLEAN button clicked");
-        var cleanedFiles = files;
-        if (this.chbxRmAllComments.isSelected()) {
-            cleanedFiles = cleanedFiles
-                    .parallelStream()
-                    .map(f -> this.cleanerController.removeLinesStartingWith(f, "#"))
-                    .toList();
-            cleanedFiles = cleanedFiles
-                    .parallelStream()
-                    .map(f -> this.cleanerController.removeLinesStartingWith(f, ">"))
-                    .toList();
+    public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
+        var cleanedFiles = new ArrayList<RNAFile>();
+        RNAFile tmp = null;
+        try {
+            for (var f : files) {
+                tmp = f;
+                if (this.chbxRmAllComments.isSelected()) {
+                    f = this.cleanerController.removeLinesStartingWith(f, "#");
+                    f = this.cleanerController.removeLinesStartingWith(f, ">");
+                }
+                if (this.chbxRmLinesContainingWord.isSelected())
+                    f = this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText());
+                if (this.chbxRmBlankLines.isSelected())
+                    f = this.cleanerController.removeWhiteSpaces(f);
+                if (this.chbxRmBlankLines.isSelected())
+                    f = this.cleanerController.mergeDBLines(f);
+                cleanedFiles.add(f);
+            }
+        } catch (Exception e) {
+            throw new RNAFileException("Error caused by : " + tmp.getFileName());
         }
-        if (this.chbxRmLinesContainingWord.isSelected())
-            cleanedFiles = cleanedFiles
-                    .parallelStream()
-                    .map(f -> this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText()))
-                    .toList();
-        if (this.chbxRmBlankLines.isSelected())
-            cleanedFiles = cleanedFiles
-                    .parallelStream()
-                    .map(f -> this.cleanerController.removeWhiteSpaces(f))
-                    .toList();
-        if (this.chbxRmBlankLines.isSelected())
-            cleanedFiles = cleanedFiles
-                    .parallelStream()
-                    .map(f -> this.cleanerController.mergeDBLines(f))
-                    .toList();
         return cleanedFiles;
 
     }
 
-    private List<RNAFile> translate(List<RNAFile> files) {
-        logger.info("TRANSLATE button clicked");
+    private List<RNAFile> translate(List<RNAFile> files) throws RNAFileException {
         List<RNAFile> translatedRNAFiles;
         translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.selectedFormat);
         if (!this.chbxIncludeHeader.isSelected())
@@ -233,6 +233,7 @@ public class HomeController {
 
     @FXML
     public void handleRun() {
+        logger.info("RUN button clicked");
         var files = this.filesTable.getItems().stream().toList();
         try {
             if (isTranslating) {
@@ -245,10 +246,8 @@ public class HomeController {
             }
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            this.showAlert(Alert.AlertType.ERROR, "Error", "", "Something went wrong, some files have a wrong syntax");
+            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
         }
-
-
     }
 
     @FXML
@@ -272,12 +271,14 @@ public class HomeController {
     }
 
     @FXML
-    public void handleWriteFile() throws IOException {
+    public void handleWriteFile() throws IOException, URISyntaxException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/writeFile.fxml"));
         Parent root = loader.load();
         var stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setScene(new Scene(root, 700, 400));
+        stage.getIcons().add(new Image(String.valueOf(App.class.getResource("/img/tarnas-icon.png").toURI())));
+        stage.setTitle("Edit File");
         var textArea = (TextArea) loader.getNamespace().get("txtAreaRnaFileContent");
         var saveButton = (Button) loader.getNamespace().get(("btnSaveWriteFile"));
         var cancelButton = (Button) loader.getNamespace().get(("btnCancelWriteFile"));
@@ -309,7 +310,11 @@ public class HomeController {
                     logger.info("write content on " + fileName);
                     Files.write(tmp.toPath(), textArea.getText().getBytes());
                     var selectedRNAFile = Path.of(tmp.getPath());
-                    this.addFileToTable(selectedRNAFile);
+                    try {
+                        this.addFileToTable(selectedRNAFile);
+                    } catch (Exception e) {
+                        showAlert(Alert.AlertType.ERROR, "", "", e.getMessage());
+                    }
                     Files.delete(tmp.toPath());
                     // clear
                     dialog.getEditor().clear();
@@ -349,7 +354,7 @@ public class HomeController {
         //this.btnTranslate.setDisable(true);
     }
 
-    private void addFileToTable(Path selectedRNAFile) {
+    private void addFileToTable(Path selectedRNAFile) throws RNAFileException {
         try {
             var rnaFile = this.ioController.loadFile(selectedRNAFile);
             this.filesTable.getItems().add(rnaFile);
@@ -359,8 +364,8 @@ public class HomeController {
             // add event to select ButtonItem for destination format translation
             this.initSelectEventOnButtonItems(this.translatorController.getAvailableTranslations(rnaFile.getFormat()));
         } catch (Exception e) {
-            logger.severe(e.getMessage());
-            this.showAlert(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+            logger.severe("Could not load file: " + selectedRNAFile);
+            throw new RNAFileException("Error caused by: " + selectedRNAFile);
         }
     }
 

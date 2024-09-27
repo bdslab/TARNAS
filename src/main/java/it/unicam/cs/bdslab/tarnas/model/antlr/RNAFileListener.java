@@ -6,6 +6,7 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.WeakBond;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -131,28 +132,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));
     }
 
-    @Override
-    public void enterSequenceContinue(RNASecondaryStructureParser.SequenceContinueContext ctx) {
-        /*
-         * add this line of nucleotides to the already existing sequence
-         * because of the right recursion of the parse tree
-         */
-        this.sequenceBuffer.append(ctx.NUCLEOTIDE().getText());
-    }
 
-    @Override
-    public void enterSequenceEnd(RNASecondaryStructureParser.SequenceEndContext ctx) {
-        /*
-         * add this line of nucleotides to the already existing sequence
-         * because of the right recursion of the parse tree and the call to
-         * the exit method
-         */
-        this.sequenceBuffer.append(ctx.NUCLEOTIDE().getText());
-        // assign the whole sequence to the RNASecondaryStructure
-        this.s.setSequence(this.sequenceBuffer.toString());
-        // set the size of the structure to the length of the sequence
-        this.s.setSize(this.s.getSequence().length());
-    }
 
     @Override
     public void enterBondsContinue(RNASecondaryStructureParser.BondsContinueContext ctx) {
@@ -196,55 +176,32 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     // EDBN
 
     @Override
-    public void enterEdbnStructureContinue(RNASecondaryStructureParser.EdbnStructureContinueContext ctx) {
-        String edbn = ctx.EDBN().getText();
-        /*
-         * Control if this part of string has been classified wrongly as EDBN
-         * while originally it was a nucleotide part with non-recognised
-         * codes; in this case throw an exception
-         */
-        if (!edbn.contains(".")) {
-            // there are no dots, check if there is at least one bracket
-            if (!edbn.contains("(") && !edbn.contains(")") && !edbn.contains("[") && !edbn.contains("]") && !edbn.contains("{") && !edbn.contains("}")) {
-                // there are no brackets, check if the string is very short
-                if (edbn.length() >= 5) {
-                    // ok, it is not considered edbn, the exception is thrown
-                    String m = "Line " + ctx.start.getLine() + " Character " + (ctx.start.getCharPositionInLine() + 1) + ": " + "unrecognised nucleotide code in " + edbn;
-                    throw new RNAInputFileParserException(m);
+    public void exitEdbn_structure(RNASecondaryStructureParser.Edbn_structureContext ctx) {
+        var edbn = ctx.EDBN().stream().map(ParseTree::getText).toList();
+        for (var e: edbn){
+            /*
+             * Control if this part of string has been classified wrongly as EDBN
+             * while originally it was a nucleotide part with non-recognised
+             * codes; in this case throw an exception
+             */
+            if (!e.contains(".")) {
+                // there are no dots, check if there is at least one bracket
+                if (!e.contains("(") && !e.contains(")") && !e.contains("[") && !e.contains("]") && !e.contains("{") && !e.contains("}")) {
+                    // there are no brackets, check if the string is very short
+                    if (e.length() >= 5) {
+                        // ok, it is not considered edbn, the exception is thrown
+                        String m = "Line " + ctx.start.getLine() + " Character " + (ctx.start.getCharPositionInLine() + 1) + ": " + "unrecognised nucleotide code in " + e;
+                        throw new RNAInputFileParserException(m);
+                    }
                 }
             }
+            /*
+             * add this line of edbn to the already existing ones because of the
+             * right recursion of the parse tree
+             */
+            this.edbnsBuffer.append(e);
         }
-        /*
-         * add this line of edbn to the already existing ones because of the
-         * right recursion of the parse tree
-         */
-        this.edbnsBuffer.append(edbn);
-    }
 
-    @Override
-    public void enterEdbnStructureEnd(RNASecondaryStructureParser.EdbnStructureEndContext ctx) {
-        var edbn = ctx.EDBN().getText();
-        /*
-         * Control if this part of string has been classified wrongly as EDBN
-         * while originally it was a nucleotide part with non-recognised
-         * codes; in this case throw an exception
-         */
-        if (!edbn.contains(".")) {
-            // there are no dots, check if there is at least one bracket
-            if (!edbn.contains("(") && !edbn.contains(")") && !edbn.contains("[") && !edbn.contains("]") && !edbn.contains("{") && !edbn.contains("}")) {
-                // there are no brackets, check if the string is very short
-                if (edbn.length() >= 5) {
-                    // ok, it is not considered edbn, the exception is thrown
-                    String m = "Line " + ctx.start.getLine() + " Character " + (ctx.start.getCharPositionInLine() + 1) + ": " + "unrecognised nucleotide code in " + edbn;
-                    throw new RNAInputFileParserException(m);
-                }
-            }
-        }
-        /*
-         * add this line of edbn to the already existing ones because of the
-         * right recursion of the parse tree
-         */
-        this.edbnsBuffer.append(edbn);
         // check length of edbns wrt the size of the structure
         if (this.s.getSequence() == null)
             // set the size of the structure using the length of the edbns

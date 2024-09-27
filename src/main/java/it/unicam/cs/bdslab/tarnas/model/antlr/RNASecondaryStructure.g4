@@ -48,13 +48,11 @@ ct:
 ;
 
 edbn_structure:
-	EDBN edbn_structure #edbnStructureContinue
-	| EDBN # edbnStructureEnd
+	EDBN+
 ;
 
 sequence:
-    NUCLEOTIDE sequence # sequenceContinue
-    | NUCLEOTIDE # sequenceEnd
+    NUCLEOTIDE+
 ;
 
 bonds:
@@ -63,8 +61,7 @@ bonds:
 ;
 
 ct_structure:
-    ct_line ct_structure # ctSeq
-	| ct_line # ctLast
+    ct_line+
 ;
 
 ct_line:
@@ -84,8 +81,7 @@ ct_line:
 ;
 
 bpseq_structure:
-    bpseq_line bpseq_structure # bpseqSeq
-	| bpseq_line # bpseqLast
+    bpseq_line+
 ;
 
 bpseq_line:
