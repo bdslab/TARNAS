@@ -129,7 +129,6 @@ public class TranslatorController {
         }
         Path outputFilePath = Path.of(output);
         rnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
-        rnaFile.setFormat(RNAML);
         // delete input and output files
         Files.delete(outputFilePath);
         Files.delete(inputFilePath);

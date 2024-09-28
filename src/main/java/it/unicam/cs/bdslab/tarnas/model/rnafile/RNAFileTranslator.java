@@ -134,31 +134,6 @@ public class RNAFileTranslator {
         return new RNAFile(getFileNameWithDstExtension(rnaFile.getFileName(), "fasta"), header, body, secondaryStructureOnlySize, RNAFormat.FASTA);
     }
 
-    // TODO: javadoc RNAML
-    public static RNAFile translateToRNAML(RNAFile rnaFile) throws IOException {
-        var rnaSecondaryStructure = new RNASecondaryStructure();
-        // create empty RNAML header
-        var header = List.of("");
-
-        // write the list of strings to the temporary file
-        var input = "input." + rnaFile.getFormat().getExtension();
-        Files.write(Path.of(input), rnaFile.getContent());
-        var controller = new RnaParserAnalyzerController();
-        var result = controller.loadRna(input);
-        var output = "output.rnaml";
-        if (result.result) {
-            controller.SaveLoadedData(output);
-        }
-
-        // create RNAML body
-        Path outputFilePath = Path.of(output);
-        var body = Files.readAllLines(outputFilePath);
-        // delete input and output files
-        Files.delete(outputFilePath);
-        Files.delete(Path.of(input));
-        return new RNAFile(getFileNameWithDstExtension(rnaFile.getFileName(), "rnaml"), header, body, rnaSecondaryStructure, RNAML);
-    }
-
     /**
      * Creates the {@link RNAFormat#DB} body for the specified {@code rnaSecondaryStructure}.
      * If {@code addSequence} parameter is true, adds the sequence to the body.
