@@ -83,13 +83,6 @@ public class RNASecondaryStructureBaseVisitor<T> extends AbstractParseTreeVisito
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitCt_structure(RNASecondaryStructureParser.Ct_structureContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

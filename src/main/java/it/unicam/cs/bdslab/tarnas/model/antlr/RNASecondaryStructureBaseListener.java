@@ -127,18 +127,6 @@ public class RNASecondaryStructureBaseListener implements RNASecondaryStructureL
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCt_structure(RNASecondaryStructureParser.Ct_structureContext ctx) { }
 	/**
 	 * {@inheritDoc}

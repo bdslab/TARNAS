@@ -57,7 +57,6 @@ sequence:
 
 bonds:
 	BOND SEP? bonds #bondsContinue
-	| # bondsEnd
 ;
 
 ct_structure:

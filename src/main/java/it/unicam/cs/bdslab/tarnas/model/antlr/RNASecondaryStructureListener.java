@@ -102,18 +102,6 @@ public interface RNASecondaryStructureListener extends ParseTreeListener {
 	 */
 	void exitBondsContinue(RNASecondaryStructureParser.BondsContinueContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code bondsEnd}
-	 * labeled alternative in {@link RNASecondaryStructureParser#bonds}.
-	 * @param ctx the parse tree
-	 */
-	void enterBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code bondsEnd}
-	 * labeled alternative in {@link RNASecondaryStructureParser#bonds}.
-	 * @param ctx the parse tree
-	 */
-	void exitBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#ct_structure}.
 	 * @param ctx the parse tree
 	 */

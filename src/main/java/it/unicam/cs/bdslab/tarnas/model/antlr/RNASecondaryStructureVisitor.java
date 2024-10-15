@@ -68,13 +68,6 @@ public interface RNASecondaryStructureVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBondsContinue(RNASecondaryStructureParser.BondsContinueContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code bondsEnd}
-	 * labeled alternative in {@link RNASecondaryStructureParser#bonds}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBondsEnd(RNASecondaryStructureParser.BondsEndContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link RNASecondaryStructureParser#ct_structure}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
