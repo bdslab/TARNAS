@@ -1,18 +1,20 @@
-package cs.unicam.rna.parser.controller;
+package it.unicam.cs.bdslab.rnamlparsertool.controller;
+
+import it.unicam.cs.bdslab.rnamlparsertool.abstraction.RnaDataLoader;
+import it.unicam.cs.bdslab.rnamlparsertool.abstraction.RnaFileWriter;
+import it.unicam.cs.bdslab.rnamlparsertool.model.OperationResult;
+import it.unicam.cs.bdslab.rnamlparsertool.model.RnaMolecule;
+import it.unicam.cs.bdslab.rnamlparsertool.service.writer.TertiaryStructureWriter;
+import it.unicam.cs.bdslab.rnamlparsertool.utility.DefaultRnaHandlerBuilder;
+import it.unicam.cs.bdslab.rnamlparsertool.utility.RnaFileNameHandler;
+import it.unicam.cs.bdslab.rnamlparsertool.utility.RnaHandlerBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import cs.unicam.rna.parser.abstraction.RnaDataLoader;
-import cs.unicam.rna.parser.abstraction.RnaFileWriter;
-import cs.unicam.rna.parser.model.OperationResult;
-import cs.unicam.rna.parser.model.RnaMolecule;
-import cs.unicam.rna.parser.service.writer.TertiaryStructureWriter;
-import cs.unicam.rna.parser.utility.RnaFileNameHandler;
-import cs.unicam.rna.parser.utility.RnaHandlerBuilder;
-import cs.unicam.rna.parser.utility.DefaultRnaHandlerBuilder;
+
 
 /**
  * Controller Facade, centrale in questo tool

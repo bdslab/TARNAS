@@ -23,15 +23,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
 
-// TODO: check file with same name
 public class HomeController {
     public static final Logger logger = Logger.getLogger("it.unicam.cs.bdslab.tarnas.view.HomeController");
     private TranslatorController translatorController;
@@ -470,6 +469,7 @@ public class HomeController {
         // Show the dialog
         helpDialog.showAndWait();
     }
+
     @FXML
     public void handleContactUs() {
         // Create an alert dialog for help information
