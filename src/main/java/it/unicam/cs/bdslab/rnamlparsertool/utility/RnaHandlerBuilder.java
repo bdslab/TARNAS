@@ -28,7 +28,6 @@ public abstract class RnaHandlerBuilder {
             case "ct" -> new CtFileWriter();
             case "aas" -> new AasFileWriter();
             case "db" -> new DbFileWriter();
-            case "fasta" -> new FastaFileWriter();
             default -> buildUnexpectedFileWriter(path);
         };
     }
