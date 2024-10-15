@@ -47,12 +47,9 @@ public class RnaParserAnalyzerController extends RnaParserController {
 	}
 
     @Override
-    public OperationResult SaveLoadedData(String path) {
-        OperationResult result = super.SaveLoadedData(path);
-        if(result.result && (!equals(getLoadedPath(), path).result)) {
-				result.addInfo("Some data was lost during the format switch.");
-        }
-        return result;
+    public synchronized OperationResult SaveLoadedData(String path) {
+		return super.SaveLoadedData(path);
     }
+    
     
 }
