@@ -26,7 +26,7 @@ public class DefaultRnaHandlerBuilder extends RnaHandlerBuilder {
 
     @Override
     public String[] getSupportedExtensions() {
-        return new String[]{"rnaml", "xml", "bpseq", "ct", "aas", "db", "fasta"};
+        return new String[]{"rnaml", "xml", "bpseq", "ct", "aas", "db"};
     }
 
     @Override
