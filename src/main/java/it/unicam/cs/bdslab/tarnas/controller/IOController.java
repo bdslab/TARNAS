@@ -15,7 +15,6 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileConstructor;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 
 /**
- * // TODO: javadoc
  * An implementation of Translator Controller that accepts input like files, format translation and converts that
  * input to commands for the Model or View.
  * This Controller takes care translation operations and file loading/saving/deleting and directory loading/saving.
@@ -98,10 +97,11 @@ public class IOController {
         if (!Files.exists(srcFilePath))
             throw new FileNotFoundException("Non existent file with path: " + srcFilePath);
         var rnaFile = this.getRNAFileOf(srcFilePath);
-        this.loadedRNAFiles.add(rnaFile);
-        if (this.recognizedFormat == null)
+        if (this.recognizedFormat == null || this.recognizedFormat == rnaFile.getFormat()) {
+            this.loadedRNAFiles.add(rnaFile);
             this.recognizedFormat = rnaFile.getFormat();
-        else if (this.recognizedFormat != rnaFile.getFormat())
+        }
+        else
             throw new IllegalArgumentException("All loaded files must be of the same format!");
         return rnaFile;
     }

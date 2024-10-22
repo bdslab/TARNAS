@@ -29,9 +29,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
-
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +40,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
 
+// TODO: check file with same name
 public class HomeController {
     public static final Logger logger = Logger.getLogger("it.unicam.cs.bdslab.tarnas.view.HomeController");
     private TranslatorController translatorController;
@@ -140,7 +139,7 @@ public class HomeController {
         this.filesTable.setId("fileTables");
         // set column values
         this.nameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-        this.formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+        this.formatColumn.setCellValueFactory(rnaFile -> new ReadOnlyObjectWrapper<>(rnaFile.getValue().getFormat().getName()));
         this.previewColumn.setCellValueFactory(rnaFile -> new ReadOnlyObjectWrapper<>(rnaFile.getValue()));
         this.deleteColumn.setCellValueFactory(rnaFile -> new ReadOnlyObjectWrapper<>(rnaFile.getValue()));
         // set custom cell
@@ -469,7 +468,6 @@ public class HomeController {
         // Show the dialog
         helpDialog.showAndWait();
     }
-
     @FXML
     public void handleContactUs() {
         // Create an alert dialog for help information

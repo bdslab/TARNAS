@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.DB;
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.RNAML;
@@ -178,6 +179,8 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     @Override
     public void exitEdbn_structure(RNASecondaryStructureParser.Edbn_structureContext ctx) {
         var edbn = ctx.EDBN().stream().map(ParseTree::getText).toList();
+        this.s.setSequence(this.sequenceBuffer.toString());
+        this.s.setSize(this.s.getSequence().length());
         for (var e: edbn){
             /*
              * Control if this part of string has been classified wrongly as EDBN
@@ -202,18 +205,14 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
             this.edbnsBuffer.append(e);
         }
 
-        // check length of edbns wrt the size of the structure
-        if (this.s.getSequence() == null)
-            // set the size of the structure using the length of the edbns
-            this.s.setSize(this.edbnsBuffer.length());
-        else // the structure has a sequence, check if the length are the same
-            if (this.edbnsBuffer.length() != this.s.getSize())
-                throw new RNAInputFileParserException("Extended Dot-Bracket Notation Structure is of length " + this.edbnsBuffer.length() + " while the sequence of nucleotides is of length " + this.s.getSize());
-        // parse edbn and create weak bonds in the structure
-        var bonds = parseEDBN(this.edbnsBuffer.toString());
-        // add all the bonds to the structure
-        for (var wb : bonds)
-            this.s.addBond(wb);
+        if (this.s.getSize() != 0 && this.edbnsBuffer.length() != this.s.getSize())
+            throw new RNAInputFileParserException("Extended Dot-Bracket Notation Structure is of length " + this.edbnsBuffer.length() + " while the sequence of nucleotides is of length " + this.s.getSize());
+    }
+
+    @Override
+    public void enterSequence(RNASecondaryStructureParser.SequenceContext ctx) {
+        var sequence = ctx.NUCLEOTIDE().stream().map(ParseTree::getText).collect(Collectors.joining());
+        this.sequenceBuffer.append(sequence);
     }
 
     @Override
@@ -225,7 +224,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     public void exitEdbn(RNASecondaryStructureParser.EdbnContext ctx) {
         this.s.finalise();
         // create rnafile object
-        if (this.s.getSequence() == null)
+        if (this.s.getSize() == 0)
             this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.edbnsBuffer.toString()), this.s, RNAFormat.DB_NO_SEQUENCE);
         else
             this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.sequenceBuffer.toString(), this.edbnsBuffer.toString()), this.s, DB);
