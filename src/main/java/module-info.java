@@ -2,10 +2,12 @@ module tarnas {
     // required modules
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
     requires org.antlr.antlr4.runtime;
     requires java.logging;
     requires java.xml;
     requires java.desktop;
+    requires jdk.jsobject;
 
     // all types in it.unicam.cs.bdslab.tarnas.model.* packages are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.model.rnastructure to javafx.base;
