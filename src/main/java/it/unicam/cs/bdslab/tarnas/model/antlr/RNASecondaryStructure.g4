@@ -28,7 +28,7 @@ rna_format:
 ;
 
 aas:
-    COMMENT* sequence? bonds
+    COMMENT* sequence? bonds+
 ;
 
 edbn:
@@ -56,7 +56,7 @@ sequence:
 ;
 
 bonds:
-	BOND SEP? bonds #bondsContinue
+	BOND SEP?
 ;
 
 ct_structure:

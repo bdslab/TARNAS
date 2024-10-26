@@ -29,9 +29,12 @@ public final class AasFileWriter extends TextFileWriter {
 		List<Entry<Integer, Integer>> list = m.getPairMap().entrySet().stream()
 											.map(x -> x.getKey() < x.getValue() ? x : new SimpleEntry<Integer, Integer>(x.getValue(), x.getKey()))
 											.distinct().toList();
-		for(Entry<Integer, Integer> pair : list) {
-			data += "(" + pair.getKey() + "," + pair.getValue() +");";
+		for (int i = 0; i < list.size()-1; i++) {
+			data += "(" + list.get(i).getKey() + "," + list.get(i).getValue() +");";
 		}
+
+		data += "(" + list.get(list.size()-1).getKey() + "," + list.get(list.size()-1).getValue() +")";
+
 	}
 	
 

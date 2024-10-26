@@ -134,9 +134,8 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     }
 
 
-
     @Override
-    public void enterBondsContinue(RNASecondaryStructureParser.BondsContinueContext ctx) {
+    public void enterBonds(RNASecondaryStructureParser.BondsContext ctx) {
         // take the bond and add it to the structure
         var indexes = this.getBondTokens(ctx.BOND().getText());
         int left = Integer.parseInt(indexes.get(0));
@@ -157,6 +156,8 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         var body = this.content.subList(this.header.size(), this.content.size());
         // everything has been added to the structure, finalise it
         this.s.finalise();
+        this.s.setSequence(this.sequenceBuffer.toString());
+        this.s.setSize(this.s.getSequence().length());
         // create rnafile object with unnecessary empty body
         this.rnaFile = new RNAFile(this.fileName, this.header, body, this.s, this.s.getSequence() == null ? RNAFormat.AAS_NO_SEQUENCE : RNAFormat.AAS);
     }
@@ -181,7 +182,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         var edbn = ctx.EDBN().stream().map(ParseTree::getText).toList();
         this.s.setSequence(this.sequenceBuffer.toString());
         this.s.setSize(this.s.getSequence().length());
-        for (var e: edbn){
+        for (var e : edbn) {
             /*
              * Control if this part of string has been classified wrongly as EDBN
              * while originally it was a nucleotide part with non-recognised
@@ -222,6 +223,10 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
 
     @Override
     public void exitEdbn(RNASecondaryStructureParser.EdbnContext ctx) {
+        var bonds = parseEDBN(this.edbnsBuffer.toString());
+        // add all the bonds to the structure
+        for (var wb : bonds)
+            this.s.addBond(wb);
         this.s.finalise();
         // create rnafile object
         if (this.s.getSize() == 0)
