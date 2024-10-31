@@ -33,7 +33,8 @@ import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
  * @see RNAFormat
  */
 public class RNAFile {
-    private final String fileName;
+
+    private String fileName;
     private final List<String> header;
     private final RNASecondaryStructure structure;
     private RNAFormat format;
@@ -65,6 +66,10 @@ public class RNAFile {
      */
     public String getFileName() {
         return this.fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     /**
@@ -114,6 +119,7 @@ public class RNAFile {
 
     /**
      * Sets the {@link RNAFormat} for this {@code RNAFile}
+     *
      * @param format the format will be set for this {@code RNAFile}
      */
     public void setFormat(RNAFormat format) {
