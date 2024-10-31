@@ -14,6 +14,8 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileConstructor;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 
+import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.RNAML;
+
 /**
  * An implementation of Translator Controller that accepts input like files, format translation and converts that
  * input to commands for the Model or View.
@@ -141,8 +143,12 @@ public class IOController {
     public void saveFilesTo(List<RNAFile> rnaFiles, Path dstPath) throws IOException {
         if (!Files.isDirectory(dstPath))
             throw new IllegalArgumentException(dstPath + "is not a directory");
-        for (var f : rnaFiles)
+        for (var f : rnaFiles) {
+            var extension = f.getFormat() == RNAML? ".xml":".txt";
+            f.setFileName(f.getFileName()+extension);
             Files.write(dstPath.resolve(f.getFileName()), f.getContent());
+
+        }
     }
 
     public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles) throws IOException {
