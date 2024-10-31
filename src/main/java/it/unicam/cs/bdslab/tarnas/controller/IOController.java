@@ -92,7 +92,7 @@ public class IOController {
      * @param srcFilePath the {@link Path} of the file to translate.
      * @throws IOException              if an I/O error occurs
      * @throws FileNotFoundException    if the path not exists
-     * @throws IllegalArgumentException if the format of corresponding TODO
+     * @throws IllegalArgumentException if the format of corresponding
      * @
      */
     public RNAFile loadFile(Path srcFilePath) throws IOException {
@@ -102,8 +102,7 @@ public class IOController {
         if (this.recognizedFormat == null || this.recognizedFormat == rnaFile.getFormat()) {
             this.loadedRNAFiles.add(rnaFile);
             this.recognizedFormat = rnaFile.getFormat();
-        }
-        else
+        } else
             throw new IllegalArgumentException("All loaded files must be of the same format!");
         return rnaFile;
     }
@@ -144,40 +143,28 @@ public class IOController {
         if (!Files.isDirectory(dstPath))
             throw new IllegalArgumentException(dstPath + "is not a directory");
         for (var f : rnaFiles) {
-            var extension = f.getFormat() == RNAML? ".xml":".txt";
-            f.setFileName(f.getFileName()+extension);
+            var extension = (f.getFormat() == RNAML) ? ".xml" : ".txt";
+            f.setFileName(f.getFileName() + extension);
             Files.write(dstPath.resolve(f.getFileName()), f.getContent());
-
         }
     }
 
     public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles) throws IOException {
         if (!Files.exists(dstZipPath) || !Files.isDirectory(dstZipPath))
-            throw new IllegalArgumentException(dstZipPath + " is not a directory or non existent path");
-        List<Path> tmpFiles = new ArrayList<>();
-        for (RNAFile f : rnaFiles) {
-            File tmp = new File(dstZipPath.toUri().resolve(f.getFileName()));
-            Files.write(dstZipPath.resolve(f.getFileName()), f.getContent());
-            tmpFiles.add(dstZipPath.resolve(Paths.get(f.getFileName())));
+            throw new IllegalArgumentException(dstZipPath + " is not a directory or does not exist");
+        Path zipFilePath = dstZipPath.resolve(zipName + ".zip");
+        try (ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
+            for (RNAFile rnaFile : rnaFiles) {
+                var extension = (rnaFile.getFormat() == RNAML) ? ".xml" : ".txt";
+                rnaFile.setFileName(rnaFile.getFileName() + extension);
+                ZipEntry zipEntry = new ZipEntry(rnaFile.getFileName());
+                zipOut.putNextEntry(zipEntry);
+                for (String line : rnaFile.getContent())
+                    zipOut.write((line + System.lineSeparator()).getBytes());
+                zipOut.closeEntry();
+            }
         }
-        Path zipPath = dstZipPath.resolve(zipName + ".zip");
-        FileOutputStream fos = new FileOutputStream(zipPath.toFile());
-        ZipOutputStream zipOut = new ZipOutputStream(fos);
-        for (Path srcFile : tmpFiles) {
-            File fileToZip = new File(srcFile.toUri());
-            FileInputStream fis = new FileInputStream(fileToZip);
-            ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-            zipOut.putNextEntry(zipEntry);
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = fis.read(bytes)) >= 0)
-                zipOut.write(bytes, 0, length);
-            fis.close();
-            Files.delete(srcFile);  // delete tmp file
-        }
-        zipOut.close();
-        fos.close();
-        return zipPath;
+        return zipFilePath;
     }
 
     /**

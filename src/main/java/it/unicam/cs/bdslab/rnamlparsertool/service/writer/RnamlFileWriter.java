@@ -40,7 +40,7 @@ public final class RnamlFileWriter extends XmlFileWriter {
      * @param organism nome dell'organismo
      */
     private void addchain(RnaChain chain, String accessionNumer, String organism) {
-        Element mol = xmlDoc.createElement("chain");
+        Element mol = xmlDoc.createElement("molecule");
         mol.setAttribute("id", "" + chain.getchainId());
         if(accessionNumer != null){
             mol.setAttribute("database-ids", accessionNumer);
