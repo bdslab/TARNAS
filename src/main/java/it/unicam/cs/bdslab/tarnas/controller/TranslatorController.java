@@ -147,7 +147,9 @@ public class TranslatorController {
         try {
             return RNAFileConstructor.getInstance().construct(outputFilePath);
         } catch (IOException e) {
-            //delete files after use
+            e.printStackTrace(); // Optional: Log the exception if needed
+        } finally {
+            // Delete files after use
             Files.deleteIfExists(inputFilePath);
             Files.deleteIfExists(outputFilePath);
         }

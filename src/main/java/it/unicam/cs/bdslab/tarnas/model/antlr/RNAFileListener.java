@@ -51,6 +51,10 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         if (ctx.COMMENT() != null) ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));
         if (ctx.BPSEQCTLINES() != null)
             this.header.addAll(Arrays.stream(ctx.BPSEQCTLINES().getText().split("\n")).map(String::trim).toList());
+        if (this.s.getSize() == -1){
+            this.s.setSequence("");
+            this.s.setSize(0);
+        }
     }
 
     @Override
@@ -92,6 +96,10 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         if (ctx.COMMENT() != null) ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));
         if (ctx.BPSEQCTLINES() != null)
             this.header.addAll(Arrays.stream(ctx.BPSEQCTLINES().getText().split("\n")).map(String::trim).toList());
+        if (this.s.getSize() == -1){
+            this.s.setSequence("");
+            this.s.setSize(0);
+        }
     }
 
     @Override
@@ -117,10 +125,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     public void exitCt(RNASecondaryStructureParser.CtContext ctx) {
         // create body
         var body = this.content.subList(this.header.size(), this.content.size());
-        // assign the whole sequence to the RNASecondaryStructure
-        this.s.setSequence(this.sequenceBuffer.toString());
-        // set the size of the structure to the length of the sequence
-        this.s.setSize(this.s.getSequence().length());
         // everything has been added to the structure, finalise it
         this.s.finalise();
         // create rnafile object with unnecessary empty body
