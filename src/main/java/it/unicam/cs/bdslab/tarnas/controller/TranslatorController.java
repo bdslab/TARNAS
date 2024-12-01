@@ -58,9 +58,11 @@ public class TranslatorController {
      * @return list of {@link RNAFormat}
      */
     public List<RNAFormat> getAvailableTranslations(RNAFormat rnaFormat) {
-        if (rnaFormat == AAS || rnaFormat == DB)
-            this.conversionMatrix.get(rnaFormat).remove(rnaFormat);
-        return this.conversionMatrix.get(rnaFormat);
+        return (rnaFormat == AAS || rnaFormat == DB)
+                ? this.conversionMatrix.get(rnaFormat).stream()
+                .filter(t -> t != rnaFormat)
+                .toList()
+                : this.conversionMatrix.get(rnaFormat);
     }
 
     /**
