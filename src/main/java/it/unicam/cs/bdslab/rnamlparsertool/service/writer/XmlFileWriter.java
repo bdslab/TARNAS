@@ -48,13 +48,16 @@ public abstract class XmlFileWriter implements RnaFileWriter {
         try {
             Source source = new DOMSource(xmlDoc);
             File xmlFile = new File(path);
-            StreamResult result = new StreamResult(new OutputStreamWriter(
-                    new FileOutputStream(xmlFile), "ISO-8859-1"));
-            Transformer xformer = TransformerFactory.newInstance().newTransformer();
-            xformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtd);
-            xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            xformer.transform(source, result);
+
+            // Use try-with-resources to ensure the stream is closed properly
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(xmlFile), "ISO-8859-1")) {
+                StreamResult result = new StreamResult(writer);
+                Transformer xformer = TransformerFactory.newInstance().newTransformer();
+                xformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtd);
+                xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+                xformer.transform(source, result);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

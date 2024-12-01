@@ -106,7 +106,7 @@ public class RNASecondaryStructure {
                 throw new RNAInputFileParserException("Weak Bond right index " + b.getRight() + " is equal to bond ("
                         + wb.getLeft() + ", " + wb.getRight() + ") right index");
         // check or increase right limit
-        if (this.sequence != null) {
+        if (!Objects.equals(this.sequence, "")) {
             // the size is fixed to the length of the sequence
             if (b.getRight() > this.size)
                 throw new RNAInputFileParserException(

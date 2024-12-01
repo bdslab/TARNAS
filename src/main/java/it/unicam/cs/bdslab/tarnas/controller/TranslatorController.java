@@ -41,11 +41,11 @@ public class TranslatorController {
      */
     private TranslatorController() {
         conversionMatrix = Map.of(
-                AAS, List.of(AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML),
+                AAS, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML),
                 AAS_NO_SEQUENCE, List.of(DB_NO_SEQUENCE),
                 BPSEQ, List.of(AAS, AAS_NO_SEQUENCE, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML),
                 CT, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, DB, DB_NO_SEQUENCE, FASTA, RNAML),
-                DB, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB_NO_SEQUENCE, FASTA, RNAML),
+                DB, List.of(AAS, AAS_NO_SEQUENCE, DB, BPSEQ, CT, DB_NO_SEQUENCE, FASTA, RNAML),
                 DB_NO_SEQUENCE, List.of(AAS_NO_SEQUENCE),
                 FASTA, List.of(),
                 RNAML, List.of(AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA));
@@ -58,6 +58,8 @@ public class TranslatorController {
      * @return list of {@link RNAFormat}
      */
     public List<RNAFormat> getAvailableTranslations(RNAFormat rnaFormat) {
+        if (rnaFormat == AAS || rnaFormat == DB)
+            this.conversionMatrix.get(rnaFormat).remove(rnaFormat);
         return this.conversionMatrix.get(rnaFormat);
     }
 
@@ -124,25 +126,30 @@ public class TranslatorController {
     }
 
     private RNAFile handleRnamlTranslation(RNAFile rnaFile, String inputExtension, String outputExtension) throws IOException {
-        // Create temporary file paths
-        var inputFileName = "input." + inputExtension;
-        var inputFilePath = Path.of(inputFileName);
-        Files.write(inputFilePath, rnaFile.getContent());
-        // Process RNA data
-        var controller = new RnaParserAnalyzerController();
-        var loadSuccessful = controller.loadRna(inputFileName).result;
-        // Define output file name
-        var outputFileName = rnaFile.getFileName().replaceFirst("[.][^.]+$", "") + "." + outputExtension;
-        if (loadSuccessful) {
-            controller.SaveLoadedData(outputFileName);
-        }
-        // Construct RNAFile from output and clean up
-        var outputFilePath = Path.of(outputFileName);
-        var translatedRnaFile = RNAFileConstructor.getInstance().construct(outputFilePath);
-        Files.deleteIfExists(outputFilePath);
-        Files.deleteIfExists(inputFilePath);
+        Path inputFilePath = Path.of(rnaFile.getFileName().split("\\.")[0] + "." + inputExtension);
+        Path outputFilePath = Path.of(rnaFile.getFileName().split("\\.")[0] + "." + outputExtension);
 
-        return translatedRnaFile;
+        if (inputExtension.equals("aas")) {
+            rnaFile = this.noCheckingTranslateTo(rnaFile, AAS);
+        } else if (inputExtension.equals("db")) {
+            rnaFile = this.noCheckingTranslateTo(rnaFile, DB);
+        }
+        Files.write(inputFilePath, rnaFile.getContent());
+
+        var controller = new RnaParserAnalyzerController();
+        var loadSuccessful = controller.loadRna(inputFilePath.toString()).result;
+
+        if (loadSuccessful) {
+            controller.SaveLoadedData(outputFilePath.toString());
+        }
+        try {
+            return RNAFileConstructor.getInstance().construct(outputFilePath);
+        } catch (IOException e) {
+            //delete files after use
+            Files.deleteIfExists(inputFilePath);
+            Files.deleteIfExists(outputFilePath);
+        }
+        return null;
     }
 
     /**

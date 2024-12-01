@@ -139,7 +139,7 @@ public class IOController {
      * @param dstPath  the destination path where save the files
      * @throws IOException if an I/O error occurs
      */
-    public void saveFilesTo(List<RNAFile> rnaFiles, Path dstPath) throws IOException {
+    public void saveFilesTo(List<RNAFile> rnaFiles, Path dstPath, boolean generateNonCanonicalPairs) throws IOException {
         if (!Files.isDirectory(dstPath))
             throw new IllegalArgumentException(dstPath + "is not a directory");
         for (var f : rnaFiles) {
@@ -147,22 +147,59 @@ public class IOController {
             f.setFileName(f.getFileName() + extension);
             Files.write(dstPath.resolve(f.getFileName()), f.getContent());
         }
+
+        var cd = Paths.get(System.getProperty("user.dir"));
+        // Move and rename all .csv files
+        for (var file : Files.list(cd).toList()) {
+            // Check if the file ends with .csv
+            if (file.toString().endsWith(".csv")) {
+                if (generateNonCanonicalPairs) {
+                    // Construct the new file name
+                    var newFileName = file.getFileName().toString().split("\\.")[0] + ".csv";
+                    // Move and rename the file
+                    Files.move(file, dstPath.resolve(newFileName));
+                } else
+                    Files.delete(file);
+            }
+        }
     }
 
-    public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles) throws IOException {
-        if (!Files.exists(dstZipPath) || !Files.isDirectory(dstZipPath))
+
+    public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles, boolean generateNonCanonicalPairs) throws IOException {
+        if (!Files.exists(dstZipPath) || !Files.isDirectory(dstZipPath)) {
             throw new IllegalArgumentException(dstZipPath + " is not a directory or does not exist");
+        }
+
         Path zipFilePath = dstZipPath.resolve(zipName + ".zip");
         try (ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
+            // Add RNA files to the zip
             for (RNAFile rnaFile : rnaFiles) {
-                var extension = (rnaFile.getFormat() == RNAML) ? ".xml" : ".txt";
+                String extension = rnaFile.getFormat() == RNAML ? ".xml" : ".txt";
                 rnaFile.setFileName(rnaFile.getFileName() + extension);
-                ZipEntry zipEntry = new ZipEntry(rnaFile.getFileName());
-                zipOut.putNextEntry(zipEntry);
-                for (String line : rnaFile.getContent())
+                zipOut.putNextEntry(new ZipEntry(rnaFile.getFileName()));
+                for (String line : rnaFile.getContent()) {
                     zipOut.write((line + System.lineSeparator()).getBytes());
+                }
                 zipOut.closeEntry();
             }
+
+            Files.list(Paths.get(System.getProperty("user.dir")))
+                    .filter(file -> file.toString().endsWith(".csv"))
+                    .forEach(file -> {
+                        try {
+                            if (generateNonCanonicalPairs) {
+                                var fn = file.getFileName().toString().split("\\.")[0] + ".csv";
+                                zipOut.putNextEntry(new ZipEntry(fn));
+                                Files.copy(file, zipOut);
+                                zipOut.closeEntry();
+                                Files.deleteIfExists(file);
+                            } else
+                                Files.delete(file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
         }
         return zipFilePath;
     }

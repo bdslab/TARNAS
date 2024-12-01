@@ -186,12 +186,12 @@
             </BorderPane>
          </right>
          <center>
-                <BorderPane prefHeight="181.0" prefWidth="383.0" BorderPane.alignment="CENTER">
+                <BorderPane prefHeight="178.0" prefWidth="436.0" BorderPane.alignment="CENTER">
                     <center>
                         <GridPane maxHeight="120.0" maxWidth="500.0" minHeight="120.0" minWidth="285.0" prefHeight="120.0" prefWidth="285.0" BorderPane.alignment="CENTER">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="343.0" minWidth="10.0" prefWidth="343.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="54.0" />
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints maxHeight="68.39999618530274" minHeight="2.0000045537948594" prefHeight="31.600010299682616" vgrow="SOMETIMES" />
@@ -210,6 +210,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
+                        <CheckBox fx:id="chbxGenerateNonCanonicalPairs" mnemonicParsing="false" prefHeight="19.0" prefWidth="284.0" text="generate non canonical pairs" GridPane.rowIndex="1" />
                             </children>
                      <BorderPane.margin>
                         <Insets left="100.0" />
