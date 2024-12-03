@@ -144,18 +144,16 @@ public class TranslatorController {
         if (loadSuccessful) {
             controller.SaveLoadedData(outputFilePath.toString());
         }
-        System.out.println(inputFilePath);
         try {
             return RNAFileConstructor.getInstance().construct(outputFilePath);
-        } catch (IOException e) {
-            e.printStackTrace(); // Optional: Log the exception if needed
+        } catch (Exception e) {
+            Files.deleteIfExists(Path.of(inputFilePath + ".csv"));
+            throw new IOException();
         } finally {
             // Delete files after use
             Files.deleteIfExists(inputFilePath);
             Files.deleteIfExists(outputFilePath);
-            Files.deleteIfExists(Path.of(inputFilePath + ".csv"));
         }
-        return null;
     }
 
     /**

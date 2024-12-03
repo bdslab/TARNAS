@@ -183,7 +183,7 @@ public class IOController {
                 zipOut.closeEntry();
             }
 
-            /*Files.list(Paths.get(System.getProperty("user.dir")))
+            Files.list(Paths.get(System.getProperty("user.dir")))
                     .filter(file -> file.toString().endsWith(".csv"))
                     .forEach(file -> {
                         try {
@@ -198,7 +198,7 @@ public class IOController {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    });*/
+                    });
 
         }
         return zipFilePath;
