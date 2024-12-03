@@ -155,7 +155,7 @@ public class IOController {
             if (file.toString().endsWith(".csv")) {
                 if (generateNonCanonicalPairs) {
                     // Construct the new file name
-                    var newFileName = file.getFileName().toString().split("\\.")[0] + ".txt";
+                    var newFileName = file.getFileName().toString().split("\\.")[0] + "_nc.txt";
                     // Move and rename the file
                     Files.move(file, dstPath.resolve(newFileName));
                 } else
@@ -183,12 +183,12 @@ public class IOController {
                 zipOut.closeEntry();
             }
 
-            Files.list(Paths.get(System.getProperty("user.dir")))
+            /*Files.list(Paths.get(System.getProperty("user.dir")))
                     .filter(file -> file.toString().endsWith(".csv"))
                     .forEach(file -> {
                         try {
                             if (generateNonCanonicalPairs) {
-                                var fn = file.getFileName().toString().split("\\.")[0] + ".txt";
+                                var fn = file.getFileName().toString().split("\\.")[0] + "_nc.txt";
                                 zipOut.putNextEntry(new ZipEntry(fn));
                                 Files.copy(file, zipOut);
                                 zipOut.closeEntry();
@@ -198,7 +198,7 @@ public class IOController {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    });
+                    });*/
 
         }
         return zipFilePath;
