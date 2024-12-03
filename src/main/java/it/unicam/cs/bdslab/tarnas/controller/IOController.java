@@ -155,7 +155,7 @@ public class IOController {
             if (file.toString().endsWith(".csv")) {
                 if (generateNonCanonicalPairs) {
                     // Construct the new file name
-                    var newFileName = file.getFileName().toString().split("\\.")[0] + ".csv";
+                    var newFileName = file.getFileName().toString().split("\\.")[0] + ".txt";
                     // Move and rename the file
                     Files.move(file, dstPath.resolve(newFileName));
                 } else
@@ -188,7 +188,7 @@ public class IOController {
                     .forEach(file -> {
                         try {
                             if (generateNonCanonicalPairs) {
-                                var fn = file.getFileName().toString().split("\\.")[0] + ".csv";
+                                var fn = file.getFileName().toString().split("\\.")[0] + ".txt";
                                 zipOut.putNextEntry(new ZipEntry(fn));
                                 Files.copy(file, zipOut);
                                 zipOut.closeEntry();
