@@ -27,13 +27,13 @@ public final class AasFileWriter extends TextFileWriter {
 	 */
 	private void writechain(RnaChain m) {
 		List<Entry<Integer, Integer>> list = m.getPairMap().entrySet().stream()
-											.map(x -> x.getKey() < x.getValue() ? x : new SimpleEntry<Integer, Integer>(x.getValue(), x.getKey()))
-											.distinct().toList();
-		for (int i = 0; i < list.size()-1; i++) {
-			data += "(" + list.get(i).getKey() + "," + list.get(i).getValue() +");";
+				.map(x -> x.getKey() < x.getValue() ? x : new SimpleEntry<>(x.getValue(), x.getKey()))
+				.distinct().toList();
+		for (int i = 0; i < list.size() - 1; i++) {
+			data += "(" + list.get(i).getKey() + "," + list.get(i).getValue() + ");";
 		}
-
-		data += "(" + list.get(list.size()-1).getKey() + "," + list.get(list.size()-1).getValue() +")";
+		if (list.size() != 0)
+			data += "(" + list.get(list.size() - 1).getKey() + "," + list.get(list.size() - 1).getValue() + ")";
 
 	}
 	

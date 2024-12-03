@@ -5,6 +5,7 @@ import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +148,9 @@ public class TranslatorController {
         try {
             return RNAFileConstructor.getInstance().construct(outputFilePath);
         } catch (Exception e) {
-            Files.deleteIfExists(Path.of(inputFilePath + ".csv"));
+            for (Path file : Files.list(Paths.get(System.getProperty("user.dir"))).toList()) {
+                if (Files.isRegularFile(file) && file.toString().endsWith(".csv")) Files.delete(file);
+            }
             throw new IOException();
         } finally {
             // Delete files after use
