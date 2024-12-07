@@ -72,6 +72,12 @@
             <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Command Line Interface -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.7.6</version>
+        </dependency>
     </dependencies>
 
 
@@ -141,6 +147,24 @@
             <id>cli</id>
             <build>
                 <plugins>
+                    <!-- Maven Compiler Plugin with Picocli Codegen -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <configuration>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>info.picocli</groupId>
+                                    <artifactId>picocli-codegen</artifactId>
+                                    <version>4.7.6</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <compilerArgs>
+                                <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
@@ -177,7 +201,7 @@
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <outputFile>target/${project.artifactId}.jar</outputFile>
+                                    <outputFile>target/${project.artifactId}_CLI.jar</outputFile>
                                     <!-- After the usage, the dependecy-reduced-pom.xml file will be created, you can ignore it -->
                                     <createDependencyReducedPom>false</createDependencyReducedPom>
                                     <transformers>
