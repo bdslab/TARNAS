@@ -15,20 +15,16 @@ import picocli.CommandLine.Command;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 
 @Command(
-        name = "tarnas",
-        mixinStandardHelpOptions = true, version = "tarnas 1.0",
+        name = "TARNAS_CLI.jar",
+        mixinStandardHelpOptions = true, version = "TARNAS 1.0",
         description = "A simple CLI tool for RNA file format conversion."
 )
 public class CLIController implements Callable<Integer> {
-
-    public static final Logger logger = Logger.getLogger("it.unicam.cs.bdslab.tarnas.view.CLIController");
 
     private final TranslatorController translatorController;
 
@@ -39,7 +35,7 @@ public class CLIController implements Callable<Integer> {
     private final AbstractionsController abstractionsController;
 
     // TODO: check the usage of this variable. IT could be useless...
-    private RNAFormat selectedFormat;
+    private RNAFormat loadedFormat;
 
     private final boolean isTranslating;
 
@@ -49,13 +45,13 @@ public class CLIController implements Callable<Integer> {
     private String inputPath;
 
     // Output RNA directory path
-    /*@Parameters(index = "1", description = "Output directory path")
+    @Parameters(index = "1", description = "Output directory path")
     private String outputDirectoryPath;
 
     // Cleaning options
 
     // remove all comments from the input file
-    @Option(names = {"-c", "--rcomments"}, description = "Remove all comments from the input file")
+    /*@Option(names = {"-c", "--rcomments"}, description = "Remove all comments from the input file")
     private boolean removeComments;
 
 
@@ -69,24 +65,24 @@ public class CLIController implements Callable<Integer> {
 
     // merge all lines in the input file only for DB and DB NO SEQUENCE formats
     @Option(names = {"-m", "--merge"}, description = "Merge all lines in the input file only for DB and DB NO SEQUENCE formats")
-    private boolean mergeLines;
+    private boolean mergeLines;*/
 
     // Translation options
 
     // include the header in the output file
-    //@Option(names = {"-h", "--header"}, description = "Include the header in the output file")
+    @Option(names = {"--no-header"}, description = "Do not include the header in the output file")
     private boolean includeHeader;
 
     // generate non canonical pairs (only for RNAML input format)
-    @Option(names = {"-n", "--non-canonical"}, description = "Generate non canonical pairs (only for RNAML input format)")
-    private boolean generateNonCanonicalPairs;
+    //@Option(names = {"-n", "--non-canonical"}, description = "Generate non canonical pairs (only for RNAML input format)")
+    //private boolean generateNonCanonicalPairs;
 
     // translate to the specified destination format
     @Option(names = {"-t", "--translate"}, description = "Translate to the specified destination format")
-    private String destinationFormat;
+    private RNAFormat destinationFormat;
 
     // Save as zip file
-    @Option(names = {"-z", "--zip"}, description = "Save as zip file")
+    /*@Option(names = {"-z", "--zip"}, description = "Save as zip file")
     private String zipFileName;
 
     // Abstraction options
@@ -104,19 +100,22 @@ public class CLIController implements Callable<Integer> {
     private boolean generateShape;*/
 
     public CLIController() {
-        logger.info("Initializing...");
         this.isTranslating = false;
         // init controllers
         this.cleanerController = CleanerController.getInstance();
         this.ioController = IOController.getInstance();
         this.translatorController = TranslatorController.getInstance();
         this.abstractionsController = AbstractionsController.getInstance();
-        logger.info("Initialization done");
+        // Default options
+        this.includeHeader = true;
     }
 
 
     public boolean addFile(Path p) {
-        if (!Files.exists(p)) return false;
+        if (!Files.exists(p)) {
+            System.err.println("Non existent file with path: " + p);
+            return false;
+        }
         try {
             if (Files.isRegularFile(p)) {
                 return loadPath(p, "file");
@@ -125,53 +124,32 @@ public class CLIController implements Callable<Integer> {
                 return loadPath(p, "folder");
             }
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
         return false;
     }
 
     private boolean loadPath(Path p, String type) throws IOException {
-        logger.info("Adding " + type);
         if (type.equals("file"))
             this.ioController.loadFile(p);
         else
             this.ioController.loadDirectory(p);
-        logger.info(type + " added successfully");
         return true;
     }
 
-
-
-    /*public void handleAddFile(Path inputFilePath) {
-        logger.info("Adding file");
-        if (inputFilePath != null) {
-            try {
-                this.loadFile(inputFilePath);
-                logger.info("File added successfully");
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
-            }
+    private boolean checkOutputDirectory(Path p) {
+        // check if the output directory exists
+        if (!Files.exists(p)) {
+            System.err.println("Non existent directory with path: " + p);
+            return false;
         }
-        logger.info("Exit add file");
-    }*/
-
-    /*public void handleAddFolder(Path inputFolderPath) {
-        logger.info("Adding folder");
-        if (inputFolderPath != null) {
-            try {
-                var files = Files.walk(inputFolderPath)
-                        .filter(Files::isRegularFile)
-                        .toList();
-                for (var f : files)
-                    this.loadFile(f);
-                logger.info("Folder added successfully");
-            } catch (Exception e) {
-                logger.severe(e.getMessage());
-            }
+        if (!Files.isDirectory(p)) {
+            System.err.println(p + " is not a directory");
+            return false;
         }
-        logger.info("Exit add file");
-    }*/
+        return true;
+    }
 
     /*public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
         var cleanedFiles = new ArrayList<RNAFile>();
@@ -196,17 +174,17 @@ public class CLIController implements Callable<Integer> {
         }
         return cleanedFiles;
 
-    }
+    }*/
 
     private List<RNAFile> translate(List<RNAFile> files) throws RNAFileException {
         List<RNAFile> translatedRNAFiles;
-        translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.selectedFormat);
+        translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.destinationFormat);
         if (!this.includeHeader)
             translatedRNAFiles = translatedRNAFiles.parallelStream()
                     .map(f -> this.cleanerController.removeHeader(f))
                     .toList();
         return translatedRNAFiles;
-    }*/
+    }
 
  /*   public void handleRun() {
         logger.info("RUN button clicked");
@@ -277,10 +255,18 @@ public class CLIController implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        this.addFile(Path.of(this.inputPath));
-
-
-        // TODO: implement the CLI controller
+        if (!this.addFile(Path.of(this.inputPath)) || !this.checkOutputDirectory(Path.of(this.outputDirectoryPath)))
+            return 1;
+        this.loadedFormat = this.ioController.getRecognizedFormat();
+        // RNA File Translation
+        try {
+            var translatedFiles = this.translate(this.ioController.getLoadedRNAFiles());
+            // TODO check canonical pairs
+            this.ioController.saveFilesTo(translatedFiles, Path.of(this.outputDirectoryPath), false);
+        } catch (RNAFileException | IOException e) {
+            System.err.println(e.getMessage());
+            return 1;
+        }
 
         // Check the options: the user must choose between cleaning and/or translating, or generating abstractions, not both!
 

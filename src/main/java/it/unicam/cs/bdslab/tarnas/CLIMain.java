@@ -13,6 +13,6 @@ public class CLIMain {
             return;
         }
 
-        cmd.execute(args);
+        System.exit(cmd.execute(args));
     }
 }
