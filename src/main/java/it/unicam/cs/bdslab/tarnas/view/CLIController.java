@@ -7,8 +7,10 @@ import it.unicam.cs.bdslab.tarnas.controller.TranslatorController;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileException;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
+
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Command;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +20,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-public class CLIController  implements Callable<Integer> {
+
+@Command(
+        name = "tarnas",
+        mixinStandardHelpOptions = true, version = "tarnas 1.0",
+        description = "A simple CLI tool for RNA file format conversion."
+)
+public class CLIController implements Callable<Integer> {
 
     public static final Logger logger = Logger.getLogger("it.unicam.cs.bdslab.tarnas.view.CLIController");
 
@@ -35,14 +43,13 @@ public class CLIController  implements Callable<Integer> {
 
     private final boolean isTranslating;
 
-    private final List<RNAFile> loadedRNAFiles;
 
     // Input RNA file path or RNA directory path
-    @Parameters(index = "0", description = "Input RNA file path or RNA directory path")
+    @Parameters(index = "0", description = "Input RNA file path or RNA directory path", arity = "1")
     private String inputPath;
 
     // Output RNA directory path
-    @Parameters(index = "1", description = "Output directory path")
+    /*@Parameters(index = "1", description = "Output directory path")
     private String outputDirectoryPath;
 
     // Cleaning options
@@ -67,7 +74,7 @@ public class CLIController  implements Callable<Integer> {
     // Translation options
 
     // include the header in the output file
-    @Option(names = {"-h", "--header"}, description = "Include the header in the output file")
+    //@Option(names = {"-h", "--header"}, description = "Include the header in the output file")
     private boolean includeHeader;
 
     // generate non canonical pairs (only for RNAML input format)
@@ -94,7 +101,7 @@ public class CLIController  implements Callable<Integer> {
 
     // generate shape
     @Option(names = {"-s", "--shape"}, description = "Generate shape")
-    private boolean generateShape;
+    private boolean generateShape;*/
 
     public CLIController() {
         logger.info("Initializing...");
@@ -104,11 +111,39 @@ public class CLIController  implements Callable<Integer> {
         this.ioController = IOController.getInstance();
         this.translatorController = TranslatorController.getInstance();
         this.abstractionsController = AbstractionsController.getInstance();
-        this.loadedRNAFiles = new ArrayList<>();
         logger.info("Initialization done");
     }
 
-    public void handleAddFile(Path inputFilePath) {
+
+    public boolean addFile(Path p) {
+        if (!Files.exists(p)) return false;
+        try {
+            if (Files.isRegularFile(p)) {
+                return loadPath(p, "file");
+            }
+            if (Files.isDirectory(p)) {
+                return loadPath(p, "folder");
+            }
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return false;
+    }
+
+    private boolean loadPath(Path p, String type) throws IOException {
+        logger.info("Adding " + type);
+        if (type.equals("file"))
+            this.ioController.loadFile(p);
+        else
+            this.ioController.loadDirectory(p);
+        logger.info(type + " added successfully");
+        return true;
+    }
+
+
+
+    /*public void handleAddFile(Path inputFilePath) {
         logger.info("Adding file");
         if (inputFilePath != null) {
             try {
@@ -119,9 +154,9 @@ public class CLIController  implements Callable<Integer> {
             }
         }
         logger.info("Exit add file");
-    }
+    }*/
 
-    public void handleAddFolder(Path inputFolderPath) {
+    /*public void handleAddFolder(Path inputFolderPath) {
         logger.info("Adding folder");
         if (inputFolderPath != null) {
             try {
@@ -136,9 +171,9 @@ public class CLIController  implements Callable<Integer> {
             }
         }
         logger.info("Exit add file");
-    }
+    }*/
 
-    public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
+    /*public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
         var cleanedFiles = new ArrayList<RNAFile>();
         RNAFile tmp = null;
         try {
@@ -171,9 +206,9 @@ public class CLIController  implements Callable<Integer> {
                     .map(f -> this.cleanerController.removeHeader(f))
                     .toList();
         return translatedRNAFiles;
-    }
+    }*/
 
-    public void handleRun() {
+ /*   public void handleRun() {
         logger.info("RUN button clicked");
         var files = this.loadedRNAFiles;
         try {
@@ -188,9 +223,9 @@ public class CLIController  implements Callable<Integer> {
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
-    }
+    }*/
 
-    private void loadFile(Path selectedRNAFile) throws RNAFileException {
+    /*private void loadFile(Path selectedRNAFile) throws RNAFileException {
         try {
             var rnaFile = this.ioController.loadFile(selectedRNAFile);
             this.loadedRNAFiles.add(rnaFile);
@@ -204,9 +239,9 @@ public class CLIController  implements Callable<Integer> {
             logger.severe("Could not load file: " + selectedRNAFile);
             throw new RNAFileException("Error caused by: " + selectedRNAFile);
         }
-    }
+    }*/
 
-    private void saveFilesTo(List<RNAFile> rnaFiles) throws IOException {
+    /*private void saveFilesTo(List<RNAFile> rnaFiles) throws IOException {
         if ((this.zipFileName != null) && (this.zipFileName.isEmpty() || this.zipFileName.isBlank())) {
             logger.severe("Insert a name for the zip file!");
             return;
@@ -238,10 +273,12 @@ public class CLIController  implements Callable<Integer> {
                 abstractions.add(this.abstractionsController.getShape(f));
         }
         return abstractions;
-    }
+    }*/
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
+        this.addFile(Path.of(this.inputPath));
+
 
         // TODO: implement the CLI controller
 

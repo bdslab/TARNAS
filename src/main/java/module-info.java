@@ -15,7 +15,8 @@ module tarnas {
     opens it.unicam.cs.bdslab.tarnas.model.utils to javafx.base;
     // all types in it.unicam.cs.bdslab.tarnas.view.* package are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.view.utils to javafx.fxml;
-    opens it.unicam.cs.bdslab.tarnas.view to javafx.fxml;
+    opens it.unicam.cs.bdslab.tarnas.view to javafx.fxml, info.picocli;
     // javafx.graphics needs to access the it.unicam.cs.bdslab.tarnas exported package
     exports it.unicam.cs.bdslab.tarnas to javafx.graphics;
+
 }
