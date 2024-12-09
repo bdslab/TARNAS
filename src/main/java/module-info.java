@@ -18,5 +18,6 @@ module tarnas {
     opens it.unicam.cs.bdslab.tarnas.view to javafx.fxml, info.picocli;
     // javafx.graphics needs to access the it.unicam.cs.bdslab.tarnas exported package
     exports it.unicam.cs.bdslab.tarnas to javafx.graphics;
+    opens it.unicam.cs.bdslab.tarnas.view.cli to info.picocli, javafx.fxml;
 
 }

@@ -1,6 +1,6 @@
 package it.unicam.cs.bdslab.tarnas;
 
-import it.unicam.cs.bdslab.tarnas.view.CLIController;
+import it.unicam.cs.bdslab.tarnas.view.cli.CLIController;
 import picocli.CommandLine;
 
 
@@ -13,6 +13,7 @@ public class CLIMain {
             return;
         }
 
+        //cmd.setExecutionStrategy(new CommandLine.RunAll());
         System.exit(cmd.execute(args));
     }
 }

@@ -1,13 +1,13 @@
-package it.unicam.cs.bdslab.tarnas.view;
+package it.unicam.cs.bdslab.tarnas.view.cli;
+//D:\UNIVERSITA\paper_tarnas\TARNAS\src\test\resources\datasets\aspralignTest\edbn\CRW_00808.db C:\Users\newxp\OneDrive\Desktop -t AAS --no-header false
+//D:\UNIVERSITA\paper_tarnas\TARNAS\src\test\resources\datasets\aspralignTest\edbn\CRW_00808.db C:\Users\newxp\OneDrive\Desktop translate
 
 import it.unicam.cs.bdslab.tarnas.controller.AbstractionsController;
 import it.unicam.cs.bdslab.tarnas.controller.CleanerController;
 import it.unicam.cs.bdslab.tarnas.controller.IOController;
-import it.unicam.cs.bdslab.tarnas.controller.TranslatorController;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileException;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
-
+// nome.jar <input> <output> translate
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Command;
@@ -16,79 +16,36 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 
 @Command(
         name = "TARNAS_CLI.jar",
-        mixinStandardHelpOptions = true, version = "TARNAS 1.0",
-        description = "A simple CLI tool for RNA file format conversion."
+        mixinStandardHelpOptions = true,
+        version = "TARNAS 1.0",
+        description = "A simple CLI tool for RNA file format conversion.",
+        subcommands = {TranslateCommand.class, CleaningCommand.class}
 )
-public class CLIController implements Callable<Integer> {
-
-    private final TranslatorController translatorController;
+public class CLIController implements Runnable {
 
     private final IOController ioController;
 
-    private final CleanerController cleanerController;
-
     private final AbstractionsController abstractionsController;
 
-    // TODO: check the usage of this variable. IT could be useless...
-    private RNAFormat loadedFormat;
-
-    private final boolean isTranslating;
-
-
-    // Input RNA file path or RNA directory path
-    @Parameters(index = "0", description = "Input RNA file path or RNA directory path", arity = "1")
+    @Parameters(index = "0", description = "Input RNA file path or RNA directory path")
     private String inputPath;
 
     // Output RNA directory path
     @Parameters(index = "1", description = "Output directory path")
     private String outputDirectoryPath;
 
-    // Cleaning options
-
-    // remove all comments from the input file
-    /*@Option(names = {"-c", "--rcomments"}, description = "Remove all comments from the input file")
-    private boolean removeComments;
-
-
-    // remove lines containing an input string from the input file
-    @Option(names = {"-r", "--rlines"}, description = "Remove lines containing an input string from the input file")
-    private String stringToBeRemoved;
-
-    // remove all empty lines from the input file
-    @Option(names = {"-e", "--empty"}, description = "Remove all empty lines from the input file")
-    private boolean removeEmptyLines;
-
-    // merge all lines in the input file only for DB and DB NO SEQUENCE formats
-    @Option(names = {"-m", "--merge"}, description = "Merge all lines in the input file only for DB and DB NO SEQUENCE formats")
-    private boolean mergeLines;*/
-
-    // Translation options
-
-    // include the header in the output file
-    @Option(names = {"--no-header"}, description = "Do not include the header in the output file")
-    private boolean includeHeader;
-
-    // generate non canonical pairs (only for RNAML input format)
-    //@Option(names = {"-n", "--non-canonical"}, description = "Generate non canonical pairs (only for RNAML input format)")
-    //private boolean generateNonCanonicalPairs;
-
-    // translate to the specified destination format
-    @Option(names = {"-t", "--translate"}, description = "Translate to the specified destination format")
-    private RNAFormat destinationFormat;
-
-    // Save as zip file
-    /*@Option(names = {"-z", "--zip"}, description = "Save as zip file")
+    @Option(names = "--zip", description = "Save files as a zip file with the given name at the <outputDirectoryPath>")
     private String zipFileName;
+
 
     // Abstraction options
 
     // generate core
-    @Option(names = {"-g", "--generate"}, description = "Generate core")
+    /*@Option(names = {"-g", "--generate"}, description = "Generate core")
     private boolean generateCore;
 
     // generate coreplus
@@ -100,55 +57,51 @@ public class CLIController implements Callable<Integer> {
     private boolean generateShape;*/
 
     public CLIController() {
-        this.isTranslating = false;
         // init controllers
-        this.cleanerController = CleanerController.getInstance();
         this.ioController = IOController.getInstance();
-        this.translatorController = TranslatorController.getInstance();
         this.abstractionsController = AbstractionsController.getInstance();
         // Default options
-        this.includeHeader = true;
+        this.zipFileName = null;
     }
 
 
-    public boolean addFile(Path p) {
+    private void addFile(Path p) {
         if (!Files.exists(p)) {
             System.err.println("Non existent file with path: " + p);
-            return false;
+            System.exit(1);
         }
         try {
             if (Files.isRegularFile(p)) {
-                return loadPath(p, "file");
+                loadPath(p, "file");
             }
             if (Files.isDirectory(p)) {
-                return loadPath(p, "folder");
+                loadPath(p, "folder");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
+            System.exit(1);
         }
-
-        return false;
+        System.exit(1);
     }
 
-    private boolean loadPath(Path p, String type) throws IOException {
+    private void loadPath(Path p, String type) throws IOException {
         if (type.equals("file"))
             this.ioController.loadFile(p);
         else
             this.ioController.loadDirectory(p);
-        return true;
+
     }
 
-    private boolean checkOutputDirectory(Path p) {
+    private void checkOutputDirectory(Path p) {
         // check if the output directory exists
         if (!Files.exists(p)) {
             System.err.println("Non existent directory with path: " + p);
-            return false;
+            System.exit(1);
         }
         if (!Files.isDirectory(p)) {
             System.err.println(p + " is not a directory");
-            return false;
+            System.exit(1);
         }
-        return true;
     }
 
     /*public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
@@ -176,15 +129,7 @@ public class CLIController implements Callable<Integer> {
 
     }*/
 
-    private List<RNAFile> translate(List<RNAFile> files) throws RNAFileException {
-        List<RNAFile> translatedRNAFiles;
-        translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.destinationFormat);
-        if (!this.includeHeader)
-            translatedRNAFiles = translatedRNAFiles.parallelStream()
-                    .map(f -> this.cleanerController.removeHeader(f))
-                    .toList();
-        return translatedRNAFiles;
-    }
+
 
  /*   public void handleRun() {
         logger.info("RUN button clicked");
@@ -253,23 +198,54 @@ public class CLIController implements Callable<Integer> {
         return abstractions;
     }*/
 
-    @Override
-    public Integer call() {
-        if (!this.addFile(Path.of(this.inputPath)) || !this.checkOutputDirectory(Path.of(this.outputDirectoryPath)))
-            return 1;
-        this.loadedFormat = this.ioController.getRecognizedFormat();
-        // RNA File Translation
-        try {
-            var translatedFiles = this.translate(this.ioController.getLoadedRNAFiles());
-            // TODO check canonical pairs
-            this.ioController.saveFilesTo(translatedFiles, Path.of(this.outputDirectoryPath), false);
-        } catch (RNAFileException | IOException e) {
-            System.err.println(e.getMessage());
-            return 1;
-        }
 
-        // Check the options: the user must choose between cleaning and/or translating, or generating abstractions, not both!
-
-        return 0;
+    private boolean clean() {
+        //if(this.removeComments || this.removeEmptyLines || this.stringToBeRemoved != null || this.mergeLines
+        return false;
     }
+
+    public String getInputPath() {
+        return this.inputPath;
+    }
+
+    public String getOutputDirectoryPath() {
+        return this.outputDirectoryPath;
+    }
+
+    public String getZipFileName() {
+        return this.zipFileName;
+    }
+
+    @Override
+    public void run() {
+        this.addFile(Path.of(this.inputPath));
+        this.checkOutputDirectory(Path.of(this.outputDirectoryPath));
+    }
+
+    protected void saveFiles(List<RNAFile> files, boolean generateNonCanonicalPairs) {
+        var outputDirectory = Path.of(this.outputDirectoryPath);
+        try {
+            if (this.zipFileName != null)
+                this.ioController.zipFiles(outputDirectory, this.zipFileName, files, generateNonCanonicalPairs);
+            else
+                this.ioController.saveFilesTo(files, outputDirectory, generateNonCanonicalPairs);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    protected void saveFiles(List<RNAFile> files) {
+        var outputDirectory = Path.of(this.outputDirectoryPath);
+        try {
+            if (this.zipFileName != null)
+                this.ioController.zipFiles(outputDirectory, this.zipFileName, files, false);
+            else
+                this.ioController.saveFilesTo(files, outputDirectory, false);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
 }

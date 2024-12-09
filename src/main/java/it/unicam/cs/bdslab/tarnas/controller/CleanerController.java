@@ -86,6 +86,34 @@ public class CleanerController {
         return RNAFileCleaner.applyCleanOption(rnaFile, function);
     }
 
+    public List<RNAFile> clean(List<RNAFile> files, boolean removeComments, String stringToBeRemoved, boolean removeEmptyLines,
+                               boolean mergeLines) throws Exception {
+        RNAFile tmp = null;
+        var cleanedFiles = new ArrayList<RNAFile>();
+        try {
+            for (var f : files) {
+                tmp = f;
+                if (removeComments) {
+                    f = this.removeLinesStartingWith(f, "#");
+                    f = this.removeLinesStartingWith(f, ">");
+                }
+                if (stringToBeRemoved != null)
+                    f = this.removeLinesContaining(f, stringToBeRemoved);
+                if (removeEmptyLines)
+                    f = this.removeWhiteSpaces(f);
+                if (mergeLines)
+                    f = this.mergeDBLines(f);
+                cleanedFiles.add(f);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Error caused by : " + tmp.getFileName() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("Error caused by : " + tmp.getFileName());
+        }
+        return cleanedFiles;
+    }
+
+
     /**
      * Removes all the lines that satisfies the {@code predicate} from the {@code header}.
      *

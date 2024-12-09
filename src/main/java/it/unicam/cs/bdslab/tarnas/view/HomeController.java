@@ -205,7 +205,7 @@ public class HomeController {
                     f = this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText());
                 if (this.chbxRmBlankLines.isSelected())
                     f = this.cleanerController.removeWhiteSpaces(f);
-                if (this.chbxRmBlankLines.isSelected())
+                if (this.chbxMergeLines.isSelected())
                     f = this.cleanerController.mergeDBLines(f);
                 cleanedFiles.add(f);
             }
