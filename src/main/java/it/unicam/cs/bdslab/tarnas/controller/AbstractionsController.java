@@ -10,20 +10,20 @@ public class AbstractionsController {
     private static AbstractionsController instance;
 
 
-    public RNAFile getCorePlus(RNAFile rnaFile) {
+    public RNAFile getCorePlus(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_coreplus.txt";
         return new RNAFile(name, new ArrayList<>(), List.of(coreplus), null, null);
     }
 
-    public RNAFile getCore(RNAFile rnaFile) {
+    public RNAFile getCore(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var core = computeCore(coreplus);
         var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_core.txt";
         return new RNAFile(name, new ArrayList<>(), List.of(core), null, null);
     }
 
-    public RNAFile getShape(RNAFile rnaFile) {
+    public RNAFile getShape(RNAFile rnaFile) throws IllegalArgumentException {
         var shape = getDotBracket(rnaFile);
         try {
             shape = determineStructureShape(shape);
@@ -41,7 +41,9 @@ public class AbstractionsController {
         return convertPairsToString(corePlusPairs, sequence);
     }
 
-    private String getDotBracket(RNAFile rnaFile) {
+    private String getDotBracket(RNAFile rnaFile) throws IllegalArgumentException {
+        if (rnaFile.getFormat() != RNAFormat.DB && rnaFile.getFormat() != RNAFormat.DB_NO_SEQUENCE)
+            throw new IllegalArgumentException("Impossible to compute abstractions for "+ rnaFile.getFormat() + " format");
         if (rnaFile.getFormat() == RNAFormat.DB_NO_SEQUENCE)
             return rnaFile.getBody().get(0);
         return rnaFile.getBody().get(1);

@@ -3,7 +3,6 @@ package it.unicam.cs.bdslab.tarnas.view.cli;
 import it.unicam.cs.bdslab.tarnas.controller.CleanerController;
 import it.unicam.cs.bdslab.tarnas.controller.IOController;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileException;
 import picocli.CommandLine.ParentCommand;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
@@ -11,6 +10,9 @@ import picocli.CommandLine.Command;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the command for cleaning the input based on the selected cleaning option.
+ */
 @Command(
         name = "cleaning",
         mixinStandardHelpOptions = true,
@@ -24,6 +26,7 @@ public class CleaningCommand implements Runnable {
     private CleanerController cleanerController;
 
     private List<RNAFile> cleanedFiles;
+
     @ParentCommand
     private CLIController parent;
 
