@@ -2,8 +2,6 @@ package it.unicam.cs.bdslab.tarnas.controller;
 
 import it.unicam.cs.bdslab.tarnas.model.cleaner.RNAFileCleaner;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileConstructor;
-import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileTranslator;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ public class CleanerController {
     private static CleanerController instance;
 
     private CleanerController() {
-
     }
 
     /**
@@ -82,7 +79,7 @@ public class CleanerController {
      * @return the new content, which has all the lines that are not blank
      */
     public RNAFile removeWhiteSpaces(RNAFile rnaFile) {
-        var function = this.removeIf(rnaFile.getContent(), line -> !line.isBlank());
+        var function = this.removeIf(rnaFile.getHeader(), rnaFile.getBody(), String::isBlank);
         return RNAFileCleaner.applyCleanOption(rnaFile, function);
     }
 
@@ -113,7 +110,6 @@ public class CleanerController {
         return cleanedFiles;
     }
 
-
     /**
      * Removes all the lines that satisfies the {@code predicate} from the {@code header}.
      *
@@ -123,14 +119,42 @@ public class CleanerController {
      */
     private Function<RNAFile, RNAFile> removeIf(List<String> header, Predicate<String> predicate) {
         return rnaFile -> {
-            var newHeader = new ArrayList<String>();
-            for (var line : header)
-                if (!predicate.test(line))
-                    newHeader.add(line);
+            var newHeader = this.filterList(header, predicate);
             return new RNAFile(rnaFile.getFileName(), newHeader, rnaFile.getBody(), rnaFile.getStructure(), rnaFile.getFormat());
         };
     }
 
+    /**
+     * Removes all the lines that satisfies the {@code predicate} from the {@code header} and {@code body}.
+     * @param header the header from which remove all the lines satisfy the {@code predicate}.
+     * @param body the body from which remove all the lines satisfy the {@code predicate}.
+     * @param predicate the {@link Predicate} to satisfy for header and body lines removal
+     * @return a {@link Function} that represent the removing function.
+     */
+    private Function<RNAFile, RNAFile> removeIf(List<String> header, List<String> body, Predicate<String> predicate) {
+        return rnaFile -> {
+            var newHeader = this.filterList(header, predicate);
+            var newBody = this.filterList(body, predicate);
+            return new RNAFile(rnaFile.getFileName(), newHeader, newBody, rnaFile.getStructure(), rnaFile.getFormat());
+        };
+    }
+
+    /**
+     * Filters the {@code list} with the specified {@code predicate}.
+     * @param list the list to filter
+     * @param predicate the {@link Predicate} to satisfy for list filtering
+     * @return a new list that contains all the elements that do not satisfy the {@code predicate}
+     */
+    private List<String> filterList(List<String> list, Predicate<String> predicate) {
+        return list.stream()
+                .filter(line -> !predicate.test(line))
+                .toList();
+    }
+
+    /**
+     * Merges the lines of the {@code rnaFile} with {@link RNAFormat#DB} or {@link RNAFormat#DB_NO_SEQUENCE} format.
+     * @return a {@link Function} that represent the merging function.
+     */
     private Function<RNAFile, RNAFile> mergeDBLines() {
         // the file is already read with the line merged, here it is only checked whether the format is DB or DB NO SEQUENCE
         return rnaFile -> {

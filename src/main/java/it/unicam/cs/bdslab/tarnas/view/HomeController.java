@@ -55,7 +55,7 @@ public class HomeController {
 
     private RNAFormat selectedFormat;
 
-    private boolean isTranslating;
+    private Boolean isTranslating;
 
     @FXML
     private TableView<RNAFile> filesTable;
@@ -123,7 +123,7 @@ public class HomeController {
     @FXML
     public void initialize() {
         logger.info("Initializing...");
-        this.isTranslating = false;
+        this.isTranslating = null;
         // remove sorting
         this.nameColumn.setSortable(false);
         this.formatColumn.setSortable(false);
@@ -243,9 +243,14 @@ public class HomeController {
         logger.info("RUN button clicked");
         var files = this.filesTable.getItems().stream().toList();
         try {
-            if (isTranslating) {
+            if (this.isTranslating == null) {
+                showAlert(Alert.AlertType.INFORMATION, "", "", "You must select an option before running!");
+                return;
+            }
+            if (this.isTranslating) {
                 files = this.clean(files);
-                files = this.translate(files);
+                if (this.btnSelectFormatTranslation.isShowing())
+                    files = this.translate(files);
                 this.saveFilesTo(files);
             } else {
                 files = this.abstractions(files);
@@ -265,7 +270,7 @@ public class HomeController {
         this.chbxRmLinesContainingWord.setSelected(false);
         this.textFieldRmLinesContainingWord.setText("");
         this.chbxIncludeHeader.setSelected(false);
-        this.btnSelectFormatTranslation.setText("Translate to");//easter egg
+        this.btnSelectFormatTranslation.setText("Translate to");
         this.isTranslating = false;
     }
 
@@ -442,6 +447,7 @@ public class HomeController {
             //this.btnTranslate.setDisable(true);
             // reset panes
             this.paneTranslationCleaning.setDisable(true);
+            this.isTranslating = null;
         }
     }
 
@@ -579,15 +585,15 @@ public class HomeController {
                 <h2>Contact Us</h2>
                         <b class="bigger_text">TARNAS has been realised within the <a href="http://www.emanuelamerelli.eu/bigdata/doku.php" target="_blank">BioShape and Data Science Lab</a> with the contribution of Piero Jean Pier Hierro Canchari, Michela Quadrini, Piermichele Rosati and Luca Tesei.</b>
                         <p>Lab website: <a href="https://bdslab.unicam.it" target="_blank">https://bdslab.unicam.it</a></p>
-                                
+                
                         <p>RNA2Fun Project website: <a href="https://bdslab.unicam.it/rna2fun/" target="_blank">https://bdslab.unicam.it/rna2fun/</a></p>
-                                
+                
                         <b class="bigger_text">For any issue, please contact:</b>
                         <p>Prof. Luca Tesei</p>
                         <p>email: luca.tesei&#64;unicam.it</p>
-                                
+                
                         <p>address: School of Sciences and Technology, Via Madonna delle Carceri 7, 62032, Camerino (MC), Italy</p>
-                                
+                
                         <p>Personal website: <a href="http://www.lucatesei.com" target="_blank">http://www.lucatesei.com</a></p>
                 """;
         showAlertWithContent("About TARNAS", "Contact Us", contactUsContent);

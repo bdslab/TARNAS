@@ -14,6 +14,28 @@ import picocli.CommandLine.Option;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the command that translates the input to the specified destination format.
+ *
+ * @see CLIController
+ *
+ * This class is a @code{picocli.CommandLine.Command} class that represents the command that translates the input to the specified destination format.
+ *
+ * The class is responsible for parsing the input arguments and executing the command.
+ *
+ * The class is also responsible for translating the input RNA files to the specified destination format.
+ *
+ * @pico.cli.command.Option names = "--no-header" description = "Exclude the header from the output during translation."
+ *
+ * @pico.cli.command.Option names = "--non-canonical-pairs" description = "Generate non canonical pairs, if there are (only for RNAML input format)."
+ *
+ * @pico.cli.command.Parameters index = "0" description = "Destination Format options (case-sensitive): AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML."
+ *
+ * @pico.cli.command.Command(name = "translate", mixinStandardHelpOptions = true, description = "Translate the input to the specified destination format.", version = "TARNAS 1.0")
+ *
+ * @pico.cli.command.ParentCommand CLIController
+ *
+ */
 @Command(
         name = "translate",
         mixinStandardHelpOptions = true,
@@ -31,7 +53,7 @@ public class TranslateCommand implements Runnable {
     private List<RNAFile> translatedFiles;
 
     @ParentCommand
-    private CLIController parent;
+    private CLIController parentCommand;
 
     // Translation options
     @Parameters(index = "0", description = "Destination Format options (case-sensitive): AAS, AAS_NO_SEQUENCE, BPSEQ, CT, DB, DB_NO_SEQUENCE, FASTA, RNAML.")
@@ -45,6 +67,9 @@ public class TranslateCommand implements Runnable {
     private boolean generateNonCanonicalPairs;
 
 
+    /**
+     * Builds a new TranslateCommand instance.
+     */
     public TranslateCommand() {
         this.cleanerController = CleanerController.getInstance();
         this.translatorController = TranslatorController.getInstance();
@@ -55,6 +80,12 @@ public class TranslateCommand implements Runnable {
         this.destinationFormat = null;
     }
 
+    /**
+     * Translates the input RNA files to the specified destination format.
+     * @param files the input RNA files
+     * @return the translated RNA files
+     * @throws RNAFileException if an error occurs during the translation
+     */
     private List<RNAFile> translateFiles(List<RNAFile> files) throws RNAFileException {
         List<RNAFile> translatedRNAFiles;
         translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.destinationFormat);
@@ -65,6 +96,9 @@ public class TranslateCommand implements Runnable {
         return translatedRNAFiles;
     }
 
+    /**
+     * Translates the input RNA files to the specified destination format.
+     */
     private void translate() {
         try {
             this.translatedFiles = this.translateFiles(this.ioController.getLoadedRNAFiles());
@@ -74,11 +108,13 @@ public class TranslateCommand implements Runnable {
         }
     }
 
-
+    /**
+     * Runs the command that translates the input to the specified destination format.
+     */
     @Override
     public void run() {
         this.translate();
-        this.parent.saveFiles(this.translatedFiles,this.generateNonCanonicalPairs);
+        this.parentCommand.saveFiles(this.translatedFiles, this.generateNonCanonicalPairs);
     }
 
 }
