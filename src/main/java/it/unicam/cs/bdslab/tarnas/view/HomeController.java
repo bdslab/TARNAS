@@ -249,7 +249,8 @@ public class HomeController {
             }
             if (this.isTranslating) {
                 files = this.clean(files);
-                if (this.btnSelectFormatTranslation.isShowing())
+                // checks is format is selected
+                if (this.selectedFormat != null)
                     files = this.translate(files);
                 this.saveFilesTo(files);
             } else {
@@ -427,6 +428,7 @@ public class HomeController {
 
     private void tableEmpty() {
         if (this.filesTable.getItems().isEmpty()) {
+            this.selectedFormat = null;
             // reset checkboxes
             this.chbxMergeLines.setSelected(false);
             this.chbxRmLinesContainingWord.setSelected(false);
