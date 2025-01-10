@@ -14,22 +14,19 @@ import java.util.List;
 /**
  * CLIController class that handles the command line interface.
  *
+ * @pico.cli.command.Parameters index = "0" description = "Input RNA file path or RNA directory path"
+ * @pico.cli.command.Parameters index = "1" description = "Output directory path"
+ * @pico.cli.command.Option names = "--zip" description = "Save files as a zip file with the given name at the <outputDirectoryPath>"
  * @see TranslateCommand
  * @see CleaningCommand
  * @see AbstractionsCommand
- *
+ * <p>
  * This class is the main @code{picocli.CommandLine.Command} class that handles the command line interface.
  * It is responsible for parsing the input arguments and executing the commands.
- *
+ * <p>
  * The class is also responsible for loading the input RNA file or directory and checking the output directory.
- *
+ * <p>
  * The class also provides a method to save the translated RNA files to the output directory.
- *
- * @pico.cli.command.Parameters index = "0" description = "Input RNA file path or RNA directory path"
- *
- * @pico.cli.command.Parameters index = "1" description = "Output directory path"
- *
- * @pico.cli.command.Option names = "--zip" description = "Save files as a zip file with the given name at the <outputDirectoryPath>"
  */
 @Command(
         name = "TARNAS_CLI.jar",
@@ -92,7 +89,8 @@ public class CLIController implements Runnable {
 
     /**
      * Loads a file or a directory containing RNA files.
-     * @param p the path of the file or the folder to load
+     *
+     * @param p    the path of the file or the folder to load
      * @param type the type of the path (file or directory)
      * @throws IOException if an I/O error occurs
      */
@@ -106,6 +104,7 @@ public class CLIController implements Runnable {
 
     /**
      * Checks if the output directory exists.
+     *
      * @param p the path of the output directory
      */
     private void checkOutputDirectory(Path p) {
@@ -130,7 +129,8 @@ public class CLIController implements Runnable {
 
     /**
      * Saves the translated RNA files to the output directory.
-     * @param files the list of RNA files to save
+     *
+     * @param files                     the list of RNA files to save
      * @param generateNonCanonicalPairs whether to generate non-canonical pairs (only for RNAML input format)
      */
     protected void saveFiles(List<RNAFile> files, boolean generateNonCanonicalPairs) {
@@ -149,10 +149,26 @@ public class CLIController implements Runnable {
 
     /**
      * Saves the translated RNA files to the output directory.
+     *
      * @param files the list of RNA files to save
      */
     protected void saveFiles(List<RNAFile> files) {
         this.saveFiles(files, false);
+    }
+
+    /**
+     * Saves the abstractions to the output directory.
+     *
+     * @param abstractions the list of abstractions to save
+     */
+    protected void saveAbstractions(List<RNAFile> abstractions) {
+        try {
+            this.ioController.saveAbstractions(abstractions, Path.of(this.outputDirectoryPath));
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+
     }
 
 }

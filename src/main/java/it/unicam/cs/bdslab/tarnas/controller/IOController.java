@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -13,6 +14,8 @@ import java.util.zip.ZipOutputStream;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFileConstructor;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
+
+import static it.unicam.cs.bdslab.tarnas.model.utils.RNAStatisticsCalculator.*;
 
 import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.RNAML;
 
@@ -131,6 +134,15 @@ public class IOController {
         );
     }
 
+    public void saveFiles(List<RNAFile> rnaFiles, Path dstPath, String zipName, boolean generateNonCanonicalPairs, boolean generateStatistics) throws IOException {
+        // TODO
+    }
+
+    public void saveFiles(List<RNAFile> rnaFiles, Path dstPath, boolean generateNonCanonicalPairs, boolean generateStatistics) throws IOException {
+        // TODO
+    }
+
+
     /**
      * Saves the specified {@code rnaFiles} to the specified {@code dstFilePath}.
      * Every file will be saved with its {@link RNAFile#getFileName()} by default.
@@ -140,12 +152,21 @@ public class IOController {
      * @throws IOException if an I/O error occurs
      */
     public void saveFilesTo(List<RNAFile> rnaFiles, Path dstPath, boolean generateNonCanonicalPairs) throws IOException {
-        if (!Files.isDirectory(dstPath))
-            throw new IllegalArgumentException(dstPath + "is not a directory");
         for (var f : rnaFiles) {
             var extension = (f.getFormat() == RNAML) ? ".xml" : ".txt";
             f.setFileName(f.getFileName() + extension);
             Files.write(dstPath.resolve(f.getFileName()), f.getContent());
+            // TODO: change statistics
+            // Statistics file generation
+            var statsFileName = f.getFileName().split("\\.")[0] + "_seqInfo.csv";
+            var statsFile = dstPath.resolve(statsFileName);
+            // write header in append mode
+            Files.write(statsFile,
+                    Files.exists(statsFile)
+                            ? List.of(getNucleotideCount(f) + ", " + getBondCount(f) + ", " + getGcBonds(f) + ", " + getAuBonds(f) + ", " + getGuBonds(f) + ", " + getNonCanonicalPairs(f))
+                            : List.of("Nucleotide count, Bond count, GC bonds, AU bonds, GU bonds, Non canonical pairs",
+                            getNucleotideCount(f) + ", " + getBondCount(f) + ", " + getGcBonds(f) + ", " + getAuBonds(f) + ", " + getGuBonds(f) + ", " + getNonCanonicalPairs(f)),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
 
         var cd = Paths.get(System.getProperty("user.dir"));
@@ -155,15 +176,39 @@ public class IOController {
             if (file.toString().endsWith(".csv")) {
                 if (generateNonCanonicalPairs) {
                     // Construct the new file name
-                    var newFileName = file.getFileName().toString().split("\\.")[0] + "_nc.txt";
+                    var newFileName = file.getFileName().toString().split("\\.")[0] + "_nc.csv";
                     // Move and rename the file
                     Files.move(file, dstPath.resolve(newFileName));
+                    // Replace all the spaces with comma
+                    var lines = Files.readAllLines(dstPath.resolve(newFileName));
+                    var newLines = new ArrayList<String>();
+                    for (var line : lines) {
+                        newLines.add(line.replace(" ", ","));
+                    }
+                    Files.write(dstPath.resolve(newFileName), newLines);
                 } else
                     Files.delete(file);
             }
         }
     }
 
+    /**
+     * Saves the specified {@code abstractions} to the specified {@code dstPath}.
+     *
+     * @param abstractions the list of abstractions to save
+     * @param dstPath      the destination path where save the abstractions
+     */
+    public void saveAbstractions(List<RNAFile> abstractions, Path dstPath) throws IOException {
+        if (!Files.isDirectory(dstPath))
+            throw new IllegalArgumentException(dstPath + "is not a directory");
+        for (var f : abstractions) {
+            try {
+                Files.write(dstPath.resolve(f.getFileName()), f.getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles, boolean generateNonCanonicalPairs) throws IOException {
         if (!Files.exists(dstZipPath) || !Files.isDirectory(dstZipPath)) {

@@ -13,7 +13,7 @@ import java.util.List;
 @Command(
         name = "abstractions",
         mixinStandardHelpOptions = true,
-        description = "Computes abstractions of the input RNA file",
+        description = "Computes abstractions of the input RNA file. By default, it computes core, coreplus and shape abstractions.",
         version = "TARNAS 1.0"
 )
 public class AbstractionsCommand implements Runnable {
@@ -56,12 +56,20 @@ public class AbstractionsCommand implements Runnable {
     private void computeAbstractions() {
         try {
             for (var f : this.ioController.getLoadedRNAFiles()) {
-                if (this.generateCore)
-                    this.abstractions.add(this.abstractionsController.getCore(f));
-                if (this.generateCorePlus)
-                    this.abstractions.add(this.abstractionsController.getCorePlus(f));
-                if (this.generateShape)
-                    this.abstractions.add(this.abstractionsController.getShape(f));
+                if (!this.generateCore && !this.generateCorePlus && !this.generateShape)
+                    this.abstractions.addAll(List.of(
+                            this.abstractionsController.getCore(f),
+                            this.abstractionsController.getCorePlus(f),
+                            this.abstractionsController.getShape(f)
+                    ));
+                else {
+                    if (this.generateCore)
+                        this.abstractions.add(this.abstractionsController.getCore(f));
+                    if (this.generateCorePlus)
+                        this.abstractions.add(this.abstractionsController.getCorePlus(f));
+                    if (this.generateShape)
+                        this.abstractions.add(this.abstractionsController.getShape(f));
+                }
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -72,6 +80,6 @@ public class AbstractionsCommand implements Runnable {
     @Override
     public void run() {
         this.computeAbstractions();
-        this.parent.saveFiles(this.abstractions);
+        this.parent.saveAbstractions(this.abstractions);
     }
 }
