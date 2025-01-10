@@ -1,13 +1,12 @@
 package it.unicam.cs.bdslab.tarnas.controller;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,257 +16,189 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 
 import static it.unicam.cs.bdslab.tarnas.model.utils.RNAStatisticsCalculator.*;
 
-import static it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat.RNAML;
-
 /**
- * An implementation of Translator Controller that accepts input like files, format translation and converts that
- * input to commands for the Model or View.
- * This Controller takes care translation operations and file loading/saving/deleting and directory loading/saving.
- * In particular, it provides paralleled translation operations when multiple files are loaded, to have better performance.
- * Moreover, this Controller executes checking for I/O errors.
- *
- * @author Piero Hierro, Piermichele Rosati
- * @see RNAFile
- * @see Stream#parallel()
+ * Singleton controller for loading, saving, and packaging RNA files.
+ * Exceptions are propagated upwards.
  */
 public class IOController {
 
-    private RNAFormat recognizedFormat;
-
-    private static IOController instance;
-
-    /**
-     * Loaded file paths
-     */
+    private static final IOController instance = new IOController();
+    private RNAFormat recognizedFormat;  // Tracks the format of loaded files
     private final List<RNAFile> loadedRNAFiles;
 
-
-    /**
-     * Invisible constructor.
-     */
     private IOController() {
         this.loadedRNAFiles = new ArrayList<>();
     }
 
-    /**
-     * Factory method for the obtaining the {@link IOController} instance.
-     *
-     * @return the instance of this Singleton
-     */
     public static IOController getInstance() {
-        if (instance == null)
-            instance = new IOController();
         return instance;
     }
 
     /**
-     * Reads the content of the specified {@code srcFilePath} and gets the corresponding {@link RNAFile}.
-     *
-     * @param srcFilePath the {@link Path} of file to get the {@code RNAFile}.
-     * @return the {@code RNAFile} that represents the content of the {@code srcFilePath}
-     * @throws IOException if an I/O error occurs
+     * Returns an unmodifiable list of currently loaded RNA files.
+     */
+    public List<RNAFile> getLoadedRNAFiles() {
+        return List.copyOf(loadedRNAFiles);
+    }
+
+    public RNAFormat getRecognizedFormat() {
+        return recognizedFormat;
+    }
+
+    /**
+     * Builds an {@link RNAFile} from the given path.
      */
     public RNAFile getRNAFileOf(Path srcFilePath) throws IOException {
         return RNAFileConstructor.getInstance().construct(srcFilePath);
     }
 
     /**
-     * Returns the list of all loaded file paths.
-     *
-     * @return the list of all loaded file paths
-     */
-    public List<RNAFile> getLoadedRNAFiles() {
-        return this.loadedRNAFiles;
-    }
-
-    /**
-     * Get the recognized format
-     *
-     * @return the recognized format
-     */
-    public RNAFormat getRecognizedFormat() {
-        return this.recognizedFormat;
-    }
-
-    /**
-     * Loads a file from the specified {@code srcFilePath} and stores it in the list of loaded files to translate.
-     *
-     * @param srcFilePath the {@link Path} of the file to translate.
-     * @throws IOException              if an I/O error occurs
-     * @throws FileNotFoundException    if the path not exists
-     * @throws IllegalArgumentException if the format of corresponding
-     * @
+     * Loads a single RNA file and checks format consistency with any already-loaded files.
      */
     public RNAFile loadFile(Path srcFilePath) throws IOException {
-        if (!Files.exists(srcFilePath))
-            throw new FileNotFoundException("Non existent file with path: " + srcFilePath);
-        var rnaFile = this.getRNAFileOf(srcFilePath);
-        if (this.recognizedFormat == null || this.recognizedFormat == rnaFile.getFormat()) {
-            this.loadedRNAFiles.add(rnaFile);
-            this.recognizedFormat = rnaFile.getFormat();
-        } else
-            throw new IllegalArgumentException("All loaded files must be of the same format!");
+        var rnaFile = getRNAFileOf(srcFilePath);
+
+        if (recognizedFormat == null || recognizedFormat.equals(rnaFile.getFormat())) {
+            loadedRNAFiles.add(rnaFile);
+            recognizedFormat = rnaFile.getFormat();
+        } else {
+            throw new IllegalArgumentException(
+                    "All loaded files must share the same format: " + recognizedFormat +
+                            ", but got: " + rnaFile.getFormat()
+            );
+        }
+
         return rnaFile;
     }
 
     /**
-     * Loads a directory from the specified {@code srcDirectoryPath} and stores all the contained files in the list of loaded files to translate.
-     *
-     * @param srcDirectoryPath the {@link Path} of the directory to translate.
-     * @throws IOException           if an I/O error occurs
-     * @throws FileNotFoundException if the path not exists
+     * Loads all regular files from a directory.
      */
     public void loadDirectory(Path srcDirectoryPath) throws IOException {
-        Files.newDirectoryStream(srcDirectoryPath).forEach(
-                p -> {
-                    try {
-                        if (Files.isRegularFile(p))
-                            this.loadFile(p);
-                        else if (Files.isDirectory(p))
-                            this.loadDirectory(p);
-                        else
-                            throw new FileNotFoundException("Non existent path: " + p);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+        try (var directoryStream = Files.newDirectoryStream(srcDirectoryPath)) {
+            for (var path : directoryStream) {
+                if (Files.isRegularFile(path)) {
+                    loadFile(path);
                 }
-        );
+            }
+        }
     }
-
-    public void saveFiles(List<RNAFile> rnaFiles, Path dstPath, String zipName, boolean generateNonCanonicalPairs, boolean generateStatistics) throws IOException {
-        // TODO
-    }
-
-    public void saveFiles(List<RNAFile> rnaFiles, Path dstPath, boolean generateNonCanonicalPairs, boolean generateStatistics) throws IOException {
-        // TODO
-    }
-
 
     /**
-     * Saves the specified {@code rnaFiles} to the specified {@code dstFilePath}.
-     * Every file will be saved with its {@link RNAFile#getFileName()} by default.
-     *
-     * @param rnaFiles the list of all files to save
-     * @param dstPath  the destination path where save the files
-     * @throws IOException if an I/O error occurs
+     * Saves and optionally processes RNA files, generates statistics, and zips the result.
      */
-    public void saveFilesTo(List<RNAFile> rnaFiles, Path dstPath, boolean generateNonCanonicalPairs) throws IOException {
-        for (var f : rnaFiles) {
-            var extension = (f.getFormat() == RNAML) ? ".xml" : ".txt";
-            f.setFileName(f.getFileName() + extension);
-            Files.write(dstPath.resolve(f.getFileName()), f.getContent());
-            // TODO: change statistics
-            // Statistics file generation
-            var statsFileName = f.getFileName().split("\\.")[0] + "_seqInfo.csv";
-            var statsFile = dstPath.resolve(statsFileName);
-            // write header in append mode
-            Files.write(statsFile,
-                    Files.exists(statsFile)
-                            ? List.of(getNucleotideCount(f) + ", " + getBondCount(f) + ", " + getGcBonds(f) + ", " + getAuBonds(f) + ", " + getGuBonds(f) + ", " + getNonCanonicalPairs(f))
-                            : List.of("Nucleotide count, Bond count, GC bonds, AU bonds, GU bonds, Non canonical pairs",
-                            getNucleotideCount(f) + ", " + getBondCount(f) + ", " + getGcBonds(f) + ", " + getAuBonds(f) + ", " + getGuBonds(f) + ", " + getNonCanonicalPairs(f)),
-                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        }
+    public void saveFiles(List<RNAFile> files,
+                          Path dstPath,
+                          boolean generateNonCanonicalPairs,
+                          boolean generateStatistics,
+                          String zipFileName) throws IOException {
 
-        var cd = Paths.get(System.getProperty("user.dir"));
-        // Move and rename all .csv files
-        for (var file : Files.list(cd).toList()) {
-            // Check if the file ends with .csv
-            if (file.toString().endsWith(".csv")) {
+        var generatedFiles = new ArrayList<Path>();
+        saveRNAFiles(files, dstPath, generatedFiles);
+        processNonCanonicalPairs(generateNonCanonicalPairs, dstPath, generatedFiles);
+        generateStatistics(files, dstPath, generateStatistics, generatedFiles);
+        createZipFile(dstPath, zipFileName, generatedFiles);
+    }
+
+    private void saveRNAFiles(List<RNAFile> files, Path dstPath, List<Path> generatedFiles) throws IOException {
+        for (var file : files) {
+            var extension = (file.getFormat() == RNAFormat.RNAML) ? ".xml" : ".txt";
+            var fileName = file.getFileName() + extension;
+            var destinationPath = dstPath.resolve(fileName);
+
+            Files.write(destinationPath, file.getContent());
+            generatedFiles.add(destinationPath);
+        }
+    }
+
+    /**
+     * If {@code generateNonCanonicalPairs} is true, updates *.csv files in the current dir.
+     * Otherwise, deletes them.
+     */
+    private void processNonCanonicalPairs(boolean generateNonCanonicalPairs,
+                                          Path dstPath,
+                                          List<Path> generatedFiles) throws IOException {
+        var currentDir = Paths.get(System.getProperty("user.dir"));
+        try (var csvStream = Files.list(currentDir)) {
+            var csvFiles = csvStream
+                    .filter(path -> path.toString().endsWith(".csv"))
+                    .toList();
+
+            for (var csvFile : csvFiles) {
                 if (generateNonCanonicalPairs) {
-                    // Construct the new file name
-                    var newFileName = file.getFileName().toString().split("\\.")[0] + "_nc.csv";
-                    // Move and rename the file
-                    Files.move(file, dstPath.resolve(newFileName));
-                    // Replace all the spaces with comma
-                    var lines = Files.readAllLines(dstPath.resolve(newFileName));
-                    var newLines = new ArrayList<String>();
-                    for (var line : lines) {
-                        newLines.add(line.replace(" ", ","));
-                    }
-                    Files.write(dstPath.resolve(newFileName), newLines);
-                } else
-                    Files.delete(file);
-            }
-        }
-    }
+                    var newFileName = csvFile.getFileName().toString().replace(".csv", "_nc.csv");
+                    var destinationPath = dstPath.resolve(newFileName);
 
-    /**
-     * Saves the specified {@code abstractions} to the specified {@code dstPath}.
-     *
-     * @param abstractions the list of abstractions to save
-     * @param dstPath      the destination path where save the abstractions
-     */
-    public void saveAbstractions(List<RNAFile> abstractions, Path dstPath) throws IOException {
-        if (!Files.isDirectory(dstPath))
-            throw new IllegalArgumentException(dstPath + "is not a directory");
-        for (var f : abstractions) {
-            try {
-                Files.write(dstPath.resolve(f.getFileName()), f.getContent());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+                    Files.move(csvFile, destinationPath);
 
-    public Path zipFiles(Path dstZipPath, String zipName, List<RNAFile> rnaFiles, boolean generateNonCanonicalPairs) throws IOException {
-        if (!Files.exists(dstZipPath) || !Files.isDirectory(dstZipPath)) {
-            throw new IllegalArgumentException(dstZipPath + " is not a directory or does not exist");
-        }
+                    // Replace spaces with commas in each line
+                    var updatedLines = Files.readAllLines(destinationPath).stream()
+                            .map(line -> line.replace(" ", ","))
+                            .collect(Collectors.toList());
+                    Files.write(destinationPath, updatedLines);
 
-        Path zipFilePath = dstZipPath.resolve(zipName + ".zip");
-        try (ZipOutputStream zipOut = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
-            // Add RNA files to the zip
-            for (RNAFile rnaFile : rnaFiles) {
-                String extension = rnaFile.getFormat() == RNAML ? ".xml" : ".txt";
-                rnaFile.setFileName(rnaFile.getFileName() + extension);
-                zipOut.putNextEntry(new ZipEntry(rnaFile.getFileName()));
-                for (String line : rnaFile.getContent()) {
-                    zipOut.write((line + System.lineSeparator()).getBytes());
+                    generatedFiles.add(destinationPath);
+                } else {
+                    Files.delete(csvFile);
                 }
-                zipOut.closeEntry();
             }
+        }
+    }
 
-            Files.list(Paths.get(System.getProperty("user.dir")))
-                    .filter(file -> file.toString().endsWith(".csv"))
-                    .forEach(file -> {
-                        try {
-                            if (generateNonCanonicalPairs) {
-                                var fn = file.getFileName().toString().split("\\.")[0] + "_nc.txt";
-                                zipOut.putNextEntry(new ZipEntry(fn));
-                                Files.copy(file, zipOut);
-                                zipOut.closeEntry();
-                                Files.deleteIfExists(file);
-                            } else
-                                Files.delete(file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+    private void generateStatistics(List<RNAFile> files,
+                                    Path dstPath,
+                                    boolean generateStatistics,
+                                    List<Path> generatedFiles) throws IOException {
+        if (!generateStatistics) return;
+
+        for (var file : files) {
+            var statsFileName = file.getFileName().split("\\.")[0] + "_seqInfo.csv";
+            var statsFilePath = dstPath.resolve(statsFileName);
+
+            var header = "Nucleotide count, Bond count, GC bonds, AU bonds, GU bonds, Non canonical pairs";
+            var statsData = String.join(", ",
+                    String.valueOf(getNucleotideCount(file)),
+                    String.valueOf(getBondCount(file)),
+                    String.valueOf(getGcBonds(file)),
+                    String.valueOf(getAuBonds(file)),
+                    String.valueOf(getGuBonds(file)),
+                    String.valueOf(getNonCanonicalPairs(file))
+            );
+
+            Files.write(statsFilePath, List.of(header, statsData));
+            generatedFiles.add(statsFilePath);
+        }
+    }
+
+    private void createZipFile(Path dstPath, String zipFileName, List<Path> generatedFiles) throws IOException {
+        if (zipFileName == null || zipFileName.isBlank()) return;
+        {
 
         }
-        return zipFilePath;
+        var zipFilePath = dstPath.resolve(zipFileName + ".zip");
+
+        try (var zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
+            for (var filePath : generatedFiles) {
+                var zipEntry = new ZipEntry(filePath.getFileName().toString());
+                zipOutputStream.putNextEntry(zipEntry);
+
+                Files.copy(filePath, zipOutputStream);
+                zipOutputStream.closeEntry();
+
+                Files.delete(filePath);  // Remove original file after adding to ZIP
+            }
+        }
     }
 
-    /**
-     * Removes the specified {@code rnaFile} from loaded rnaFiles.
-     *
-     * @param rnaFile the {@link RNAFile} to remove
-     * @throws IllegalArgumentException if the list of loaded files not contains the specified {@code rnaFile}
-     */
     public void deleteFile(RNAFile rnaFile) {
-        if (!this.loadedRNAFiles.contains(rnaFile))
-            throw new IllegalArgumentException("RNAFile not found in the list of loaded files");
-        this.loadedRNAFiles.remove(rnaFile);
-        if (this.loadedRNAFiles.isEmpty())
-            this.recognizedFormat = null;
+        loadedRNAFiles.remove(rnaFile);
+        if (loadedRNAFiles.isEmpty()) {
+            recognizedFormat = null;
+        }
     }
 
-    /**
-     * Resets all data structures of this Controller, {@link TranslatorController} and {@link CleanerController}.
-     */
     public void clearAllDataStructures() {
-        this.loadedRNAFiles.clear();
-        this.recognizedFormat = null;
+        loadedRNAFiles.clear();
+        recognizedFormat = null;
     }
 }

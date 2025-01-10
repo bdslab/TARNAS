@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -28,7 +27,7 @@ import it.unicam.cs.bdslab.tarnas.model.rnafile.*;
  */
 public class TranslatorController {
 
-    private static TranslatorController instance;
+    private final static TranslatorController instance = new TranslatorController();
 
     /**
      * This conversion matrix has the X {@link RNAFormat} as key-map and
@@ -72,31 +71,17 @@ public class TranslatorController {
      * @return the instance of this Singleton
      */
     public static TranslatorController getInstance() {
-        if (instance == null)
-            instance = new TranslatorController();
         return instance;
     }
 
     /**
-     * Translates all files corresponding specified file paths to the specified {@code dstRNAFormat} and
-     * returns the list of all translated loaded files.
+     * Translates all loaded files to the specified {@code dstRNAFormat}
      *
-     * @param rnaFiles     the list of file paths to translate
      * @param dstRNAFormat the destination {@link RNAFormat} to which translate all loaded files.
      * @return the list of all translated loaded files
      */
-    public List<RNAFile> translateAllLoadedFiles(List<RNAFile> rnaFiles, RNAFormat dstRNAFormat) throws RNAFileException {
-        List<RNAFile> translatedtedLoadedRNAFiles = new ArrayList<>();
-        RNAFile tmp = null;
-        try {
-            for (var f : rnaFiles) {
-                tmp = f;
-                translatedtedLoadedRNAFiles.add(this.translateTo(f, dstRNAFormat));
-            }
-        } catch (Exception e) {
-            throw new RNAFileException("Error caused by file: " + tmp.getFileName());
-        }
-        return translatedtedLoadedRNAFiles;
+    public RNAFile translate(RNAFile file, RNAFormat dstRNAFormat) throws IOException {
+        return translateTo(file, dstRNAFormat);
     }
 
     /**
@@ -106,14 +91,10 @@ public class TranslatorController {
      * @param rnaFile      the {@code RNAFile} to translate to the specified {@code dstRNAFormat}.
      * @param dstRNAFormat the destination {@link RNAFormat} to which translate the specified {@code rnaFile}
      * @return the {@code FormattedRNAFile}, so the translation of the specified {@code rnaFile}
-     * @throws RNAFormatTranslationException if a translation error occurs
      */
-    private RNAFile translateTo(RNAFile rnaFile, RNAFormat dstRNAFormat) throws RNAFormatTranslationException, IOException {
+    private RNAFile translateTo(RNAFile rnaFile, RNAFormat dstRNAFormat) throws IOException {
         RNAFormat srcFormat = rnaFile.getFormat();
-        // Check if translation is supported
-        if (!conversionMatrix.get(srcFormat).contains(dstRNAFormat)) {
-            throw new RNAFormatTranslationException("Cannot translate from " + srcFormat + " to " + dstRNAFormat);
-        }
+
         RNAFile formattedRNAFile;
         if (srcFormat == RNAML || dstRNAFormat == RNAML) {
             formattedRNAFile = handleRnamlTranslation(rnaFile, srcFormat.getExtension(), dstRNAFormat.getExtension());

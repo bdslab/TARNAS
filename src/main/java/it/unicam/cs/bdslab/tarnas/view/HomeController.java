@@ -39,7 +39,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -193,38 +192,57 @@ public class HomeController {
 
     public List<RNAFile> clean(List<RNAFile> files) throws RNAFileException {
         var cleanedFiles = new ArrayList<RNAFile>();
-        RNAFile tmp = null;
-        try {
-            for (var f : files) {
-                tmp = f;
-                if (this.chbxRmAllComments.isSelected()) {
-                    f = this.cleanerController.removeLinesStartingWith(f, "#");
-                    f = this.cleanerController.removeLinesStartingWith(f, ">");
-                }
-                if (this.chbxRmLinesContainingWord.isSelected())
-                    f = this.cleanerController.removeLinesContaining(f, this.textFieldRmLinesContainingWord.getText());
-                if (this.chbxRmBlankLines.isSelected())
-                    f = this.cleanerController.removeWhiteSpaces(f);
-                if (this.chbxMergeLines.isSelected())
-                    f = this.cleanerController.mergeDBLines(f);
-                cleanedFiles.add(f);
+
+        for (var f : files) {
+            try {
+                // Determine the options from checkboxes
+                boolean removeComments = chbxRmAllComments.isSelected();
+                boolean removeEmptyLines = chbxRmBlankLines.isSelected();
+                boolean mergeLines = chbxMergeLines.isSelected();
+
+                // If the "remove lines containing word" checkbox is selected, retrieve the word; otherwise null
+                String stringToBeRemoved = chbxRmLinesContainingWord.isSelected()
+                        ? textFieldRmLinesContainingWord.getText()
+                        : null;
+
+                var cleanedFile = cleanerController.clean(
+                        f,
+                        removeComments,
+                        stringToBeRemoved,
+                        removeEmptyLines,
+                        mergeLines
+                );
+
+                cleanedFiles.add(cleanedFile);
+            } catch (Exception e) {
+                throw new RNAFileException("Error caused by: " + f.getFileName());
             }
-        } catch (Exception e) {
-            throw new RNAFileException("Error caused by : " + tmp.getFileName());
         }
         return cleanedFiles;
-
     }
+
 
     private List<RNAFile> translate(List<RNAFile> files) throws RNAFileException {
-        List<RNAFile> translatedRNAFiles;
-        translatedRNAFiles = this.translatorController.translateAllLoadedFiles(files, this.selectedFormat);
-        if (!this.chbxIncludeHeader.isSelected())
-            translatedRNAFiles = translatedRNAFiles.parallelStream()
-                    .map(f -> this.cleanerController.removeHeader(f))
-                    .toList();
-        return translatedRNAFiles;
+        var translatedFiles = new ArrayList<RNAFile>();
+
+        for (var file : files) {
+            try {
+                // Translate the file to the desired format
+                var translatedFile = translatorController.translate(file, selectedFormat);
+
+                // Optionally remove the header, if the user doesn't want to include it
+                if (!chbxIncludeHeader.isSelected()) {
+                    translatedFile = cleanerController.removeHeader(translatedFile);
+                }
+
+                translatedFiles.add(translatedFile);
+            } catch (Exception e) {
+                throw new RNAFileException("Error caused by: " + file.getFileName());
+            }
+        }
+        return translatedFiles;
     }
+
 
     @FXML
     public void handleReset() {
@@ -241,21 +259,21 @@ public class HomeController {
     @FXML
     public void handleRun() {
         logger.info("RUN button clicked");
-        var files = this.filesTable.getItems().stream().toList();
+        var files = ioController.getLoadedRNAFiles();
         try {
             if (this.isTranslating == null) {
                 showAlert(Alert.AlertType.INFORMATION, "", "", "You must select an option before running!");
                 return;
             }
             if (this.isTranslating) {
-                files = this.clean(files);
+                files = clean(files);
                 // checks is format is selected
                 if (this.selectedFormat != null)
                     files = this.translate(files);
-                this.saveFilesTo(files);
+                saveFilesTo(files);
             } else {
                 files = this.abstractions(files);
-                this.saveFilesTo(files);
+                saveFilesTo(files);
             }
         } catch (Exception e) {
             logger.severe(e.getMessage());
@@ -383,48 +401,51 @@ public class HomeController {
     }
 
     private void saveFilesTo(List<RNAFile> rnaFiles) throws IOException {
-        if ((this.chbxSaveAsZIP.isSelected()) && (this.textFieldArchiveName.getText().isEmpty() || this.textFieldArchiveName.getText().isBlank())) {
-            showAlert(Alert.AlertType.ERROR, "", "", "Inserire un nome per lo zip!");
-            return;
+        // If ZIP is selected, ensure a valid archive name is provided
+        String archiveName = "";
+        if (chbxSaveAsZIP.isSelected()) {
+            if (textFieldArchiveName.getText().isBlank()) {
+                showAlert(Alert.AlertType.ERROR, "", "", "Please enter a name for the zip!");
+                return;
+            }
+            archiveName = textFieldArchiveName.getText().trim();
         }
-        this.showAlert(Alert.AlertType.INFORMATION, "", "", "Choose the directory where to save the files");
+
+        showAlert(Alert.AlertType.INFORMATION, "", "", "Choose the directory where to save the files");
         var directoryChooser = new DirectoryChooser();
         var selectedDirectory = directoryChooser.showDialog(this.getPrimaryStage());
-        if (selectedDirectory != null) {
-            // zip options
-            if (this.chbxSaveAsZIP.isSelected()) {
-                String folderName = this.textFieldArchiveName.getText();
-                var zipPath = this.ioController.zipFiles(selectedDirectory.toPath(), folderName, rnaFiles, this.chbxGenerateNonCanonicalPairs.isSelected());
-                this.showAlert(Alert.AlertType.INFORMATION,
-                        "",
-                        "Files saved successfully",
-                        " files saved in: " + zipPath);
-                logger.info(rnaFiles.size() + " files saved in: " + zipPath);
-            } else { // files options
-                this.ioController.saveFilesTo(rnaFiles, selectedDirectory.toPath(), this.chbxGenerateNonCanonicalPairs.isSelected());
-                this.showAlert(Alert.AlertType.INFORMATION,
-                        "",
-                        "Files saved successfully",
-                        " files saved in: " + selectedDirectory.getPath());
-                logger.info(" files saved in: " + selectedDirectory.getPath());
-            }
 
-        } else {
-            logger.info("no files saved");
+        if (selectedDirectory == null) {
+            logger.info("No directory selected, no files saved");
+            return;
         }
 
-        Path currentDir = Paths.get(System.getProperty("user.dir"));
-        // List and delete all files with the specified extensions
-       /* Files.list(currentDir)
-                .filter(file -> file.toString().matches(".*\\.(db|rnaml|fasta|aas|bpseq|ct)$"))
-                .forEach(file -> {
-                    try {
-                        Files.delete(file);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });*/
+        // Save the files
+        ioController.saveFiles(
+                rnaFiles,
+                selectedDirectory.toPath(),
+                chbxGenerateNonCanonicalPairs.isSelected(),
+                isTranslating,
+                archiveName
+        );
+
+        // Determine the final path for displaying in the alert and logs
+        String finalPath;
+        if (chbxSaveAsZIP.isSelected())
+            finalPath = selectedDirectory.toPath().resolve(archiveName + ".zip").toString();
+        else
+            finalPath = selectedDirectory.getPath();
+
+        showAlert(
+                Alert.AlertType.INFORMATION,
+                "",
+                "Files saved successfully",
+                "Files saved in: " + finalPath
+        );
+        logger.info(rnaFiles.size() + " files saved in: " + finalPath);
     }
+
+
 
     private void tableEmpty() {
         if (this.filesTable.getItems().isEmpty()) {
