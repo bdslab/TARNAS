@@ -185,6 +185,7 @@ public class RNAFileTranslator {
      */
     private static List<String> createBPSEQBody(RNASecondaryStructure rnaSecondaryStructure) {
         var body = new ArrayList<String>();
+        // i=1 because bpseq indexes starts from 1
         for (int i = 1; i <= rnaSecondaryStructure.getSequence().length(); i++) {
             var line = i + " " +
                     rnaSecondaryStructure.getSequence().charAt(i - 1) + " " +

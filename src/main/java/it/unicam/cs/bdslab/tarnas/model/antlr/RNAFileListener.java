@@ -125,6 +125,10 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     public void exitCt(RNASecondaryStructureParser.CtContext ctx) {
         // create body
         var body = this.content.subList(this.header.size(), this.content.size());
+        // assign the whole sequence to the RNASecondaryStructure
+        this.s.setSequence(this.sequenceBuffer.toString());
+        // set the size of the structure to the length of the sequence
+        this.s.setSize(this.s.getSequence().length());
         // everything has been added to the structure, finalise it
         this.s.finalise();
         // create rnafile object with unnecessary empty body
