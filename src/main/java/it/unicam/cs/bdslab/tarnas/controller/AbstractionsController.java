@@ -12,14 +12,14 @@ public class AbstractionsController {
 
     public RNAFile getCorePlus(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_coreplus.txt";
+        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_coreplus";
         return new RNAFile(name, new ArrayList<>(), List.of(coreplus), null, null);
     }
 
     public RNAFile getCore(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var core = computeCore(coreplus);
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_core.txt";
+        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_core";
         return new RNAFile(name, new ArrayList<>(), List.of(core), null, null);
     }
 
@@ -30,7 +30,7 @@ public class AbstractionsController {
         } catch (Exception e) {
             shape = "";
         }
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_shape.txt";
+        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_shape";
         return new RNAFile(name, new ArrayList<>(), List.of(shape), null, null);
     }
 
