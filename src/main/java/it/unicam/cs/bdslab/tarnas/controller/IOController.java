@@ -94,6 +94,7 @@ public class IOController {
                           String zipFileName) throws IOException {
 
         var generatedFiles = new ArrayList<Path>();
+
         saveRNAFiles(files, dstPath, generatedFiles);
         processNonCanonicalPairs(generateNonCanonicalPairs, dstPath, generatedFiles);
         generateStatistics(files, dstPath, generateStatistics, generatedFiles);
@@ -172,9 +173,7 @@ public class IOController {
 
     private void createZipFile(Path dstPath, String zipFileName, List<Path> generatedFiles) throws IOException {
         if (zipFileName == null || zipFileName.isBlank()) return;
-        {
 
-        }
         var zipFilePath = dstPath.resolve(zipFileName + ".zip");
 
         try (var zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {

@@ -18,27 +18,27 @@ import java.util.List;
 )
 public class AbstractionsCommand implements Runnable {
 
-    private IOController ioController;
+    private final IOController ioController;
 
-    private AbstractionsController abstractionsController;
+    private final AbstractionsController abstractionsController;
 
     @ParentCommand
     private CLIController parent;
 
-    private List<RNAFile> abstractions;
+    private final List<RNAFile> abstractions;
 
     // Abstraction options
 
     // generate core
-    @Option(names = {"--core"}, description = "Generate core abstraction of the input RNA file")
+    @Option(names = {"--core"}, description = "Generate core abstraction of the input RNA file", defaultValue = "false")
     private boolean generateCore;
 
     // generate coreplus
-    @Option(names = {"--core-plus"}, description = "Generate coreplus abstraction of the input RNA file")
+    @Option(names = {"--core-plus"}, description = "Generate coreplus abstraction of the input RNA file", defaultValue = "false")
     private boolean generateCorePlus;
 
     // generate shape
-    @Option(names = {"--shape"}, description = "Generate shape abstraction of the input RNA file")
+    @Option(names = {"--shape"}, description = "Generate shape abstraction of the input RNA file", defaultValue = "false")
     private boolean generateShape;
 
     /**
@@ -48,38 +48,37 @@ public class AbstractionsCommand implements Runnable {
         this.ioController = IOController.getInstance();
         this.abstractionsController = AbstractionsController.getInstance();
         this.abstractions = new ArrayList<>();
-        this.generateCore = false;
-        this.generateCorePlus = false;
-        this.generateShape = false;
     }
 
     private void computeAbstractions() {
-        try {
-            for (var f : this.ioController.getLoadedRNAFiles()) {
-                if (!this.generateCore && !this.generateCorePlus && !this.generateShape)
-                    this.abstractions.addAll(List.of(
-                            this.abstractionsController.getCore(f),
-                            this.abstractionsController.getCorePlus(f),
-                            this.abstractionsController.getShape(f)
+        for (var f : ioController.getLoadedRNAFiles()) {
+            try {
+                if (!generateCore && !generateCorePlus && !generateShape)
+                    abstractions.addAll(List.of(
+                            abstractionsController.getCore(f),
+                            abstractionsController.getCorePlus(f),
+                            abstractionsController.getShape(f)
                     ));
                 else {
-                    if (this.generateCore)
-                        this.abstractions.add(this.abstractionsController.getCore(f));
-                    if (this.generateCorePlus)
-                        this.abstractions.add(this.abstractionsController.getCorePlus(f));
-                    if (this.generateShape)
-                        this.abstractions.add(this.abstractionsController.getShape(f));
+                    if (generateCore)
+                        abstractions.add(abstractionsController.getCore(f));
+                    if (generateCorePlus)
+                        abstractions.add(abstractionsController.getCorePlus(f));
+                    if (generateShape)
+                        abstractions.add(abstractionsController.getShape(f));
                 }
+
+            } catch (Exception e) {
+                System.err.println("Error caused by: " + f.getFileName());
+                System.err.println(e.getMessage());
+                System.exit(1);
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
         }
     }
 
     @Override
     public void run() {
-        this.computeAbstractions();
-        this.parent.saveAbstractions(this.abstractions);
+        computeAbstractions();
+        parent.saveFiles(abstractions, false, false);
     }
 }

@@ -32,18 +32,25 @@ import java.util.List;
         name = "TARNAS_CLI.jar",
         mixinStandardHelpOptions = true,
         version = "TARNAS 1.0",
-        description = "TARNAS: a TrAnslator for RNA Secondary Structure formats.\n\n" +
-                "USAGE EXAMPLES:\n" +
-                "1. Translate RNA file:\n" +
-                "   java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate --no-header RNAML\n\n" +
-                "2. Clean RNA file by removing comments:\n" +
-                "   java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> cleaning --comments\n\n" +
-                "3. Compute abstractions (core, coreplus and shape):\n" +
-                "   java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --core --coreplus --shape\n\n" +
-                "4. Save translated RNA file as a zip:\n" +
-                "   java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> --zip output.zip translate RNAML\n\n",
+        description = """
+        TARNAS: a TrAnslator for RNA Secondary Structure formats.
+
+        USAGE EXAMPLES:
+        1. Translate RNA file:
+           java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate --no-header RNAML
+
+        2. Clean RNA file by removing comments:
+           java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> cleaning --comments
+
+        3. Compute abstractions (core, coreplus and shape):
+           java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --core --coreplus --shape
+
+        4. Save translated RNA file as a zip:
+           java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> --zip <zipFileName> translate RNAML
+        """,
         subcommands = {TranslateCommand.class, CleaningCommand.class, AbstractionsCommand.class}
 )
+
 public class CLIController implements Runnable {
 
     private final IOController ioController;
@@ -55,7 +62,7 @@ public class CLIController implements Runnable {
     @Parameters(index = "1", description = "Output directory path")
     private String outputDirectoryPath;
 
-    @Option(names = "--zip", description = "Save files as a zip file with the given name at the <outputDirectoryPath>")
+    @Option(names = "--zip", description = "Save files as a zip file with the given name at the <outputDirectoryPath>", defaultValue = "")
     private String zipFileName;
 
     /**
@@ -96,10 +103,9 @@ public class CLIController implements Runnable {
      */
     private void loadPath(Path p, String type) throws IOException {
         if (type.equals("file"))
-            this.ioController.loadFile(p);
+            ioController.loadFile(p);
         else
-            this.ioController.loadDirectory(p);
-
+            ioController.loadDirectory(p);
     }
 
     /**
@@ -123,52 +129,35 @@ public class CLIController implements Runnable {
      */
     @Override
     public void run() {
-        this.addFile(Path.of(this.inputPath));
-        this.checkOutputDirectory(Path.of(this.outputDirectoryPath));
+        addFile(Path.of(inputPath));
+        checkOutputDirectory(Path.of(outputDirectoryPath));
     }
 
+
     /**
-     * Saves the translated RNA files to the output directory.
+     * Saves the given list of {@link RNAFile} objects to the output directory path using the {@code ioController}.
+     * If an error occurs it is logged to the standard error stream and the application terminates with code {@code 1}.
      *
-     * @param files                     the list of RNA files to save
-     * @param generateNonCanonicalPairs whether to generate non-canonical pairs (only for RNAML input format)
+     * @param files                     the list of {@link RNAFile} objects to save
+     * @param generateNonCanonicalPairs whether to process non-canonical pairs
+     * @param generateStatistics        whether to generate statistics for each file
      */
-    protected void saveFiles(List<RNAFile> files, boolean generateNonCanonicalPairs) {
-        var outputDirectory = Path.of(this.outputDirectoryPath);
+    public void saveFiles(List<RNAFile> files,
+                          boolean generateNonCanonicalPairs,
+                          boolean generateStatistics) {
         try {
-            if (this.zipFileName != null) {
-                this.ioController.zipFiles(outputDirectory, this.zipFileName, files, generateNonCanonicalPairs);
-            } else {
-                this.ioController.saveFilesTo(files, outputDirectory, generateNonCanonicalPairs);
-            }
+            ioController.saveFiles(
+                    files,
+                    Path.of(outputDirectoryPath),
+                    generateNonCanonicalPairs,
+                    generateStatistics,
+                    zipFileName
+            );
         } catch (Exception e) {
+            System.err.println("Error while saving files");
             System.err.println(e.getMessage());
             System.exit(1);
         }
-    }
-
-    /**
-     * Saves the translated RNA files to the output directory.
-     *
-     * @param files the list of RNA files to save
-     */
-    protected void saveFiles(List<RNAFile> files) {
-        this.saveFiles(files, false);
-    }
-
-    /**
-     * Saves the abstractions to the output directory.
-     *
-     * @param abstractions the list of abstractions to save
-     */
-    protected void saveAbstractions(List<RNAFile> abstractions) {
-        try {
-            this.ioController.saveAbstractions(abstractions, Path.of(this.outputDirectoryPath));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
-
     }
 
 }
