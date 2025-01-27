@@ -18,7 +18,7 @@
  */
 grammar RNASecondaryStructure;
 
-@header{
+@header {
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 }
 
@@ -47,8 +47,12 @@ ct:
     (BPSEQCTLINES? | COMMENT*) LINECT ct_structure
 ;
 
+rnaml:
+    XML_DECLARATION DTD RNAML_OPEN molecule_structure RNAML_CLOSE
+;
+
 edbn_structure:
-	EDBN+
+    EDBN+
 ;
 
 sequence:
@@ -56,7 +60,7 @@ sequence:
 ;
 
 bonds:
-	BOND SEP?
+    BOND SEP?
 ;
 
 ct_structure:
@@ -64,19 +68,19 @@ ct_structure:
 ;
 
 ct_line:
-	INDEX                       // First column: sequence index
-	NUCLEOTIDE                  // Second column: base in one-letter notation
-	( ZERO_INDEX | INDEX )      // Third column: sequence indices (plus/minus one)
-	( ZERO_INDEX | INDEX )      // Fourth column: sequence indices (plus/minus one)
-	ZERO_INDEX                  // Fifth column: pairing partner of this base if it involved in a base pair
-	INDEX # ctLineUnpaired      // Sixth column: sequence indices (plus/minus one)
-	|
-	INDEX
-	NUCLEOTIDE
-	( ZERO_INDEX | INDEX )
-	( ZERO_INDEX | INDEX )
-	INDEX                       // Fifth column: no pairing partner of this base if it not involved in a base pair
-	INDEX # ctLineBond
+    INDEX                       // First column: sequence index
+    NUCLEOTIDE                  // Second column: base in one-letter notation
+    ( ZERO_INDEX | INDEX )      // Third column: sequence indices (plus/minus one)
+    ( ZERO_INDEX | INDEX )      // Fourth column: sequence indices (plus/minus one)
+    ZERO_INDEX                  // Fifth column: pairing partner of this base if it involved in a base pair
+    INDEX # ctLineUnpaired      // Sixth column: sequence indices (plus/minus one)
+    |
+    INDEX
+    NUCLEOTIDE
+    ( ZERO_INDEX | INDEX )
+    ( ZERO_INDEX | INDEX )
+    INDEX                       // Fifth column: no pairing partner of this base if it not involved in a base pair
+    INDEX # ctLineBond
 ;
 
 bpseq_structure:
@@ -84,17 +88,72 @@ bpseq_structure:
 ;
 
 bpseq_line:
-	INDEX NUCLEOTIDE ZERO_INDEX # bpseqLineUnpaired
-	| INDEX NUCLEOTIDE INDEX # bpseqLineBond
+    INDEX NUCLEOTIDE ZERO_INDEX # bpseqLineUnpaired
+    | INDEX NUCLEOTIDE INDEX # bpseqLineBond
 ;
 
-rnaml:
-    XML_HEADER_LINE1 XML_HEADER_LINE2 XML_CONTENT # rnamlContent
+molecule_structure:
+    '<molecule id="1">' molecule_body '</molecule>'
 ;
+
+molecule_body:
+    .*? numbering_table sequence_data .*? base_pair* .*?
+;
+
+numbering_table:
+    '<numbering-table length="'(INDEX | ZERO_INDEX)'"' .*?'</numbering-table>'
+;
+
+sequence_data:
+    '<seq-data>' NUCLEOTIDE+ '</seq-data>'
+;
+
+base_pair:
+    '<base-pair comment="?">'
+    BASE_ID_5P
+    BASE_ID_3P
+    EDGE_5P
+    EDGE_3P
+    BOND_ORIENTATION
+    '</base-pair>'
+;
+
 
 // Lexer tokens
 INDEX:
-    [1-9] [0-9]*
+    [1-9][0-9]*
+;
+
+COORD:
+    '-'? [0-9]+ '.' [0-9]+ ' ' '-'? [0-9]+ '.' [0-9]+
+;
+
+XML_DECLARATION:
+    '<?xml' .*? '?>' '\r'? '\n'
+;
+
+DTD:
+    '<!DOCTYPE rnaml SYSTEM "rnaml.dtd">' '\r'? '\n'
+;
+
+RNAML_OPEN:
+    '<rnaml version="1.0">' '\r'? '\n'
+;
+
+RNAML_CLOSE:
+    '</rnaml>'
+;
+
+attributes:
+    (ATTRIBUTE_NAME '=' ATTRIBUTE_VALUE)+
+;
+
+ATTRIBUTE_NAME:
+    [a-zA-Z_:][a-zA-Z0-9_:-]*
+;
+
+ATTRIBUTE_VALUE:
+    '"' ~["]* '"'
 ;
 
 ZERO_INDEX:
@@ -114,95 +173,103 @@ BPSEQCTLINES:
 ;
 
 LINECT:
-	NONEWLINE*?
-	(
-		'ENERGY'
-		| 'Energy'
-		| 'dG'
-	) .*? '\r'? '\n'
+    NONEWLINE*?
+    (
+        'ENERGY'
+        | 'Energy'
+        | 'dG'
+    ) .*? '\r'? '\n'
 ;
 
 fragment NONEWLINE:
-	~( '\r' | '\n' )
+    ~( '\r' | '\n' )
 ;
 
 fragment IUPAC_CODE:
-	[ACGUacguTtRrYysSWwKkMmBbDdHhVvNn-]
+    [ACGUacguTtRrYysSWwKkMmBbDdHhVvNn-]
 ;
 
 NUCLEOTIDE:
-	(
-		IUPAC_CODE
-		| NON_STANDARD_CODE
-	)+
+    (
+        IUPAC_CODE
+        | NON_STANDARD_CODE
+    )+
+;
+
+BASE_ID_5P:
+    '<base-id-5p>' '<base-id>' '<position>' INDEX '</position>' '</base-id>' '</base-id-5p>'
+;
+
+BASE_ID_3P:
+    '<base-id-3p>' '<base-id>' '<position>' INDEX '</position>' '</base-id>' '</base-id-3p>'
+;
+
+EDGE_5P:
+    '<edge-5p>' ('+' | '-' | 'W' | 'H' | 'S' | '!') '</edge-5p>'
+;
+
+EDGE_3P:
+    '<edge-3p>' ('+' | '-' | 'W' | 'H' | 'S' | '!') '</edge-3p>'
+;
+
+BOND_ORIENTATION:
+    '<bond-orientation>' ('c' | 't' | '!') '</bond-orientation>'
 ;
 
 fragment NON_STANDARD_CODE:
-	'"'
-	| '?'
-	| ']'
-	| '~'
-	| '['
-	| '_'
-	| '+'
-	| '='
-	| '/'
-	| '4'
-	| '7'
-	| 'P'
-	| 'O'
-	| 'I'
+    '"'
+    | '?'
+    | ']'
+    | '~'
+    | '['
+    | '_'
+    | '+'
+    | '='
+    | '/'
+    | '4'
+    | '7'
+    | 'P'
+    | 'O'
+    | 'I'
 ;
 
 fragment EDBN_CODE:
-	'.'
-	| '('
-	| ')'
-	| '['
-	| ']'
-	| '{'
-	| '}'
-	| '<'
-	| '>'
-	| [a-zA-Z]
+    '.'
+    | '('
+    | ')'
+    | '['
+    | ']'
+    | '{'
+    | '}'
+    | '<'
+    | '>'
+    | [a-zA-Z]
 ;
 
 EDBN:
-	EDBN_CODE+
+    EDBN_CODE+
 ;
 
 LINE1BPSEQCT:
-	'Filename' .*? '\r'? '\n'
+    'Filename' .*? '\r'? '\n'
 ;
 
 LINE2BPSEQCT:
-	'Organism' .*? '\r'? '\n'
+    'Organism' .*? '\r'? '\n'
 ;
 
 LINE3BPSEQCT:
-	'Accession' .*? '\r'? '\n'
+    'Accession' .*? '\r'? '\n'
 ;
 
 LINE4BPSEQCT:
-	'Citation' .*? '\r'? '\n'
-;
-
-XML_HEADER_LINE1:
-    '<?xml' .*? '?>' '\r'? '\n'
-;
-
-XML_HEADER_LINE2:
-    '<!DOCTYPE rnaml SYSTEM "rnaml.dtd">' '\r'? '\n'
-;
-
-XML_CONTENT:
-    '<rnaml' .*? '>' .*? '</rnaml>'
+    'Citation' .*? '\r'? '\n'
 ;
 
 COMMENT:
-	('#' | '>') .*? '\r'? '\n'
+    ('#' | '>') .*? '\r'? '\n'
 ;
 
 WS:
-	[ \t\r\n]+ -> skip
+    [ \t\r\n]+ -> skip
 ; // skip spaces, tabs, newlines
