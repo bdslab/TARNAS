@@ -48,7 +48,7 @@ ct:
 ;
 
 rnaml:
-    XML_DECLARATION DTD RNAML_OPEN molecule_structure RNAML_CLOSE
+    XML_DECLARATION DTD RNAML_OPEN molecule_structure interactions? RNAML_CLOSE
 ;
 
 edbn_structure:
@@ -97,35 +97,59 @@ molecule_structure:
 ;
 
 molecule_body:
-    .*? numbering_table sequence_data .*? base_pair* .*?
+    sequence_rnaml structure_rnaml
 ;
 
-numbering_table:
-    '<numbering-table length="'(INDEX | ZERO_INDEX)'"' .*?'</numbering-table>'
+sequence_rnaml:
+    '<sequence>' .*? sequence_data .*? '</sequence>'
 ;
 
 sequence_data:
     '<seq-data>' NUCLEOTIDE+ '</seq-data>'
 ;
 
-base_pair:
-    '<base-pair comment="?">'
-    BASE_ID_5P
-    BASE_ID_3P
-    EDGE_5P
-    EDGE_3P
-    BOND_ORIENTATION
-    '</base-pair>'
+structure_rnaml:
+    '<structure>' .*? base_pair+ .*? '</structure>'
 ;
 
+base_pair:
+    (BASE_PAIR_OPEN | BASE_PAIR_OPEN_COMMENT)
+    base_id_5p
+    base_id_3p
+    edge_5p?
+    edge_3p?
+    bond_orientation?
+    BASE_PAIR_CLOSE
+;
+
+base_id_5p:
+    BASE_ID_5P_OPEN BASE_ID_OPEN POSITION_OPEN  INDEX POSITION_CLOSE BASE_ID_CLOSE BASE_ID_5P_CLOSE
+;
+
+base_id_3p:
+    BASE_ID_3P_OPEN BASE_ID_OPEN POSITION_OPEN INDEX POSITION_CLOSE BASE_ID_CLOSE BASE_ID_3P_CLOSE
+;
+
+edge_5p:
+    EDGE_5P_OPEN NUCLEOTIDE EDGE_5P_CLOSE
+;
+
+edge_3p:
+    EDGE_3P_OPEN NUCLEOTIDE EDGE_3P_CLOSE
+
+;
+
+bond_orientation:
+    BOND_ORIENTATION_OPEN NUCLEOTIDE BOND_ORIENTATION_CLOSE
+;
+
+interactions:
+    INTERACTIONS_OPEN STR_ANNOTATION_OPEN STR_ANNOTATION_CLOSE INTERACTIONS_CLOSE
+;
 
 // Lexer tokens
 INDEX:
     [1-9][0-9]*
-;
-
-COORD:
-    '-'? [0-9]+ '.' [0-9]+ ' ' '-'? [0-9]+ '.' [0-9]+
 ;
 
 XML_DECLARATION:
@@ -142,18 +166,6 @@ RNAML_OPEN:
 
 RNAML_CLOSE:
     '</rnaml>'
-;
-
-attributes:
-    (ATTRIBUTE_NAME '=' ATTRIBUTE_VALUE)+
-;
-
-ATTRIBUTE_NAME:
-    [a-zA-Z_:][a-zA-Z0-9_:-]*
-;
-
-ATTRIBUTE_VALUE:
-    '"' ~["]* '"'
 ;
 
 ZERO_INDEX:
@@ -196,29 +208,96 @@ NUCLEOTIDE:
     )+
 ;
 
-BASE_ID_5P:
-    '<base-id-5p>' '<base-id>' '<position>' INDEX '</position>' '</base-id>' '</base-id-5p>'
+
+BASE_ID_5P_OPEN:
+    '<base-id-5p>'
 ;
 
-BASE_ID_3P:
-    '<base-id-3p>' '<base-id>' '<position>' INDEX '</position>' '</base-id>' '</base-id-3p>'
+BASE_ID_OPEN:
+    '<base-id>'
 ;
 
-EDGE_5P:
-    '<edge-5p>' ('+' | '-' | 'W' | 'H' | 'S' | '!') '</edge-5p>'
+POSITION_OPEN:
+    '<position>'
 ;
 
-EDGE_3P:
-    '<edge-3p>' ('+' | '-' | 'W' | 'H' | 'S' | '!') '</edge-3p>'
+BASE_ID_5P_CLOSE:
+    '</base-id-5p>'
 ;
 
-BOND_ORIENTATION:
-    '<bond-orientation>' ('c' | 't' | '!') '</bond-orientation>'
+BASE_ID_CLOSE:
+    '</base-id>'
+;
+
+POSITION_CLOSE:
+    '</position>'
+;
+
+BASE_ID_3P_OPEN:
+    '<base-id-3p>'
+;
+
+BASE_ID_3P_CLOSE:
+    '</base-id-3p>'
+;
+
+EDGE_5P_OPEN:
+    '<edge-5p>'
+;
+
+EDGE_5P_CLOSE:
+    '</edge-5p>'
+;
+
+EDGE_3P_OPEN:
+    '<edge-3p>'
+;
+
+EDGE_3P_CLOSE:
+    '</edge-3p>'
+;
+
+BOND_ORIENTATION_OPEN:
+    '<bond-orientation>'
+;
+
+BOND_ORIENTATION_CLOSE:
+    '</bond-orientation>'
+;
+
+
+INTERACTIONS_OPEN:
+    '<interactions>'
+;
+
+INTERACTIONS_CLOSE:
+    '</interactions>'
+;
+
+STR_ANNOTATION_OPEN:
+    '<str-annotation>'
+;
+
+STR_ANNOTATION_CLOSE:
+    '</str-annotation>'
+;
+
+BASE_PAIR_OPEN:
+    '<base-pair>'
+;
+
+BASE_PAIR_CLOSE:
+    '</base-pair>'
+;
+
+BASE_PAIR_OPEN_COMMENT:
+    '<base-pair comment="?">'
 ;
 
 fragment NON_STANDARD_CODE:
     '"'
     | '?'
+    | '!'
     | ']'
     | '~'
     | '['
@@ -231,6 +310,7 @@ fragment NON_STANDARD_CODE:
     | 'P'
     | 'O'
     | 'I'
+    | '\''
 ;
 
 fragment EDBN_CODE:
@@ -243,7 +323,8 @@ fragment EDBN_CODE:
     | '}'
     | '<'
     | '>'
-    | [a-zA-Z]
+    | [a-bd-suv-z]
+    | [A-BD-SUV-Z]
 ;
 
 EDBN:

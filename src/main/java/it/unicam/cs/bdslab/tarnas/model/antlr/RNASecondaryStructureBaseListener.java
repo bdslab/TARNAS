@@ -1,4 +1,4 @@
-// Generated from D:/UNIVERSITA/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
+// Generated from /Users/pierohierro/Desktop/university/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
 
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 
@@ -86,6 +86,18 @@ public class RNASecondaryStructureBaseListener implements RNASecondaryStructureL
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCt(RNASecondaryStructureParser.CtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRnaml(RNASecondaryStructureParser.RnamlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRnaml(RNASecondaryStructureParser.RnamlContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -199,13 +211,145 @@ public class RNASecondaryStructureBaseListener implements RNASecondaryStructureL
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) { }
+	@Override public void enterMolecule_structure(RNASecondaryStructureParser.Molecule_structureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) { }
+	@Override public void exitMolecule_structure(RNASecondaryStructureParser.Molecule_structureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMolecule_body(RNASecondaryStructureParser.Molecule_bodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMolecule_body(RNASecondaryStructureParser.Molecule_bodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSequence_rnaml(RNASecondaryStructureParser.Sequence_rnamlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSequence_rnaml(RNASecondaryStructureParser.Sequence_rnamlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSequence_data(RNASecondaryStructureParser.Sequence_dataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSequence_data(RNASecondaryStructureParser.Sequence_dataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStructure_rnaml(RNASecondaryStructureParser.Structure_rnamlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructure_rnaml(RNASecondaryStructureParser.Structure_rnamlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBase_pair(RNASecondaryStructureParser.Base_pairContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBase_pair(RNASecondaryStructureParser.Base_pairContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBase_id_5p(RNASecondaryStructureParser.Base_id_5pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBase_id_5p(RNASecondaryStructureParser.Base_id_5pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBase_id_3p(RNASecondaryStructureParser.Base_id_3pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBase_id_3p(RNASecondaryStructureParser.Base_id_3pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEdge_5p(RNASecondaryStructureParser.Edge_5pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEdge_5p(RNASecondaryStructureParser.Edge_5pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEdge_3p(RNASecondaryStructureParser.Edge_3pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEdge_3p(RNASecondaryStructureParser.Edge_3pContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBond_orientation(RNASecondaryStructureParser.Bond_orientationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBond_orientation(RNASecondaryStructureParser.Bond_orientationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInteractions(RNASecondaryStructureParser.InteractionsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInteractions(RNASecondaryStructureParser.InteractionsContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

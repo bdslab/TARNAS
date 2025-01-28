@@ -1,4 +1,4 @@
-// Generated from D:/UNIVERSITA/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
+// Generated from /Users/pierohierro/Desktop/university/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
 
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 
@@ -69,6 +69,16 @@ public interface RNASecondaryStructureListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCt(RNASecondaryStructureParser.CtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void enterRnaml(RNASecondaryStructureParser.RnamlContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void exitRnaml(RNASecondaryStructureParser.RnamlContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#edbn_structure}.
 	 * @param ctx the parse tree
@@ -168,15 +178,123 @@ public interface RNASecondaryStructureListener extends ParseTreeListener {
 	 */
 	void exitBpseqLineBond(RNASecondaryStructureParser.BpseqLineBondContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code rnamlContent}
-	 * labeled alternative in {@link RNASecondaryStructureParser#rnaml}.
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#molecule_structure}.
 	 * @param ctx the parse tree
 	 */
-	void enterRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx);
+	void enterMolecule_structure(RNASecondaryStructureParser.Molecule_structureContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code rnamlContent}
-	 * labeled alternative in {@link RNASecondaryStructureParser#rnaml}.
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#molecule_structure}.
 	 * @param ctx the parse tree
 	 */
-	void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx);
+	void exitMolecule_structure(RNASecondaryStructureParser.Molecule_structureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#molecule_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterMolecule_body(RNASecondaryStructureParser.Molecule_bodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#molecule_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitMolecule_body(RNASecondaryStructureParser.Molecule_bodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#sequence_rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void enterSequence_rnaml(RNASecondaryStructureParser.Sequence_rnamlContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#sequence_rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void exitSequence_rnaml(RNASecondaryStructureParser.Sequence_rnamlContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#sequence_data}.
+	 * @param ctx the parse tree
+	 */
+	void enterSequence_data(RNASecondaryStructureParser.Sequence_dataContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#sequence_data}.
+	 * @param ctx the parse tree
+	 */
+	void exitSequence_data(RNASecondaryStructureParser.Sequence_dataContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#structure_rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructure_rnaml(RNASecondaryStructureParser.Structure_rnamlContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#structure_rnaml}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructure_rnaml(RNASecondaryStructureParser.Structure_rnamlContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#base_pair}.
+	 * @param ctx the parse tree
+	 */
+	void enterBase_pair(RNASecondaryStructureParser.Base_pairContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#base_pair}.
+	 * @param ctx the parse tree
+	 */
+	void exitBase_pair(RNASecondaryStructureParser.Base_pairContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#base_id_5p}.
+	 * @param ctx the parse tree
+	 */
+	void enterBase_id_5p(RNASecondaryStructureParser.Base_id_5pContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#base_id_5p}.
+	 * @param ctx the parse tree
+	 */
+	void exitBase_id_5p(RNASecondaryStructureParser.Base_id_5pContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#base_id_3p}.
+	 * @param ctx the parse tree
+	 */
+	void enterBase_id_3p(RNASecondaryStructureParser.Base_id_3pContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#base_id_3p}.
+	 * @param ctx the parse tree
+	 */
+	void exitBase_id_3p(RNASecondaryStructureParser.Base_id_3pContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#edge_5p}.
+	 * @param ctx the parse tree
+	 */
+	void enterEdge_5p(RNASecondaryStructureParser.Edge_5pContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#edge_5p}.
+	 * @param ctx the parse tree
+	 */
+	void exitEdge_5p(RNASecondaryStructureParser.Edge_5pContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#edge_3p}.
+	 * @param ctx the parse tree
+	 */
+	void enterEdge_3p(RNASecondaryStructureParser.Edge_3pContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#edge_3p}.
+	 * @param ctx the parse tree
+	 */
+	void exitEdge_3p(RNASecondaryStructureParser.Edge_3pContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#bond_orientation}.
+	 * @param ctx the parse tree
+	 */
+	void enterBond_orientation(RNASecondaryStructureParser.Bond_orientationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#bond_orientation}.
+	 * @param ctx the parse tree
+	 */
+	void exitBond_orientation(RNASecondaryStructureParser.Bond_orientationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RNASecondaryStructureParser#interactions}.
+	 * @param ctx the parse tree
+	 */
+	void enterInteractions(RNASecondaryStructureParser.InteractionsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RNASecondaryStructureParser#interactions}.
+	 * @param ctx the parse tree
+	 */
+	void exitInteractions(RNASecondaryStructureParser.InteractionsContext ctx);
 }

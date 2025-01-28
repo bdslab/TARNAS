@@ -28,7 +28,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     private String absoluteFilePath;
 
     public RNAFileListener() {
-
     }
 
     public void setFilePath(Path filePath) throws IOException {
@@ -249,11 +248,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
             this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.edbnsBuffer.toString()), this.s, RNAFormat.DB_NO_SEQUENCE);
         else
             this.rnaFile = new RNAFile(this.fileName, this.header, List.of(this.sequenceBuffer.toString(), this.edbnsBuffer.toString()), this.s, DB);
-    }
-
-    @Override
-    public void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
-        this.rnaFile = new RNAFile(this.fileName, this.header, List.of(ctx.XML_HEADER_LINE1().getText(), ctx.XML_HEADER_LINE2().getText(), ctx.XML_CONTENT().getText()), this.s, RNAML);
     }
 
     /*
