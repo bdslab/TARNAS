@@ -8,6 +8,7 @@ module tarnas {
     requires jdk.jsobject;
     requires info.picocli;
     requires java.logging;
+    requires org.jsoup;
 
     // all types in it.unicam.cs.bdslab.tarnas.model.* packages are accessible via reflection in the javafx.fxml module
     opens it.unicam.cs.bdslab.tarnas.model.rnastructure to javafx.base;
