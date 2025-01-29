@@ -4,10 +4,16 @@ package it.unicam.cs.bdslab.tarnas.model.antlr;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
+import it.unicam.cs.bdslab.tarnas.model.rnastructure.EdgeFamily;
+import it.unicam.cs.bdslab.tarnas.model.rnastructure.EdgeFamilyValues;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.WeakBond;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -253,6 +259,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
 
     @Override
     public void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
+        buildEdgeFamilies(this.s,ctx.XML_CONTENT().getText());
         this.rnaFile = new RNAFile(this.fileName, this.header, List.of(ctx.XML_HEADER_LINE1().getText(), ctx.XML_HEADER_LINE2().getText(), ctx.XML_CONTENT().getText()), this.s, RNAML);
     }
 
@@ -335,5 +342,59 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
             case '>' -> '<';
             default -> Character.toUpperCase(c);
         };
+    }
+
+    private void buildEdgeFamilies(RNASecondaryStructure structure, String xmlContent) {
+        Document doc = Jsoup.parse(xmlContent, "", org.jsoup.parser.Parser.xmlParser());
+        String sequence = doc.select("seq-data")
+                .first()
+                .text()
+                .trim()
+                .replaceAll("\\s+", "");
+
+        List<EdgeFamily> edgeFamilies = new ArrayList<>();
+
+        for (Element basePair : doc.select("base-pair")) {
+            Element edge5p = basePair.selectFirst("edge-5p");
+            Element edge3p = basePair.selectFirst("edge-3p");
+            Element bondOrientation = basePair.selectFirst("bond-orientation");
+            Element position5p = basePair.selectFirst("base-id-5p base-id position");
+            Element position3p = basePair.selectFirst("base-id-3p base-id position");
+
+            if (edge5p == null || edge3p == null || bondOrientation == null) {
+                continue; // Skip this <base-pair> if any tag is missing
+            }
+
+            String edge5pValue = edge5p.text().trim();
+            String edge3pValue = edge3p.text().trim();
+            String bondOrientationValue = bondOrientation.text().trim();
+            int position5pValue = Integer.parseInt(position5p.text().trim());
+            int position3pValue = Integer.parseInt(position3p.text().trim());
+
+            if (!isCanonicalPair(edge5pValue, edge3pValue, bondOrientationValue)) {
+                // Build readable identifiers like "G6" and "U14"
+                String id5p = sequence.charAt(position5pValue - 1) + String.valueOf(position5pValue);
+                String id3p = sequence.charAt(position3pValue - 1) + String.valueOf(position3pValue);
+
+                // Prepare EdgeFamily values
+                String combinedEdges = EdgeFamilyValues.fromShortLabel(edge5pValue).getLabel()
+                        + "-"
+                        + EdgeFamilyValues.fromShortLabel(edge3pValue).getLabel();
+                EdgeFamilyValues orientation = EdgeFamilyValues.fromShortLabel(bondOrientationValue);
+
+                // Create and add the new EdgeFamily
+                EdgeFamily edgeFamily = new EdgeFamily(id5p, id3p, EdgeFamilyValues.NOT_CANONICAL_PAIR, combinedEdges, orientation);
+                edgeFamilies.add(edgeFamily);
+            }
+        }
+        structure.setEdgeFamilies(edgeFamilies);
+    }
+
+    private static boolean isCanonicalPair(String edge5p, String edge3p, String bondOrientation) {
+        boolean isCanonicalEdge = (edge5p.equals("W") && edge3p.equals("W")) ||
+                (edge5p.equals("+") && edge3p.equals("+")) ||
+                (edge5p.equals("-") && edge3p.equals("-"));
+        boolean isCanonicalBondOrientation = bondOrientation.equals("c");
+        return isCanonicalEdge && isCanonicalBondOrientation;
     }
 }
