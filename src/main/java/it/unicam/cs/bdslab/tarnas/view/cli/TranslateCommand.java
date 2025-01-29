@@ -59,6 +59,9 @@ public class TranslateCommand implements Runnable {
     @Option(names = {"--non-canonical-pairs"}, description = "Generate non canonical pairs, if there are (only for RNAML input format).", defaultValue = "false")
     private boolean generateNonCanonicalPairs;
 
+    @Option(names = {"--statistics"}, description = "Generate statistics of files", defaultValue = "false")
+    private boolean generateStatistics;
+
 
     /**
      * Builds a new TranslateCommand instance.
@@ -99,7 +102,7 @@ public class TranslateCommand implements Runnable {
     @Override
     public void run() {
         translate();
-        parent.saveFiles(translatedFiles, generateNonCanonicalPairs, true);
+        parent.saveFiles(translatedFiles, generateNonCanonicalPairs, generateStatistics);
     }
 
 }

@@ -102,6 +102,9 @@ public class HomeController {
     public CheckBox chbxShape;
 
     @FXML
+    public CheckBox chbxGenerateStatistics;
+
+    @FXML
     public CheckBox chbxGenerateNonCanonicalPairs;
 
     @FXML
@@ -425,7 +428,7 @@ public class HomeController {
                 rnaFiles,
                 selectedDirectory.toPath(),
                 chbxGenerateNonCanonicalPairs.isSelected(),
-                isTranslating,
+                chbxGenerateStatistics.isSelected(),
                 archiveName
         );
 
@@ -461,6 +464,7 @@ public class HomeController {
             this.chbxCorePlus.setSelected(false);
             this.chbxShape.setSelected(false);
             this.chbxGenerateNonCanonicalPairs.setSelected(false);
+            this.chbxGenerateStatistics.setSelected(false);
             // reset textAreas
             this.textFieldArchiveName.setText("");
             this.textFieldRmLinesContainingWord.setText("");

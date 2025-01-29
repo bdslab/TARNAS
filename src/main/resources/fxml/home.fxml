@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="880.0" prefWidth="1312.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="880.0" prefWidth="1312.0" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.bdslab.tarnas.view.HomeController">
     <top>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
@@ -196,11 +196,12 @@
                             <rowConstraints>
                                 <RowConstraints maxHeight="68.39999618530274" minHeight="2.0000045537948594" prefHeight="31.600010299682616" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="86.79999544620514" minHeight="10.0" prefHeight="33.599999999999994" vgrow="SOMETIMES" />
-                                <RowConstraints maxHeight="62.400000000000006" minHeight="10.0" prefHeight="62.400000000000006" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="86.79999544620514" minHeight="10.0" prefHeight="33.599999999999994" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="62.400000000000006" minHeight="10.0" prefHeight="62.400000000000006" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
                                 <CheckBox fx:id="chbxIncludeHeader" mnemonicParsing="false" onAction="#handleTranslationCleaningSelected" styleClass="checkbox" text="include header" />
-                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" styleClass="button" text="Translate to" GridPane.rowIndex="2">
+                                <MenuButton fx:id="btnSelectFormatTranslation" mnemonicParsing="false" styleClass="button" text="Translate to" GridPane.rowIndex="3">
                                 </MenuButton>
                               <Label maxWidth="200.0" minWidth="200.0" prefWidth="200.0" styleClass="textOptions" text="TRANSLATION OPTIONS">
                            <GridPane.margin>
@@ -211,6 +212,7 @@
                            </font>
                         </Label>
                         <CheckBox fx:id="chbxGenerateNonCanonicalPairs" mnemonicParsing="false" prefHeight="19.0" prefWidth="284.0" text="generate non canonical pairs" GridPane.rowIndex="1" />
+                        <CheckBox fx:id="chbxGenerateStatistics" mnemonicParsing="false" text="generate statistics" GridPane.rowIndex="2" />
                             </children>
                      <BorderPane.margin>
                         <Insets left="100.0" />
