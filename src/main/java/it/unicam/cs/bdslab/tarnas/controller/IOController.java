@@ -156,14 +156,17 @@ public class IOController {
             var statsFileName = file.getFileName().split("\\.")[0] + "_seqInfo.csv";
             var statsFilePath = dstPath.resolve(statsFileName);
 
-            var header = "Nucleotide count, Bond count, GC bonds, AU bonds, GU bonds, Non canonical pairs";
+            var header = "Nucleotide count, Bond count, A count, C count, G count, U count, GC bonds, AU bonds, GU bonds";
             var statsData = String.join(", ",
                     String.valueOf(getNucleotideCount(file)),
                     String.valueOf(getBondCount(file)),
+                    String.valueOf(getACount(file)),
+                    String.valueOf(getCCount(file)),
+                    String.valueOf(getGCount(file)),
+                    String.valueOf(getUCount(file)),
                     String.valueOf(getGcBonds(file)),
                     String.valueOf(getAuBonds(file)),
-                    String.valueOf(getGuBonds(file)),
-                    String.valueOf(getNonCanonicalPairs(file))
+                    String.valueOf(getGuBonds(file))
             );
 
             Files.write(statsFilePath, List.of(header, statsData));
