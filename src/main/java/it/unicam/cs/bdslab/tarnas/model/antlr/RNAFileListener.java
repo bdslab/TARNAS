@@ -386,7 +386,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
             }
         }
         structure.setEdgeFamilies(edgeFamilies);
-        System.out.println(edgeFamilies.toString());
     }
 
     private static boolean isCanonicalPair(String edge5p, String edge3p, String bondOrientation) {
