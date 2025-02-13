@@ -36,7 +36,7 @@ public class RNASecondaryStructure {
     // one array is sufficient to represent all weak bonds.
     private int[] p;
 
-    private List<EdgeFamily> edgeFamilies;
+    private List<NonCanonicalEdgeFamily> edgeFamilies;
 
     /**
      * Create an empty secondary structure.
@@ -234,11 +234,11 @@ public class RNASecondaryStructure {
         this.bonds = bonds;
     }
 
-    public List<EdgeFamily> getEdgeFamilies() {
+    public List<NonCanonicalEdgeFamily> getEdgeFamilies() {
         return edgeFamilies;
     }
 
-    public List<EdgeFamily> setEdgeFamilies(List<EdgeFamily> edgeFamilies) {
+    public List<NonCanonicalEdgeFamily> setEdgeFamilies(List<NonCanonicalEdgeFamily> edgeFamilies) {
         return this.edgeFamilies = edgeFamilies;
     }
 }

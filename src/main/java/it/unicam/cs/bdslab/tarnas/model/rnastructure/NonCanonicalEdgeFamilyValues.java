@@ -1,7 +1,6 @@
 package it.unicam.cs.bdslab.tarnas.model.rnastructure;
 
-public enum EdgeFamilyValues {
-    NOT_CANONICAL_PAIR("Not-Canonical Pair"),
+public enum NonCanonicalEdgeFamilyValues {
     SUGAR("Sugar"),
     HOOGSTEEN("Hoogsteen"),
     WATSON_CRICK("Watson-Crick"),
@@ -11,7 +10,7 @@ public enum EdgeFamilyValues {
 
     private final String label;
 
-    EdgeFamilyValues(String label) {
+    NonCanonicalEdgeFamilyValues(String label) {
         this.label = label;
     }
 
@@ -19,7 +18,7 @@ public enum EdgeFamilyValues {
         return label;
     }
 
-    public static EdgeFamilyValues fromShortLabel(String shortLabel) {
+    public static NonCanonicalEdgeFamilyValues fromShortLabel(String shortLabel) {
         return switch (shortLabel) {
             case "S" -> SUGAR;
             case "W" -> WATSON_CRICK;

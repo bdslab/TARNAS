@@ -4,16 +4,14 @@ package it.unicam.cs.bdslab.tarnas.model.antlr;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFile;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAFormat;
 import it.unicam.cs.bdslab.tarnas.model.rnafile.RNAInputFileParserException;
-import it.unicam.cs.bdslab.tarnas.model.rnastructure.EdgeFamily;
-import it.unicam.cs.bdslab.tarnas.model.rnastructure.EdgeFamilyValues;
+import it.unicam.cs.bdslab.tarnas.model.rnastructure.NonCanonicalEdgeFamily;
+import it.unicam.cs.bdslab.tarnas.model.rnastructure.NonCanonicalEdgeFamilyValues;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.RNASecondaryStructure;
 import it.unicam.cs.bdslab.tarnas.model.rnastructure.WeakBond;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
-import javax.swing.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -345,49 +343,50 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     }
 
     private void buildEdgeFamilies(RNASecondaryStructure structure, String xmlContent) {
-        Document doc = Jsoup.parse(xmlContent, "", org.jsoup.parser.Parser.xmlParser());
-        String sequence = doc.select("seq-data")
+        var doc = Jsoup.parse(xmlContent, "", org.jsoup.parser.Parser.xmlParser());
+        var sequence = doc.select("seq-data")
                 .first()
                 .text()
                 .trim()
                 .replaceAll("\\s+", "");
 
-        List<EdgeFamily> edgeFamilies = new ArrayList<>();
+        var edgeFamilies = new ArrayList<NonCanonicalEdgeFamily>();
 
-        for (Element basePair : doc.select("base-pair")) {
-            Element edge5p = basePair.selectFirst("edge-5p");
-            Element edge3p = basePair.selectFirst("edge-3p");
-            Element bondOrientation = basePair.selectFirst("bond-orientation");
-            Element position5p = basePair.selectFirst("base-id-5p base-id position");
-            Element position3p = basePair.selectFirst("base-id-3p base-id position");
+        for (var basePair : doc.select("base-pair")) {
+            var edge5pElement = basePair.selectFirst("edge-5p");
+            var edge3pElement = basePair.selectFirst("edge-3p");
+            var bondOrientationElement = basePair.selectFirst("bond-orientation");
+            var position5pElement = basePair.selectFirst("base-id-5p base-id position");
+            var position3pElement = basePair.selectFirst("base-id-3p base-id position");
 
-            if (edge5p == null || edge3p == null || bondOrientation == null) {
-                continue; // Skip this <base-pair> if any tag is missing
+            if (edge5pElement == null || edge3pElement == null || bondOrientationElement == null) {
+                continue; // We check only these three tags because they may be missing, whereas the position element is always present.
             }
 
-            String edge5pValue = edge5p.text().trim();
-            String edge3pValue = edge3p.text().trim();
-            String bondOrientationValue = bondOrientation.text().trim();
-            int position5pValue = Integer.parseInt(position5p.text().trim());
-            int position3pValue = Integer.parseInt(position3p.text().trim());
+            var bond_type1_value = edge5pElement.text().trim();
+            var bond_type2_value = edge3pElement.text().trim();
+            var bondOrientation_value = bondOrientationElement.text().trim();
 
-            if (!isCanonicalPair(edge5pValue, edge3pValue, bondOrientationValue)) {
-                // Build readable identifiers like "G6" and "U14"
-                String id5p = sequence.charAt(position5pValue - 1) + String.valueOf(position5pValue);
-                String id3p = sequence.charAt(position3pValue - 1) + String.valueOf(position3pValue);
+            if (!isCanonicalPair(bond_type1_value, bond_type2_value, bondOrientation_value)) {
+                int base_id_5p_index = Integer.parseInt(position5pElement.text().trim());
+                int base_id_3p_index = Integer.parseInt(position3pElement.text().trim());
+
+                var base_id_5p = String.valueOf(sequence.charAt(base_id_5p_index - 1));
+                var base_id_3p = String.valueOf(sequence.charAt(base_id_3p_index - 1));
 
                 // Prepare EdgeFamily values
-                String combinedEdges = EdgeFamilyValues.fromShortLabel(edge5pValue).getLabel()
-                        + "-"
-                        + EdgeFamilyValues.fromShortLabel(edge3pValue).getLabel();
-                EdgeFamilyValues orientation = EdgeFamilyValues.fromShortLabel(bondOrientationValue);
+                var bond_type_1 = NonCanonicalEdgeFamilyValues.fromShortLabel(bond_type1_value);
+                var bond_type_2 = NonCanonicalEdgeFamilyValues.fromShortLabel(bond_type2_value);
+                var bondOrientation = NonCanonicalEdgeFamilyValues.fromShortLabel(bondOrientation_value);
 
                 // Create and add the new EdgeFamily
-                EdgeFamily edgeFamily = new EdgeFamily(id5p, id3p, EdgeFamilyValues.NOT_CANONICAL_PAIR, combinedEdges, orientation);
+                var edgeFamily = new NonCanonicalEdgeFamily(base_id_5p,base_id_5p_index,base_id_3p,base_id_3p_index,
+                        bond_type_1,bond_type_2,bondOrientation);
                 edgeFamilies.add(edgeFamily);
             }
         }
         structure.setEdgeFamilies(edgeFamilies);
+        System.out.println(edgeFamilies.toString());
     }
 
     private static boolean isCanonicalPair(String edge5p, String edge3p, String bondOrientation) {
