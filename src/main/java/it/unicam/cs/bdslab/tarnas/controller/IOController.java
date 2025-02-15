@@ -95,16 +95,17 @@ public class IOController {
 
         var generatedFiles = new ArrayList<Path>();
 
-        saveRNAFiles(files, dstPath, generatedFiles);
+        saveFiles(files, dstPath, generatedFiles);
         processNonCanonicalPairs(generateNonCanonicalPairs, dstPath, generatedFiles);
         generateStatistics(files, dstPath, generateStatistics, generatedFiles);
         createZipFile(dstPath, zipFileName, generatedFiles);
     }
 
-    private void saveRNAFiles(List<RNAFile> files, Path dstPath, List<Path> generatedFiles) throws IOException {
+    private void saveFiles(List<RNAFile> files, Path dstPath, List<Path> generatedFiles) throws IOException {
         for (var file : files) {
-            var extension = (file.getFormat() == RNAFormat.RNAML) ? ".xml" : ".txt";
-            var fileName = file.getFileName() + extension;
+            var baseFileName = file.getFileName().split("\\.")[0];
+            var extension = (file.getFormat() == RNAFormat.RNAML) ? ".xml" : "." + file.getFormat().getExtension() + ".txt";
+            var fileName = baseFileName + extension;
             var destinationPath = dstPath.resolve(fileName);
 
             Files.write(destinationPath, file.getContent());
@@ -127,7 +128,8 @@ public class IOController {
 
             for (var csvFile : csvFiles) {
                 if (generateNonCanonicalPairs) {
-                    var newFileName = csvFile.getFileName().toString().replace(".csv", "_nc.csv");
+
+                    var newFileName = csvFile.getFileName().toString().split("\\.")[0] + "_nc.csv";
                     var destinationPath = dstPath.resolve(newFileName);
 
                     Files.move(csvFile, destinationPath);
