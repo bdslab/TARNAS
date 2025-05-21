@@ -55,7 +55,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         if (ctx.COMMENT() != null) ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));
         if (ctx.BPSEQCTLINES() != null)
             this.header.addAll(Arrays.stream(ctx.BPSEQCTLINES().getText().split("\n")).map(String::trim).toList());
-        if (this.s.getSize() == -1){
+        if (this.s.getSize() == -1) {
             this.s.setSequence("");
             this.s.setSize(0);
         }
@@ -100,7 +100,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         if (ctx.COMMENT() != null) ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));
         if (ctx.BPSEQCTLINES() != null)
             this.header.addAll(Arrays.stream(ctx.BPSEQCTLINES().getText().split("\n")).map(String::trim).toList());
-        if (this.s.getSize() == -1){
+        if (this.s.getSize() == -1) {
             this.s.setSequence("");
             this.s.setSize(0);
         }
@@ -148,7 +148,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
 
     @Override
     public void enterBonds(RNASecondaryStructureParser.BondsContext ctx) {
-        if (this.s.getSize() == -1){
+        if (this.s.getSize() == -1) {
             this.s.setSequence("");
             this.s.setSize(0);
         }
@@ -158,7 +158,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         int right = Integer.parseInt(indexes.get(1));
         this.s.addBond(new WeakBond(left, right));
     }
-
 
 
     private List<String> getBondTokens(String bondTokenText) {
@@ -219,7 +218,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
              */
             this.edbnsBuffer.append(e);
         }
-        if (this.s.getSize() == -1){
+        if (this.s.getSize() == -1) {
             this.s.setSequence("");
             this.s.setSize(this.edbnsBuffer.length());
         }
@@ -257,7 +256,7 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
 
     @Override
     public void exitRnamlContent(RNASecondaryStructureParser.RnamlContentContext ctx) {
-        buildEdgeFamilies(this.s,ctx.XML_CONTENT().getText());
+        buildEdgeFamilies(this.s, ctx.XML_CONTENT().getText());
         this.rnaFile = new RNAFile(this.fileName, this.header, List.of(ctx.XML_HEADER_LINE1().getText(), ctx.XML_HEADER_LINE2().getText(), ctx.XML_CONTENT().getText()), this.s, RNAML);
     }
 
@@ -380,8 +379,8 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
                 var bondOrientation = NonCanonicalEdgeFamilyValues.fromShortLabel(bondOrientation_value);
 
                 // Create and add the new EdgeFamily
-                var edgeFamily = new NonCanonicalEdgeFamily(base_id_5p,base_id_5p_index,base_id_3p,base_id_3p_index,
-                        bond_type_1,bond_type_2,bondOrientation);
+                var edgeFamily = new NonCanonicalEdgeFamily(base_id_5p, base_id_5p_index, base_id_3p, base_id_3p_index,
+                        bond_type_1, bond_type_2, bondOrientation);
                 edgeFamilies.add(edgeFamily);
             }
         }

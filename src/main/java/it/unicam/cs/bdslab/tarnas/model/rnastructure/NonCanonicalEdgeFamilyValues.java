@@ -6,7 +6,8 @@ public enum NonCanonicalEdgeFamilyValues {
     WATSON_CRICK("Watson-Crick"),
     TRANS("trans"),
     CIS("cis"),
-    EXCLAMATION("!");
+    EXCLAMATION("!"),
+    NONE("???");
 
     private final String label;
 
@@ -20,13 +21,13 @@ public enum NonCanonicalEdgeFamilyValues {
 
     public static NonCanonicalEdgeFamilyValues fromShortLabel(String shortLabel) {
         return switch (shortLabel) {
-            case "S" -> SUGAR;
+            case "S", "s" -> SUGAR;
             case "W" -> WATSON_CRICK;
             case "H" -> HOOGSTEEN;
             case "!" -> EXCLAMATION;
             case "t" -> TRANS;
             case "c" -> CIS;
-            default -> throw new IllegalArgumentException("Unknown label: " + shortLabel);
+            default -> NONE;
         };
     }
 }
