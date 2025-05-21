@@ -27,8 +27,13 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+        <ul>
+            <li><a href="#gui-application">GUI Application</a></li>
+            <li><a href="#cli-application">CLI Application</a></li>
+        </ul>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
+    <li><a href="#citation">Citation</a></li>
     <li><a href="#credits">Credits</a></li>
     <li><a href="#contact-information">Contact Information</a></li>
   </ol>
@@ -46,16 +51,34 @@ Multiple representation of RNA secondary structures through the use of multiple 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+TARNAS is available as:
+* standalone application (GUI and CLI)
+* web application at this link: https://bdslab.unicam.it/tarnas/
+
+The only difference between the standalone and web application versions is that the standalone version allows users to load multiple files at once, whereas the web app supports uploading only one file per use.
 
 ### Built With
 
-TARNAS was developed with:
+TARNAS (standalone app) was developed with:
 
 * [Java][Java-url]
 * [ANTLR4][ANTLR-url]
-* [Springboot][Springboot-url]
 * [Maven][Maven-url]
 * [JavaFX][JavaFX-url]
+
+
+TARNAS (CLI) was developed with:
+* [Java][Java-url]
+* [ANTLR4][ANTLR-url]
+* [Maven][Maven-url]
+* [Picocli][Picocli-url]
+
+TARNAS (web app) was developed with;
+* [Java][Java-url]
+* [ANTLR4][ANTLR-url]
+* [Maven][Maven-url]
+* [Springboot][Springboot-url]
+* [Angular][Angular-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -85,16 +108,19 @@ You can install TARNAS in several ways:
    ```
 * Alternatively, download the latest release from [TARNAS latest release](https://github.com/bdslab/TARNAS/releases). Here you can download:
   * TARNAS.jar
+  * TARNAS_CLI.jar
   * Source code (zip)
   * Surce code (tar.gz)
     
-  It's recommended to download just the jar file `TARNAS.jar`.
+  It's recommended to download just the jar file `TARNAS.jar` and/or `TARNAS_CLI.jar`.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## USAGE
+
 <!-- USAGE EXAMPLES -->
-## Usage
+### GUI Application
 * If you cloned the repo, you can use `Maven` to execute TARNAS.
     <br>
     Position yourself inside the `TARNAS folder`, which contains the `pom.xml`, and type the following command:
@@ -103,7 +129,7 @@ You can install TARNAS in several ways:
   mvn clean javafx:run
   ```
   
-* If you downloaded the `TARNAS.jar`from the latest release, you can use `Java` to execute TARNAS.
+* If you downloaded the `TARNAS.jar` from the latest release, you can use `Java` to execute TARNAS.
   <br>
   Position yourself inside the folder that contains the jar executable file, and type the following command:
 
@@ -112,7 +138,7 @@ You can install TARNAS in several ways:
   ```
   
 <br>
-TARNAS works as follows:
+TARNAS GUI works as follows:
 
 1. It takes a `text file as input` representing an RNA secondary structure. the file consists of a header (described by comments) and a body (which is the molecule in that representation).
 
@@ -166,6 +192,139 @@ TARNAS works as follows:
     * Core plus
     * Shape
 
+## CLI Application
+* If you downloaded the `TARNAS_CLI.jar` from the latest release, you can use `Java` to execute TARNAS.
+  <br>
+  Position yourself inside the folder that contains the jar executable file, and type the following command:
+
+  ```sh
+  java -jar TARNAS_CLI.jar
+  ```
+
+<br>
+TARNAS CLI works as follows:
+
+* The user can execute one of the following commands with one or more options.
+
+
+* `TRANSLATION` command:
+
+  * Translates to DB format:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB
+    ```
+  * Translates to DB format, the header is discarded:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB --no-header
+    ```
+  * Translates to DB format and generates a file storing all non-canonical pairs (if any). The output file retains the original input filename with ‘_nc.csv’ appended at the end:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB --non-canonical-pairs
+      ```
+  * Translates to DB format and generates a statistics file based on molecule pair data:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB --statistics
+      ```
+  * All the previous options can be used at the same time:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB --no-header --statistics --non-canonical-pairs
+      ```
+  * Previous commands can be used with other formats too:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate AAS
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate AAS_NO_SEQUENCE
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate BPSEQ
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate FASTA
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate RNAML
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate CT
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> translate DB_NO_SEQUENCE
+      ```
+
+* `CLEANING` command:
+  * Removes all comments, lines that start with '#' or '>':
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> cleaning --comments
+    ```
+  * Removes all blank lines:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> cleaning --empty
+    ```
+  * Removes all lines that contain a specific string:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> cleaning --lines=<stringToBeRemoved>
+    ```
+  * Sometimes DB files have the sequence split across multiple lines, this command merges them into a single line. This command can be used only for DB or DB_NO_SEQUENCE files:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath_DB> <outputDirectoryPath> cleaning --merge
+    ```
+    or
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath_DB_NO_SEQUENCE> <outputDirectoryPath> cleaning --merge
+    ```
+
+* `ABSTRACTIONS` command:
+* Computes core, core plus and shape:
+  ```sh
+  java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions
+  ```
+  * Computes core only:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --core
+    ```
+  * Computes core plus only:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --coreplus
+    ```
+  * Computes shape only:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --shape
+      ```
+
+  * The following 2 commands are equal:
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions --core --coreplus --shape
+      ```
+      ```sh
+      java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> abstractions
+      ```
+  
+* `SAVE AS ZIP`:
+
+    In all commands explained previously, it is possible to save the result into a zip file. To do so, include ‘--zip <zipFileName>’
+
+  * Translation and saving as zip:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> --zip <zipFileName> translate DB
+    ```
+  * Cleaning and saving as zip:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> --zip <zipFileName> cleaning --comments
+    ```
+  * Abstractions and saving as zip:
+    ```sh
+    java -jar TARNAS_CLI.jar <inputPath> <outputDirectoryPath> --zip <zipFileName> abstractions
+    ```
+
+If you need help or want to see the available options, you can run the command:
+    ```sh
+    java -jar TARNAS_CLI.jar -h
+    ```
+ or
+    ```sh
+    java -jar TARNAS_CLI.jar --help
+    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -299,3 +458,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [JavaFX-url]: https://openjfx.io
 [maven-url]: https://maven.apache.org
 [ANTLR-url]: https://www.antlr.org
+[Picocli-url]: https://picocli.info
+[Angular-url]: https://v17.angular.io/docs
