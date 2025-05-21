@@ -29,14 +29,11 @@ public final class BpseqFileWriter extends TextFileWriter {
     private void writechain(RnaChain m) {
         char[] array = m.getSequence().toCharArray();
         Map<Integer, Integer> pairs = m.getPairMap();
-        System.out.println("Array: " + Arrays.toString(array));
-        System.out.println("Array length: " + array.length);
         for (int i = 1; i <= array.length; i++) {
             int pair = pairs.getOrDefault(i, -1);
             data += i + " " + array[i - 1] + " "
                     + (pair == -1 ? "0" : pair) + "\n";
         }
-        System.out.println("data:\n" + data);
     }
 
 }
