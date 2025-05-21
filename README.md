@@ -318,13 +318,14 @@ TARNAS CLI works as follows:
     ```
 
 If you need help or want to see the available options, you can run the command:
-    ```sh
-    java -jar TARNAS_CLI.jar -h
-    ```
+
+```sh
+  java -jar TARNAS_CLI.jar -h
+```
  or
-    ```sh
-    java -jar TARNAS_CLI.jar --help
-    ```
+```sh
+  java -jar TARNAS_CLI.jar --help
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
