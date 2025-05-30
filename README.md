@@ -87,18 +87,16 @@ TARNAS (web app) was developed with;
 
 Please cite the paper whenever TARNAS is used to produce published results or incorporated into other software:
 
-```
-Quadrini, M., Hierro Canchari, P., Rosati, P., Tesei, L. (2025). 
-TARNAS, a TrAnslator for RNA Secondary Structure Formats. 
-In: Cerulo, L., Napolitano, F., Bardozzo, F., Cheng, L., Occhipinti, A., Pagnotta, S.M. (eds) 
-Computational Intelligence Methods for Bioinformatics and Biostatistics. CIBB 2024. 
-Lecture Notes in Computer Science(), vol 15276. Springer, Cham. 
-https://doi.org/10.1007/978-3-031-89704-7_24
-```
+> Quadrini, M., Hierro Canchari, P., Rosati, P., Tesei, L. (2025).  
+> *TARNAS, a TrAnslator for RNA Secondary Structure Formats*.  
+> In: Cerulo, L., Napolitano, F., Bardozzo, F., Cheng, L., Occhipinti, A., Pagnotta, S.M. (eds)  
+> *Computational Intelligence Methods for Bioinformatics and Biostatistics. CIBB 2024*.  
+> Lecture Notes in Computer Science, vol 15276. Springer, Cham.  
+> [https://doi.org/10.1007/978-3-031-89704-7_24](https://doi.org/10.1007/978-3-031-89704-7_24)
 
 bib citation:
 
-```
+```bibtex
 @inproceedings{TARNAS2025,
 author={Quadrini, Michela and Hierro Canchari, Piero and Rosati, Piermichele and Tesei, Luca},
 editor={Cerulo, Luigi and Napolitano, Francesco and Bardozzo, Francesco and Cheng, Lu and Occhipinti, Annalisa and Pagnotta, Stefano M.},
@@ -216,12 +214,12 @@ TARNAS GUI works as follows:
       | **AAS no seq.**          | ✓                        | **X**            | **X**     | **X**     | **X**   | -                | **X**  | **X**     |
       | **CT**                   | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
       | **RNAML**                | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
-
-       You can select the `include header` checkbox if you want to keep the header during translation.<br>
-       Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
-       TARNAS also allows to generate statistics like nucleotide count, bond count, A,C,G,U count and so on, for all formats.<br>
-       Also you can save all the translated files in a zip file to reduce the space occupied by them, to do this just select the `save as zip` checkbox and then name the zip file.<br>
-       When all translation options have been selected, you can start the translation through the `TRANSLATE button`. 
+      
+    You can select the `include header` checkbox if you want to keep the header during translation.<br>
+    Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
+    TARNAS also allows to generate statistics like nucleotide count, bond count, A,C,G,U count and so on, for all formats.<br>
+    Also you can save all the translated files in a zip file to reduce the space occupied by them, to do this just select the `save as zip` checkbox and then name the zip file.<br>
+    When all translation options have been selected, you can start the translation through the `TRANSLATE button`. 
 
 5. `ABSTRACTIONS OPTIONS`: they are on the `right side` side of TARNAS and allow the user to abstract a Dot-Bracket or Dot-Bracket file format in three views:
     * Core
