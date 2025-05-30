@@ -206,16 +206,16 @@ TARNAS GUI works as follows:
 
    At this point, the user will be asked to choose where to save the cleaned files, and if successful, a report will be shown of the number of files cleaned and saved in the location specified by the user.
    4. `TRANSLATION OPTIONS`: they are on the `center side` side of TARNAS and allow the user to translate a file from one format to another.<br>Allowed translations:
-         |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** | **RNAML** |
-         |--------------------------|-----------------------------|------------------|-----------|-----------|---------|------------|--------|-----------|
-         | **Dot-Bracket no seq.**  | -                           | **X**            | **X**     | **X**     | **X**   | ✓          | **X**  | **X**     |
-         | **Dot-Bracket**          | ✓                           | -                | ✓         | ✓         | ✓       | ✓          | ✓      | **X**     |
-         | **BPSEQ**                | ✓                           | ✓                | -         | ✓         | ✓       | ✓          | ✓      | **X**     |
-         | **Fasta**                | **X**                       | **X**            | **X**     | -         | **X**   | **X**      | **X**  | **X**     |
-         | **AAS**                  | ✓                           | ✓                | ✓         | ✓         | -       | ✓          | ✓      | **X**     |
-         | **AAS no seq.**          | ✓                           | **X**            | **X**     | **X**     | **X**   | -          | **X**  | **X**     |
-         | **CT**                   | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓          | -      | **X**     |
-         | **RNAML**                | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓          | -      | **X**     |
+      |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** | **RNAML** |
+      |--------------------------|--------------------------|------------------|-----------|-----------|---------|------------------|--------|-----------|
+      | **Dot-Bracket no seq.**  | -                        | **X**            | **X**     | **X**     | **X**   | ✓                | **X**  | **X**     |
+      | **Dot-Bracket**          | ✓                        | -                | ✓         | ✓         | ✓       | ✓                | ✓      | **X**     |
+      | **BPSEQ**                | ✓                        | ✓                | -         | ✓         | ✓       | ✓                | ✓      | **X**     |
+      | **Fasta**                | **X**                    | **X**            | **X**     | -         | **X**   | **X**            | **X**  | **X**     |
+      | **AAS**                  | ✓                        | ✓                | ✓         | ✓         | -       | ✓                | ✓      | **X**     |
+      | **AAS no seq.**          | ✓                        | **X**            | **X**     | **X**     | **X**   | -                | **X**  | **X**     |
+      | **CT**                   | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
+      | **RNAML**                | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
 
        You can select the `include header` checkbox if you want to keep the header during translation.<br>
        Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
