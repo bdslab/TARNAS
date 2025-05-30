@@ -205,23 +205,23 @@ TARNAS GUI works as follows:
    Once the desired cleaning options have been selected, you must press the `CLEAN button` to start cleaning on the uploaded files.
 
    At this point, the user will be asked to choose where to save the cleaned files, and if successful, a report will be shown of the number of files cleaned and saved in the location specified by the user.
-4. `TRANSLATION OPTIONS`: they are on the `center side` side of TARNAS and allow the user to translate a file from one format to another.<br>Allowed translations:
-      |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** | **RNAML** |
-      |--------------------------|-----------------------------|------------------|-----------|-----------|---------|--------------------|--------|
-      | **Dot-Bracket no seq.** | -                           | **X**            | **X**     | **X**     | **X**   | ✓                  | **X**  | **X**  |
-      | **Dot-Bracket**           | ✓                           | -                | ✓         | ✓         | ✓       | ✓                  | ✓      | **X**  |
-      | **BPSEQ**                 | ✓                           | ✓                | -         | ✓         | ✓       | ✓                  | ✓      | **X**  |
-      | **Fasta**                 | **X**                       | **X**            | **X**     | -         | **X**   | **X**              | **X**  | **X**  |
-      | **AAS**                   | ✓                           | ✓                | ✓         | ✓         | -       | ✓                  | ✓      | **X**  |
-      | **AAS no seq.**        | ✓                           | **X**            | **X**     | **X**     | **X**   | -                  | **X**  | **X**  |
-      | **CT**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   | **X**  |
-      | **RNAML**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   | **X**  |
+   4. `TRANSLATION OPTIONS`: they are on the `center side` side of TARNAS and allow the user to translate a file from one format to another.<br>Allowed translations:
+         |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** | **RNAML** |
+         |--------------------------|-----------------------------|------------------|-----------|-----------|---------|------------|--------|-----------|
+         | **Dot-Bracket no seq.**  | -                           | **X**            | **X**     | **X**     | **X**   | ✓          | **X**  | **X**     |
+         | **Dot-Bracket**          | ✓                           | -                | ✓         | ✓         | ✓       | ✓          | ✓      | **X**     |
+         | **BPSEQ**                | ✓                           | ✓                | -         | ✓         | ✓       | ✓          | ✓      | **X**     |
+         | **Fasta**                | **X**                       | **X**            | **X**     | -         | **X**   | **X**      | **X**  | **X**     |
+         | **AAS**                  | ✓                           | ✓                | ✓         | ✓         | -       | ✓          | ✓      | **X**     |
+         | **AAS no seq.**          | ✓                           | **X**            | **X**     | **X**     | **X**   | -          | **X**  | **X**     |
+         | **CT**                   | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓          | -      | **X**     |
+         | **RNAML**                | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓          | -      | **X**     |
 
-    You can select the `include header` checkbox if you want to keep the header during translation.<br>
-    Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
-    TARNAS also allows to generate statistics like nucleotide count, bond count, A,C,G,U count and so on, for all formats.<br>
-    Also you can save all the translated files in a zip file to reduce the space occupied by them, to do this just select the `save as zip` checkbox and then name the zip file.<br>
-    When all translation options have been selected, you can start the translation through the `TRANSLATE button`. 
+       You can select the `include header` checkbox if you want to keep the header during translation.<br>
+       Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
+       TARNAS also allows to generate statistics like nucleotide count, bond count, A,C,G,U count and so on, for all formats.<br>
+       Also you can save all the translated files in a zip file to reduce the space occupied by them, to do this just select the `save as zip` checkbox and then name the zip file.<br>
+       When all translation options have been selected, you can start the translation through the `TRANSLATE button`. 
 
 5. `ABSTRACTIONS OPTIONS`: they are on the `right side` side of TARNAS and allow the user to abstract a Dot-Bracket or Dot-Bracket file format in three views:
     * Core
