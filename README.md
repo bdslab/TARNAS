@@ -10,7 +10,7 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
+<details open>
   <summary>Table of Contents</summary>
   <ol>
     <li>
@@ -19,6 +19,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
+    <li><a href="#citation">Citation</a></li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
@@ -33,7 +34,6 @@
         </ul>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#citation">Citation</a></li>
     <li><a href="#credits">Credits</a></li>
     <li><a href="#contact-information">Contact Information</a></li>
   </ol>
@@ -79,6 +79,41 @@ TARNAS (web app) was developed with;
 * [Maven][Maven-url]
 * [Springboot][Springboot-url]
 * [Angular][Angular-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CITE -->
+## Citation
+
+Please cite the paper whenever TARNAS is used to produce published results or incorporated into other software:
+
+```
+Quadrini, M., Hierro Canchari, P., Rosati, P., Tesei, L. (2025). 
+TARNAS, a TrAnslator for RNA Secondary Structure Formats. 
+In: Cerulo, L., Napolitano, F., Bardozzo, F., Cheng, L., Occhipinti, A., Pagnotta, S.M. (eds) 
+Computational Intelligence Methods for Bioinformatics and Biostatistics. CIBB 2024. 
+Lecture Notes in Computer Science(), vol 15276. Springer, Cham. 
+https://doi.org/10.1007/978-3-031-89704-7_24
+```
+
+bib citation:
+
+```
+@inproceedings{TARNAS2025,
+author={Quadrini, Michela and Hierro Canchari, Piero and Rosati, Piermichele and Tesei, Luca},
+editor={Cerulo, Luigi and Napolitano, Francesco and Bardozzo, Francesco and Cheng, Lu and Occhipinti, Annalisa and Pagnotta, Stefano M.},
+title={TARNAS, a TrAnslator for RNA Secondary Structure Formats},
+booktitle={Computational Intelligence Methods for Bioinformatics and Biostatistics},
+year={2025},
+publisher={Springer Nature Switzerland},
+address={Cham},
+pages={307--316},
+abstract={RNAs are single-stranded molecules that fold into themselves, determining a complex shape to perform their biological functions. Considering the chemical bonds established, such shapes can be abstracted into secondary structures, which are tractable from a computational point of view and encode valuable biological information. The analysis of such structures, including comparison and classification, plays a fundamental role in different biological studies. Unfortunately, the available tools take secondary structures as input using different formats, making the translation among different them a necessary step in every analysis.},
+isbn={978-3-031-89704-7},
+doi={10.1007/978-3-031-89704-7_24}
+}
+
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -171,15 +206,16 @@ TARNAS GUI works as follows:
 
    At this point, the user will be asked to choose where to save the cleaned files, and if successful, a report will be shown of the number of files cleaned and saved in the location specified by the user.
 4. `TRANSLATION OPTIONS`: they are on the `center side` side of TARNAS and allow the user to translate a file from one format to another.<br>Allowed translations:
-      |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** |
+      |                          | **Dot-Bracket no seq.** | **Dot-Bracket** | **BPSEQ** | **Fasta** | **AAS** | **AAS no seq.** | **CT** | **RNAML** |
       |--------------------------|-----------------------------|------------------|-----------|-----------|---------|--------------------|--------|
-      | **Dot-Bracket no seq.** | -                           | **X**            | **X**     | **X**     | **X**   | ✓                  | **X**  |
-      | **Dot-Bracket**           | ✓                           | -                | ✓         | ✓         | ✓       | ✓                  | ✓      |
-      | **BPSEQ**                 | ✓                           | ✓                | -         | ✓         | ✓       | ✓                  | ✓      |
-      | **Fasta**                 | **X**                       | **X**            | **X**     | -         | **X**   | **X**              | **X**  |
-      | **AAS**                   | ✓                           | ✓                | ✓         | ✓         | -       | ✓                  | ✓      |
-      | **AAS no seq.**        | ✓                           | **X**            | **X**     | **X**     | **X**   | -                  | **X**  |
-      | **CT**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   |
+      | **Dot-Bracket no seq.** | -                           | **X**            | **X**     | **X**     | **X**   | ✓                  | **X**  | **X**  |
+      | **Dot-Bracket**           | ✓                           | -                | ✓         | ✓         | ✓       | ✓                  | ✓      | **X**  |
+      | **BPSEQ**                 | ✓                           | ✓                | -         | ✓         | ✓       | ✓                  | ✓      | **X**  |
+      | **Fasta**                 | **X**                       | **X**            | **X**     | -         | **X**   | **X**              | **X**  | **X**  |
+      | **AAS**                   | ✓                           | ✓                | ✓         | ✓         | -       | ✓                  | ✓      | **X**  |
+      | **AAS no seq.**        | ✓                           | **X**            | **X**     | **X**     | **X**   | -                  | **X**  | **X**  |
+      | **CT**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   | **X**  |
+      | **RNAML**                    | ✓                           | ✓                | ✓         | ✓         | ✓       | ✓                  | -   | **X**  |
 
     You can select the `include header` checkbox if you want to keep the header during translation.<br>
     Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>
@@ -372,30 +408,6 @@ Don't forget to give the project a star! Thanks again!
 ## License
 
 Distributed under the GNU License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CITE -->
-## Citation
-
-Please cite the paper whenever TARNAS is used to produce published results or incorporated into other software: 
-
-```
-@inproceedings{TARNAS2025,
-author={Quadrini, Michela and Hierro Canchari, Piero and Rosati, Piermichele and Tesei, Luca},
-editor={Cerulo, Luigi and Napolitano, Francesco and Bardozzo, Francesco and Cheng, Lu and Occhipinti, Annalisa and Pagnotta, Stefano M.},
-title={TARNAS, a TrAnslator for RNA Secondary Structure Formats},
-booktitle={Computational Intelligence Methods for Bioinformatics and Biostatistics},
-year={2025},
-publisher={Springer Nature Switzerland},
-address={Cham},
-pages={307--316},
-abstract={RNAs are single-stranded molecules that fold into themselves, determining a complex shape to perform their biological functions. Considering the chemical bonds established, such shapes can be abstracted into secondary structures, which are tractable from a computational point of view and encode valuable biological information. The analysis of such structures, including comparison and classification, plays a fundamental role in different biological studies. Unfortunately, the available tools take secondary structures as input using different formats, making the translation among different them a necessary step in every analysis.},
-isbn={978-3-031-89704-7},
-doi={10.1007/978-3-031-89704-7_24}
-}
-
-```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
