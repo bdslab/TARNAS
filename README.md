@@ -213,7 +213,7 @@ TARNAS GUI works as follows:
       | **AAS**                  | ✓                        | ✓                | ✓         | ✓         | -       | ✓                | ✓      | **X**     |
       | **AAS no seq.**          | ✓                        | **X**            | **X**     | **X**     | **X**   | -                | **X**  | **X**     |
       | **CT**                   | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
-      | **RNAML**                | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | -      | **X**     |
+      | **RNAML**                | ✓                        | ✓                | ✓         | ✓         | ✓       | ✓                | ✓      | -         |
       
     You can select the `include header` checkbox if you want to keep the header during translation.<br>
     Moreover, only for RNAML file format it's possible to generate non canonical pairs.<br>

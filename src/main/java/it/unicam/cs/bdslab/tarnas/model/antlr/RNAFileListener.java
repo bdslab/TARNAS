@@ -46,10 +46,23 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     }
 
     public RNAFile getRnaFile() {
-        return this.rnaFile;
+        var rnaFile = this.rnaFile;
+        this.clearDataStructures();
+        return rnaFile;
     }
-    //BPSEQ
 
+    private void clearDataStructures() {
+        this.rnaFile = null;
+        this.s = null;
+        this.sequenceBuffer = null;
+        this.edbnsBuffer = null;
+        this.header = null;
+        this.fileName = null;
+        this.content = null;
+        this.absoluteFilePath = null;
+    }
+
+    //BPSEQ
     @Override
     public void enterBpseq(RNASecondaryStructureParser.BpseqContext ctx) {
         if (ctx.COMMENT() != null) ctx.COMMENT().forEach(line -> this.header.add(line.getText().trim()));

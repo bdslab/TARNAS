@@ -74,9 +74,6 @@ public class HomeController {
     @FXML
     public MenuButton btnSelectFormatTranslation;
 
-    //@FXML
-    //public Button btnTranslate;
-
     @FXML
     public CheckBox chbxRmLinesContainingWord;
 
@@ -449,7 +446,6 @@ public class HomeController {
     }
 
 
-
     private void tableEmpty() {
         if (this.filesTable.getItems().isEmpty()) {
             this.selectedFormat = null;
@@ -470,8 +466,6 @@ public class HomeController {
             this.textFieldRmLinesContainingWord.setText("");
             // reset menu button
             this.btnSelectFormatTranslation.setText("Translate to");
-            // reset translate button
-            //this.btnTranslate.setDisable(true);
             // reset panes
             this.paneTranslationCleaning.setDisable(true);
             this.isTranslating = null;
