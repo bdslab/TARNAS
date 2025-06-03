@@ -1,5 +1,3 @@
-// Generated from D:/UNIVERSITA/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
-
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;

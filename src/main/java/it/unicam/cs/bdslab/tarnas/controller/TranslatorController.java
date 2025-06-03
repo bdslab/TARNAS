@@ -14,7 +14,6 @@ import it.unicam.cs.bdslab.rnamlparsertool.controller.RnaParserAnalyzerControlle
 import it.unicam.cs.bdslab.tarnas.model.rnafile.*;
 
 /**
- * // TODO: javadoc
  * An implementation of Translator Controller that accepts input from the {@link IOController} and converts that
  * input to commands for the Model or View.
  * This Controller takes care translation operations and file loading/saving/deleting and directory loading/saving.

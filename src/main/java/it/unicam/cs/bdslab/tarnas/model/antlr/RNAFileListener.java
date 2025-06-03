@@ -29,7 +29,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
     private List<String> header;
     private String fileName;
     private List<String> content;
-    private String absoluteFilePath;
 
     public RNAFileListener() {
 
@@ -42,7 +41,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         this.edbnsBuffer = new StringBuffer();
         this.header = new ArrayList<>();
         this.fileName = String.valueOf(filePath.getFileName());
-        this.absoluteFilePath = filePath.toAbsolutePath().toString(); // useful only for RNAML files
     }
 
     public RNAFile getRnaFile() {
@@ -59,7 +57,6 @@ public class RNAFileListener extends RNASecondaryStructureBaseListener {
         this.header = null;
         this.fileName = null;
         this.content = null;
-        this.absoluteFilePath = null;
     }
 
     //BPSEQ

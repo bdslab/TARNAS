@@ -1,4 +1,4 @@
-// Generated from D:/UNIVERSITA/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
+// Generated from /Users/piermichelerosati/Documents/github/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
 
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 

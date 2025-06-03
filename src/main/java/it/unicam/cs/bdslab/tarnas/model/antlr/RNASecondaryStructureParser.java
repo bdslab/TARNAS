@@ -1,5 +1,3 @@
-// Generated from D:/UNIVERSITA/paper_tarnas/TARNAS/src/main/java/it/unicam/cs/bdslab/tarnas/model/antlr/RNASecondaryStructure.g4 by ANTLR 4.13.2
-
 package it.unicam.cs.bdslab.tarnas.model.antlr;
 
 import org.antlr.v4.runtime.atn.*;
@@ -134,11 +132,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitRna_format(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitRna_format(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Rna_formatContext rna_format() throws RecognitionException {
@@ -230,11 +223,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitAas(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitAas(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AasContext aas() throws RecognitionException {
@@ -319,11 +307,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitEdbn(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitEdbn(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EdbnContext edbn() throws RecognitionException {
@@ -393,11 +376,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitFasta(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitFasta(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FastaContext fasta() throws RecognitionException {
@@ -457,11 +435,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitBpseq(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitBpseq(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -546,11 +519,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitCt(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitCt(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CtContext ct() throws RecognitionException {
@@ -631,11 +599,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitEdbn_structure(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitEdbn_structure(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Edbn_structureContext edbn_structure() throws RecognitionException {
@@ -690,11 +653,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitSequence(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitSequence(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SequenceContext sequence() throws RecognitionException {
@@ -746,11 +704,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitBonds(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitBonds(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -805,11 +758,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitCt_structure(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitCt_structure(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -879,11 +827,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitCtLineUnpaired(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitCtLineUnpaired(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class CtLineBondContext extends Ct_lineContext {
@@ -904,11 +847,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitCtLineBond(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitCtLineBond(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1021,11 +959,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitBpseq_structure(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitBpseq_structure(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Bpseq_structureContext bpseq_structure() throws RecognitionException {
@@ -1088,11 +1021,6 @@ public class RNASecondaryStructureParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitBpseqLineUnpaired(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitBpseqLineUnpaired(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class BpseqLineBondContext extends Bpseq_lineContext {
@@ -1109,11 +1037,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitBpseqLineBond(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitBpseqLineBond(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1186,11 +1109,6 @@ public class RNASecondaryStructureParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof RNASecondaryStructureListener ) ((RNASecondaryStructureListener)listener).exitRnamlContent(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RNASecondaryStructureVisitor ) return ((RNASecondaryStructureVisitor<? extends T>)visitor).visitRnamlContent(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
