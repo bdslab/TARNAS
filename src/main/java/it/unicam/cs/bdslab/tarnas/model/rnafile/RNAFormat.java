@@ -1,6 +1,7 @@
 package it.unicam.cs.bdslab.tarnas.model.rnafile;
 
 // TODO: javadoc for RNAML
+
 /**
  * An RNAFormat can be:
  * <ul>
@@ -89,7 +90,8 @@ public enum RNAFormat {
     DB("DOT BRACKET"),
     DB_NO_SEQUENCE("DOT BRACKET NO SEQUENCE"),
     FASTA("FASTA"),
-    RNAML("RNAML");
+    RNAML("RNAML"),
+    ABSTRACTION("ABSTRACTION");
 
     private final String name;
 
@@ -109,6 +111,7 @@ public enum RNAFormat {
             case DB, DB_NO_SEQUENCE -> "db";
             case FASTA -> "fasta";
             case RNAML -> "rnaml";
+            default -> "";
         };
     }
 

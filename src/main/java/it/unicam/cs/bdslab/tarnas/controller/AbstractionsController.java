@@ -13,14 +13,14 @@ public class AbstractionsController {
     public RNAFile getCorePlus(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_coreplus";
-        return new RNAFile(name, new ArrayList<>(), List.of(coreplus), null, null);
+        return new RNAFile(name, new ArrayList<>(), List.of(coreplus), null, RNAFormat.ABSTRACTION);
     }
 
     public RNAFile getCore(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var core = computeCore(coreplus);
         var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_core";
-        return new RNAFile(name, new ArrayList<>(), List.of(core), null, null);
+        return new RNAFile(name, new ArrayList<>(), List.of(core), null, RNAFormat.ABSTRACTION);
     }
 
     public RNAFile getShape(RNAFile rnaFile) throws IllegalArgumentException {
@@ -31,7 +31,7 @@ public class AbstractionsController {
             shape = "";
         }
         var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_shape";
-        return new RNAFile(name, new ArrayList<>(), List.of(shape), null, null);
+        return new RNAFile(name, new ArrayList<>(), List.of(shape), null, RNAFormat.ABSTRACTION);
     }
 
     private String computeCore(String sequence) {
@@ -43,7 +43,7 @@ public class AbstractionsController {
 
     private String getDotBracket(RNAFile rnaFile) throws IllegalArgumentException {
         if (rnaFile.getFormat() != RNAFormat.DB && rnaFile.getFormat() != RNAFormat.DB_NO_SEQUENCE)
-            throw new IllegalArgumentException("Impossible to compute abstractions for "+ rnaFile.getFormat() + " format");
+            throw new IllegalArgumentException("Impossible to compute abstractions for " + rnaFile.getFormat() + " format");
         if (rnaFile.getFormat() == RNAFormat.DB_NO_SEQUENCE)
             return rnaFile.getBody().get(0);
         return rnaFile.getBody().get(1);

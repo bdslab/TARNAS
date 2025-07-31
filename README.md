@@ -226,6 +226,8 @@ TARNAS GUI works as follows:
     * Core plus
     * Shape
 
+   For more information on the Core, Core+ and Shape abstractions, please refer to the related publication.
+
 ## CLI Application
 * If you downloaded the `TARNAS_CLI.jar` from the latest release, you can use `Java` to execute TARNAS.
   <br>
