@@ -12,15 +12,15 @@ public class AbstractionsController {
 
     public RNAFile getCorePlus(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_coreplus";
-        return new RNAFile(name, new ArrayList<>(), List.of(coreplus), null, RNAFormat.ABSTRACTION);
+        var baseName = getBaseName(rnaFile);
+        return new RNAFile(baseName, new ArrayList<>(), List.of(coreplus), null, RNAFormat.CORE_PLUS);
     }
 
     public RNAFile getCore(RNAFile rnaFile) throws IllegalArgumentException {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var core = computeCore(coreplus);
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_core";
-        return new RNAFile(name, new ArrayList<>(), List.of(core), null, RNAFormat.ABSTRACTION);
+        var baseName = getBaseName(rnaFile);
+        return new RNAFile(baseName, new ArrayList<>(), List.of(core), null, RNAFormat.CORE_PLUS);
     }
 
     public RNAFile getShape(RNAFile rnaFile) throws IllegalArgumentException {
@@ -30,8 +30,8 @@ public class AbstractionsController {
         } catch (Exception e) {
             shape = "";
         }
-        var name = rnaFile.getFileName().substring(0, rnaFile.getFileName().lastIndexOf('.')) + "_shape";
-        return new RNAFile(name, new ArrayList<>(), List.of(shape), null, RNAFormat.ABSTRACTION);
+        var baseName = getBaseName(rnaFile);
+        return new RNAFile(baseName, new ArrayList<>(), List.of(shape), null, RNAFormat.SHAPE);
     }
 
     private String computeCore(String sequence) {
@@ -173,13 +173,103 @@ public class AbstractionsController {
 
         var pairList = convertDotBracketToPairs(shapeBuilder.toString());
         var validPairs = extractValidPairs(pairList);
-        return convertPairsToString(validPairs, shapeBuilder.toString());
+        var shapeString = convertPairsToString(validPairs, shapeBuilder.toString());
+        var result = extractCrossingStructure(shapeString);
+        return result;
     }
 
     public static AbstractionsController getInstance() {
         if (instance == null)
             instance = new AbstractionsController();
         return instance;
+    }
+
+    public String extractCrossingStructure(String dotBracket) {
+        var pairings = extendedDotBracketToPairings(dotBracket);
+        var crossings = getCrossingPairs(pairings);
+
+        var result = new char[dotBracket.length()];
+        Arrays.fill(result, '\0');
+
+        for (var pair : crossings) {
+            result[pair[0]] = dotBracket.charAt(pair[0]);
+            result[pair[1]] = dotBracket.charAt(pair[1]);
+        }
+
+        var sb = new StringBuilder();
+        for (var c : result) {
+            if (c != '\0') sb.append(c);
+        }
+        return sb.toString();
+    }
+
+
+    public List<int[]> extendedDotBracketToPairings(String dotBracket) {
+        Map<Character, Character> matching = new HashMap<>();
+        matching.put('(', ')'); matching.put('[', ']'); matching.put('{', '}'); matching.put('<', '>');
+        for (int i = 0; i < 26; i++) {
+            matching.put((char) ('A' + i), (char) ('a' + i));
+        }
+
+        Map<Character, Character> reverse = new HashMap<>();
+        for (var e : matching.entrySet()) {
+            reverse.put(e.getValue(), e.getKey());
+        }
+
+        Map<Character, Deque<Integer>> stacks = new HashMap<>();
+        for (Character open : matching.keySet()) {
+            stacks.put(open, new ArrayDeque<>());
+        }
+
+        List<int[]> pairings = new ArrayList<>();
+        for (int i = 0; i < dotBracket.length(); i++) {
+            char ch = dotBracket.charAt(i);
+            if (matching.containsKey(ch)) {
+                stacks.get(ch).push(i);
+            } else if (reverse.containsKey(ch)) {
+                char open = reverse.get(ch);
+                Deque<Integer> stack = stacks.get(open);
+                if (stack == null || stack.isEmpty()) {
+                    throw new IllegalArgumentException("Unmatched closing character: " + ch);
+                }
+                int openIndex = stack.pop();
+                pairings.add(new int[]{openIndex, i});
+            }
+        }
+
+        for (Map.Entry<Character, Deque<Integer>> e : stacks.entrySet()) {
+            if (!e.getValue().isEmpty()) {
+                throw new IllegalArgumentException("Unmatched opening character: " + e.getKey());
+            }
+        }
+
+        pairings.sort(Comparator.comparingInt(a -> a[0]));
+        return pairings;
+    }
+
+    public Set<int[]> getCrossingPairs(List<int[]> pairings) {
+        Set<int[]> crossing = new HashSet<>();
+        for (int i = 0; i < pairings.size(); i++) {
+            for (int j = i + 1; j < pairings.size(); j++) {
+                if (isCrossing(pairings.get(i), pairings.get(j))) {
+                    crossing.add(pairings.get(i));
+                    crossing.add(pairings.get(j));
+                }
+            }
+        }
+        return crossing;
+    }
+
+    public boolean isCrossing(int[] p1, int[] p2) {
+        int i = p1[0], j = p1[1];
+        int k = p2[0], l = p2[1];
+        return (i < k && k < j && j < l) || (k < i && i < l && l < j);
+    }
+
+    private String getBaseName(RNAFile rnaFile) {
+            var fileName = rnaFile.getFileName();
+            var firstDot = fileName.indexOf(".");
+            return (firstDot != -1) ? fileName.substring(0, firstDot) : fileName;
     }
 
 }

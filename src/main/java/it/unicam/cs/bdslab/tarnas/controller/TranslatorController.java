@@ -156,8 +156,8 @@ public class TranslatorController {
             case DB -> RNAFileTranslator.translateToDB(rnaFile);
             case DB_NO_SEQUENCE -> RNAFileTranslator.translateToDBNoSequence(rnaFile);
             case FASTA -> RNAFileTranslator.translateToFASTA(rnaFile);
-            // dummy case, case handled in another function
-            case RNAML, ABSTRACTION -> null;
+            // dummy cases, case handled in another function
+            case RNAML, CORE,CORE_PLUS,SHAPE -> null;
         };
     }
 }

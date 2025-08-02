@@ -91,7 +91,9 @@ public enum RNAFormat {
     DB_NO_SEQUENCE("DOT BRACKET NO SEQUENCE"),
     FASTA("FASTA"),
     RNAML("RNAML"),
-    ABSTRACTION("ABSTRACTION");
+    CORE("CORE"),
+    CORE_PLUS("CORE PLUS"),
+    SHAPE("SHAPE");
 
     private final String name;
 
@@ -111,7 +113,9 @@ public enum RNAFormat {
             case DB, DB_NO_SEQUENCE -> "db";
             case FASTA -> "fasta";
             case RNAML -> "rnaml";
-            default -> "";
+            case CORE -> "core";
+            case CORE_PLUS -> "core_plus";
+            case SHAPE -> "shape";
         };
     }
 
