@@ -85,7 +85,9 @@ TARNAS (web app) was developed with;
 <!-- CITE -->
 ## Citation
 
-Please cite the paper whenever TARNAS is used to produce published results or incorporated into other software:
+Please cite the following works whenever TARNAS is used to produce published results or incorporated into other software:
+
+### Conference Paper
 
 > Quadrini, M., Hierro Canchari, P., Rosati, P., Tesei, L. (2025).  
 > *TARNAS, a TrAnslator for RNA Secondary Structure Formats*.  
@@ -112,6 +114,31 @@ doi={10.1007/978-3-031-89704-7_24}
 }
 
 ```
+
+### Journal Paper
+
+> Quadrini, M., Canchari, P. H., Rosati, P., & Tesei, L. (2025).
+> *TARNAS: A Software Tool for Abstracting and Translating RNA Secondary Structures.*
+> *International Journal of Molecular Sciences, 26(12), 5728.*
+> https://doi.org/10.3390/ijms26125728
+
+bib citation:
+
+```bibtex
+@article{TARNAS_IJMS2025,
+author = {Quadrini, Michela and Canchari, Piero H. and Rosati, Piermichele and Tesei, Luca},
+title = {TARNAS: A Software Tool for Abstracting and Translating RNA Secondary Structures},
+journal = {International Journal of Molecular Sciences},
+volume = {26},
+year = {2025},
+number = {12},
+article-number = {5728},
+doi = {10.3390/ijms26125728},
+publisher = {MDPI}
+}
+
+```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
