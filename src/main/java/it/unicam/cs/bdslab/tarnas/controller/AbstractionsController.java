@@ -20,7 +20,7 @@ public class AbstractionsController {
         var coreplus = computeCore(getDotBracket(rnaFile));
         var core = computeCore(coreplus);
         var baseName = getBaseName(rnaFile);
-        return new RNAFile(baseName, new ArrayList<>(), List.of(core), null, RNAFormat.CORE_PLUS);
+        return new RNAFile(baseName, new ArrayList<>(), List.of(core), null, RNAFormat.CORE);
     }
 
     public RNAFile getShape(RNAFile rnaFile) throws IllegalArgumentException {
