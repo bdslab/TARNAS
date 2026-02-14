@@ -178,13 +178,21 @@ public class HomeController {
             try {
                 var files = Files.walk(selectedDirectory.toPath())
                         .filter(Files::isRegularFile)
+                        .filter(f ->
+                        {
+                            var pathSelectedDir = selectedDirectory.toPath().getFileName().toString();
+                            var pathFromDirName = f.toString().substring(f.toString().indexOf(pathSelectedDir));
+                            var pathBetweenDirAndFile = pathFromDirName.substring(0, pathFromDirName.lastIndexOf(f.getFileName().toString()));
+                            return (!f.getFileName().toString().startsWith(".") && !pathBetweenDirAndFile.contains("."));
+                        })
                         .toList();
                 for (var f : files)
                     this.addFileToTable(f);
 
                 logger.info("Folder added successfully");
             } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "", "", e.getMessage());
+                // Uncomment the following line in case you would like to show which file was not loaded due to a parsing error. If uncommented, the app will stop as soon as it will find an error.
+                //showAlert(Alert.AlertType.ERROR, "", "", e.getMessage());
             }
         }
         logger.info("Exit add file");
