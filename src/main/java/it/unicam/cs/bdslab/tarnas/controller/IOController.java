@@ -76,8 +76,11 @@ public class IOController {
      */
     public void loadDirectory(Path srcDirectoryPath) throws IOException {
         try (var directoryStream = Files.newDirectoryStream(srcDirectoryPath)) {
+            var pathSelectedDir = srcDirectoryPath.getFileName().toString();
             for (var path : directoryStream) {
-                if (Files.isRegularFile(path)) {
+                var pathFromDirName = path.toString().substring(path.toString().indexOf(pathSelectedDir));
+                var pathBetweenDirAndFile = pathFromDirName.substring(0, pathFromDirName.lastIndexOf(path.getFileName().toString()));
+                if (Files.isRegularFile(path) && !path.getFileName().toString().startsWith(".") && !pathBetweenDirAndFile.contains(".")) {
                     loadFile(path);
                 }
             }
